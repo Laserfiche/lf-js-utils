@@ -13,24 +13,86 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+#       # Runs a single command using the runners shell
+#       - name: Run a one-line script
+#         run: echo Hello, world!
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+#       # Runs a set of commands using the runners shell
+#       - name: Run a multi-line script
+#         run: |
+#           echo Add other actions to build,
+#           echo test, and deploy your project.
+
+
+- name: MAJOR_VERSION
+  value: '2'
+- name: MINOR_VERSION
+  value: '0'
+- name: PATCH_VERSION
+  value: '2'
+- name: NODE_EXTRA_CA_CERTS
+  value: '/etc/ssl/certs/ca-certificates.crt'
+
+- name: CURRENT_VERSION
+  ${{ if eq(parameters.isProduction, True)}}:
+    value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
+  ${{ if eq(parameters.isProduction, False)}}:
+    value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
+
+- name: NpmPackageVersion
+  ${{ if eq(parameters.isProduction, True)}}:
+    value: '$(CURRENT_VERSION)'
+  ${{ if eq(parameters.isProduction, False)}}:
+    value: '$(CURRENT_VERSION)-preview-$(Build.BuildNumber)'
+
+steps:
+
+- script: echo '$(npmauthtoken)'
+  displayName: 'Echo npmauthtoken'
+
+- script: echo '$(Build.BuildNumber)'
+  displayName: 'Echo build number'
+
+- script: echo '$(NpmPackageVersion)'
+  displayName: 'Echo NPM package version'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+  displayName: 'Install Node.js'
+  env:
+    NPM_AUTH_TOKEN: $(npmauthtoken)
+
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    verbose: false
+
+- task: Npm@1
+  displayName: 'npm run lint'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run lint'
+  timeoutInMinutes: 5
+  
+- task: Npm@1
+  displayName: npm run test
+  inputs:
+    command: 'custom'
+    customCommand: 'run test:ci'
+
+
+
