@@ -1,7 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
 name: Build
-
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -11,7 +10,7 @@ on:
     branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+#   workflow_dispatch:
 
 # # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # jobs:
@@ -36,63 +35,63 @@ on:
 #           echo test, and deploy your project.
 
 
-- name: MAJOR_VERSION
-  value: '2'
-- name: MINOR_VERSION
-  value: '0'
-- name: PATCH_VERSION
-  value: '2'
-- name: NODE_EXTRA_CA_CERTS
-  value: '/etc/ssl/certs/ca-certificates.crt'
+  - name: MAJOR_VERSION
+    value: '2'
+  - name: MINOR_VERSION
+    value: '0'
+  - name: PATCH_VERSION
+    value: '2'
+  - name: NODE_EXTRA_CA_CERTS
+    value: '/etc/ssl/certs/ca-certificates.crt'
 
-- name: CURRENT_VERSION
-  ${{ if eq(parameters.isProduction, True)}}:
-    value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
-  ${{ if eq(parameters.isProduction, False)}}:
-    value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
+  - name: CURRENT_VERSION
+    ${{ if eq(parameters.isProduction, True)}}:
+      value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
+    ${{ if eq(parameters.isProduction, False)}}:
+      value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
 
-- name: NpmPackageVersion
-  ${{ if eq(parameters.isProduction, True)}}:
-    value: '$(CURRENT_VERSION)'
-  ${{ if eq(parameters.isProduction, False)}}:
-    value: '$(CURRENT_VERSION)-preview-$(Build.BuildNumber)'
+  - name: NpmPackageVersion
+    ${{ if eq(parameters.isProduction, True)}}:
+      value: '$(CURRENT_VERSION)'
+    ${{ if eq(parameters.isProduction, False)}}:
+      value: '$(CURRENT_VERSION)-preview-$(Build.BuildNumber)'
 
-steps:
+    steps:
 
-- script: echo '$(npmauthtoken)'
-  displayName: 'Echo npmauthtoken'
+    - script: echo '$(npmauthtoken)'
+      displayName: 'Echo npmauthtoken'
 
-- script: echo '$(Build.BuildNumber)'
-  displayName: 'Echo build number'
+    - script: echo '$(Build.BuildNumber)'
+      displayName: 'Echo build number'
 
-- script: echo '$(NpmPackageVersion)'
-  displayName: 'Echo NPM package version'
+    - script: echo '$(NpmPackageVersion)'
+      displayName: 'Echo NPM package version'
 
-- task: NodeTool@0
-  inputs:
-    versionSpec: '14.x'
-  displayName: 'Install Node.js'
-  env:
-    NPM_AUTH_TOKEN: $(npmauthtoken)
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '14.x'
+      displayName: 'Install Node.js'
+      env:
+        NPM_AUTH_TOKEN: $(npmauthtoken)
 
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    verbose: false
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        verbose: false
 
-- task: Npm@1
-  displayName: 'npm run lint'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run lint'
-  timeoutInMinutes: 5
-  
-- task: Npm@1
-  displayName: npm run test
-  inputs:
-    command: 'custom'
-    customCommand: 'run test:ci'
+    - task: Npm@1
+      displayName: 'npm run lint'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'run lint'
+      timeoutInMinutes: 5
+
+    - task: Npm@1
+      displayName: npm run test
+      inputs:
+        command: 'custom'
+        customCommand: 'run test:ci'
 
 
 
