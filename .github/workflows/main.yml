@@ -26,25 +26,22 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      CODE: ${{ github.workspace }}/go/src/github.com/${{ github.repository }}
+      CURRENT_VERSION: ${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{env.PATCH_VERSION}}
+      NpmPackageVersion: ${{env.CURRENT_VERSION}}-preview-${{github.run_id}}
       
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Print Code
-        run: echo ${CODE}
-      - name: 'Echo major'
-        run: echo "$MAJOR_VERSION"
+      - name: Print CURRENT_VERSION
+        run: echo ${CURRENT_VERSION}
+
 
       - name: 'Echo build number'
         run: echo "${{github.run_id}}"
 
       - name: 'Echo NPM package version'
-        run: echo "$NpmPackageVersion"
-        env:
-          CURRENT_VERSION: ${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{env.PATCH_VERSION}}
-          NpmPackageVersion: ${{env.CURRENT_VERSION}}-preview-${{github.run_id}}
+        run: echo ${NpmPackageVersion}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
