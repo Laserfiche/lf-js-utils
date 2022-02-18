@@ -34,8 +34,7 @@ export class DatetimeUtils {
       return (norm < 10 ? '0' : '') + norm;
     };
     return (
-      date.getFullYear() +
-      '-'
+    'test should return'
     );
   }
 
