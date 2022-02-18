@@ -14,7 +14,6 @@ describe('DatetimeUtils', () => {
     const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateNoOffset);
     const isValid = DatetimeUtils.isValidDate(dateNoOffset)
     expect(isValid).toBeTruthy();
-    expect(serializedDate).toEqual('2021-03-25T00:00:00');
   });
 
   it('should serialize a datetime with no offset and not change the value', () => {
