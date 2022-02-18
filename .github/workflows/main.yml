@@ -61,9 +61,9 @@ jobs:
       - name: Set Timezone
         uses: szenius/set-timezone@v1.0
         with:
-          timezoneLinux: America/Los_Angeles
-          timezoneMacos: America/Los_Angeles
-          timezoneWindows: America/Los_Angeles
+          timezoneLinux: America/Los_Angeles # this is because Github workflow runner runs in UTC time
+          timezoneMacos: America/Los_Angeles # but we expect the local timezone to be in GMT-8 for 
+          timezoneWindows: America/Los_Angeles # DatetimeUtil unit tests
     
       - name: 'npm install'
         run: 'npm install'
