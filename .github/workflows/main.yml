@@ -2,6 +2,7 @@
 
 name: Build
 # Controls when the workflow will run
+
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -10,88 +11,52 @@ on:
     branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
-#   workflow_dispatch:
+  workflow_dispatch:
 
-# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-# jobs:
-#   # This workflow contains a single job called "build"
-#   build:
-#     # The type of runner that the job will run on
-#     runs-on: ubuntu-latest
-
-#     # Steps represent a sequence of tasks that will be executed as part of the job
-#     steps:
-#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-#       - uses: actions/checkout@v2
-
-#       # Runs a single command using the runners shell
-#       - name: Run a one-line script
-#         run: echo Hello, world!
-
-#       # Runs a set of commands using the runners shell
-#       - name: Run a multi-line script
-#         run: |
-#           echo Add other actions to build,
-#           echo test, and deploy your project.
+env:
+  MAJOR_VERSION: '2'
+  MINOR_VERSION: '0'
+  PATCH_VERSION: '2'
+  CURRENT_VERSION: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
+  NpmPackageVersion: '$(CURRENT_VERSION)-preview-$(Build.BuildNumber)'
 
 
-  - name: MAJOR_VERSION
-    value: '2'
-  - name: MINOR_VERSION
-    value: '0'
-  - name: PATCH_VERSION
-    value: '2'
-  - name: NODE_EXTRA_CA_CERTS
-    value: '/etc/ssl/certs/ca-certificates.crt'
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
 
-  - name: CURRENT_VERSION
-    ${{ if eq(parameters.isProduction, True)}}:
-      value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
-    ${{ if eq(parameters.isProduction, False)}}:
-      value: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
-
-  - name: NpmPackageVersion
-    ${{ if eq(parameters.isProduction, True)}}:
-      value: '$(CURRENT_VERSION)'
-    ${{ if eq(parameters.isProduction, False)}}:
-      value: '$(CURRENT_VERSION)-preview-$(Build.BuildNumber)'
-
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-    - script: echo '$(npmauthtoken)'
-      displayName: 'Echo npmauthtoken'
+      - name: 'Echo npmauthtoken'
+        run: | 
+          echo '$(npmauthtoken)'
 
-    - script: echo '$(Build.BuildNumber)'
-      displayName: 'Echo build number'
+      - name: 'Echo build number'
+        run: echo '$(Build.BuildNumber)'
 
-    - script: echo '$(NpmPackageVersion)'
-      displayName: 'Echo NPM package version'
+      - name: 'Echo NPM package version'
+        run: echo '$(NpmPackageVersion)'
 
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '14.x'
-      displayName: 'Install Node.js'
-      env:
-        NPM_AUTH_TOKEN: $(npmauthtoken)
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version:  '14.x'
 
-    - task: Npm@1
-      displayName: 'npm install'
-      inputs:
-        verbose: false
 
-    - task: Npm@1
-      displayName: 'npm run lint'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: 'run lint'
-      timeoutInMinutes: 5
+      - name: 'npm install'
+        run: 'npm install'
 
-    - task: Npm@1
-      displayName: npm run test
-      inputs:
-        command: 'custom'
-        customCommand: 'run test:ci'
+      - name: 'npm run lint'
+        run: 'npm run lint'
+
+      - name: npm run test
+        run: 'npm run test:ci'
 
 
 
