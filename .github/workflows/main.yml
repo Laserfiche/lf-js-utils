@@ -42,9 +42,16 @@ jobs:
         run: echo "${{github.run_id}}"
 
       - name: 'Echo NPM package version'
+        if: ${{ github.event.inputs.isProduction == 'false' }}
         run: echo ${NpmPackageVersion}
         env:
           NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}-preview-${{ github.run_id }}
+          
+      - name: 'Echo NPM package version'
+        if: ${{ github.event.inputs.isProduction == 'true' }}
+        run: echo ${NpmPackageVersion}
+        env:
+          NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
