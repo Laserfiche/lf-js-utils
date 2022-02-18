@@ -14,11 +14,11 @@ on:
   workflow_dispatch:
 
 env:
-  MAJOR_VERSION: '2'
-  MINOR_VERSION: '0'
-  PATCH_VERSION: '2'
-  CURRENT_VERSION: '$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION'
-  NpmPackageVersion: $CURRENT_VERSION-preview-$Build.BuildNumber
+  MAJOR_VERSION: 2
+  MINOR_VERSION: 0
+  PATCH_VERSION: 2
+  CURRENT_VERSION: "$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
+  NpmPackageVersion: "$CURRENT_VERSION-preview-$Build.BuildNumber"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -32,7 +32,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      
+      - name: 'Echo major'
+        run: echo "$MAJOR_VERSION"
 
       - name: 'Echo build number'
         run: echo '$Build.BuildNumber'
