@@ -17,8 +17,8 @@ env:
   MAJOR_VERSION: 2
   MINOR_VERSION: 0
   PATCH_VERSION: 2
-  CURRENT_VERSION: "$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
-  NpmPackageVersion: "$CURRENT_VERSION-preview-$Build.BuildNumber"
+  CURRENT_VERSION: "${{MAJOR_VERSION}}.${{MINOR_VERSION}}.${{PATCH_VERSION}}"
+  NpmPackageVersion: "${{CURRENT_VERSION}}-preview-${{github.run_id}}"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -37,7 +37,7 @@ jobs:
         run: echo "$MAJOR_VERSION"
 
       - name: 'Echo build number'
-        run: echo '$Build.BuildNumber'
+        run: echo "${{github.run_id}}"
 
       - name: 'Echo NPM package version'
         run: echo "$NpmPackageVersion"
@@ -48,14 +48,14 @@ jobs:
           node-version:  '14.x'
 
 
-      - name: 'npm install'
-        run: 'npm install'
+#       - name: 'npm install'
+#         run: 'npm install'
 
-      - name: 'npm run lint'
-        run: 'npm run lint'
+#       - name: 'npm run lint'
+#         run: 'npm run lint'
 
-      - name: npm run test
-        run: 'npm run test:ci'
+#       - name: npm run test
+#         run: 'npm run test:ci'
 
 
 
