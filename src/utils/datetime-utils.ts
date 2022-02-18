@@ -51,6 +51,7 @@ export class DatetimeUtils {
 
 
   static isValidDate(date: Date): boolean {
+    console.log("called")
     return !isNaN(date.getTime());
   }
 
