@@ -61,9 +61,9 @@ jobs:
       - name: Set Timezone
         uses: szenius/set-timezone@v1.0
         with:
-          timezoneLinux: GMT-8
-          timezoneMacos: GMT-8
-          timezoneWindows: GMT-8
+          timezoneLinux: America/Los_Angeles
+          timezoneMacos: America/Los_Angeles
+          timezoneWindows: America/Los_Angeles
     
       - name: 'npm install'
         run: 'npm install'
