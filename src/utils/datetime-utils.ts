@@ -21,16 +21,19 @@ export class DatetimeUtils {
 
   static serializeDateValue(date: Date | undefined): string | undefined {
     if (!date || !DatetimeUtils.isValidDate(date)) {
+      console.log("first")
       return undefined;
     }
 
     const offset: number = date.getTimezoneOffset();
     if (offset === 0) {
+      console.log("second ", date.toISOString())
       return date.toISOString();
     }
 
     const pad: (num: number) => string = (num: number) => {
       const norm = Math.floor(Math.abs(num));
+      console.log("third ", (norm < 10 ? '0' : '') + norm )
       return (norm < 10 ? '0' : '') + norm;
     };
     return (
@@ -51,7 +54,6 @@ export class DatetimeUtils {
 
 
   static isValidDate(date: Date): boolean {
-    console.log("called")
     return !isNaN(date.getTime());
   }
 
