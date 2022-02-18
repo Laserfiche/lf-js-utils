@@ -33,17 +33,6 @@ export class DatetimeUtils {
       const norm = Math.floor(Math.abs(num));
       return (norm < 10 ? '0' : '') + norm;
     };
-    console.error("calllled",  date.getFullYear() +
-    '-' +
-    pad(date.getMonth() + 1) +
-    '-' +
-    pad(date.getDate()) +
-    'T' +
-    pad(date.getHours()) +
-    ':' +
-    pad(date.getMinutes()) +
-    ':' +
-    pad(date.getSeconds()))
     return (
       date.getFullYear() +
       '-' +
