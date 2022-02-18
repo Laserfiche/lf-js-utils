@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "test": "jest",
-    "test:ci": "npm run test",
+    "test:ci": "npm run test -- --watchAll=false --reporters=default --reporters=jest-junit",
     "lint": "eslint . --ext .ts",
     "build": "tsc"
   },
