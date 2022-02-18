@@ -12,13 +12,17 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      isProduction:
+        description: 'production build'
+        type: boolean
+        required: true
+        default: 'false'
 
 env:
-  MAJOR_VERSION: '2'
-  MINOR_VERSION: '0'
-  PATCH_VERSION: '2'
-  CURRENT_VERSION: '$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)'
-  NpmPackageVersion: '$(CURRENT_VERSION)-preview-$(Build.BuildNumber)'
+  MAJOR_VERSION: 2
+  MINOR_VERSION: 0
+  PATCH_VERSION: 2
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -27,21 +31,27 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+      
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: 'Echo npmauthtoken'
-        run: | 
-          echo '$(npmauthtoken)'
 
       - name: 'Echo build number'
-        run: echo '$(Build.BuildNumber)'
+        run: echo "${{github.run_id}}"
 
       - name: 'Echo NPM package version'
-        run: echo '$(NpmPackageVersion)'
+        if: ${{ ! github.event.inputs.isProduction }}
+        run: echo ${NpmPackageVersion}
+        env:
+          NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}-preview-${{ github.run_id }}
+          
+      - name: 'Echo NPM package version'
+        if: ${{ github.event.inputs.isProduction }}
+        run: echo ${NpmPackageVersion}
+        env:
+          NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
@@ -55,8 +65,8 @@ jobs:
       - name: 'npm run lint'
         run: 'npm run lint'
 
-      - name: npm run test
-        run: 'npm run test:ci'
+      # - name: npm run test
+      #   run: 'npm run test:ci'
 
 
 
