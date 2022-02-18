@@ -27,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-        CURRENT_VERSION: "${{MAJOR_VERSION}}.${{MINOR_VERSION}}.${{PATCH_VERSION}}"
-        NpmPackageVersion: "${{CURRENT_VERSION}}-preview-${{github.run_id}}"
+        CURRENT_VERSION: "${{env.MAJOR_VERSION}}.${{env.MINOR_VERSION}}.${{env.PATCH_VERSION}}"
+        NpmPackageVersion: "${{env.CURRENT_VERSION}}-preview-${{github.run_id}}"
         
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
