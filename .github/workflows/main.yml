@@ -58,7 +58,11 @@ jobs:
         with:
           node-version:  '14.x'
 
-
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: GMT-8
+    
       - name: 'npm install'
         run: 'npm install'
 
