@@ -23,7 +23,7 @@ export class DatetimeUtils {
     if (!date || !DatetimeUtils.isValidDate(date)) {
       return undefined;
     }
-    
+
     const offset: number = date.getTimezoneOffset();
     if (offset === 0) {
       return date.toISOString();
