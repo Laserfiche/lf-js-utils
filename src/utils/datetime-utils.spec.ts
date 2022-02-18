@@ -142,6 +142,7 @@ describe('DatetimeUtils', () => {
       );
     }
     const serializedDate: string | undefined = test(dateWithOffset);
+    console.log("heree", test, test(dateWithOffset))
     expect(serializedDate).toEqual('2021-03-25T00:00:00');
   });
 
