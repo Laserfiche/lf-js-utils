@@ -33,7 +33,7 @@ export class DatetimeUtils {
       const norm = Math.floor(Math.abs(num));
       return (norm < 10 ? '0' : '') + norm;
     };
-    console.log("test: ", date.getFullYear() +
+    console.error("test: ", date.getFullYear() +
     '-' +
     pad(date.getMonth() + 1) +
     '-' +
