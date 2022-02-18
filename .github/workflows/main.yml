@@ -44,7 +44,7 @@ jobs:
       - name: 'Echo NPM package version'
         run: echo ${NpmPackageVersion}
         env:
-          NpmPackageVersion: ${{ MAJOR_VERSION }}.${{ MINOR_VERSION }}.${{ PATCH_VERSION }}-preview-${{ github.run_id }}
+          NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}-preview-${{ github.run_id }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
