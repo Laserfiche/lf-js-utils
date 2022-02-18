@@ -1,4 +1,4 @@
-import { DatetimeUtils } from './datetime-utils';
+import { DatetimeUtils } from './datetime-utils.js';
 
 describe('DatetimeUtils', () => {
 
