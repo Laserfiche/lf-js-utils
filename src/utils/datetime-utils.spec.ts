@@ -12,6 +12,7 @@ describe('DatetimeUtils', () => {
     const dateNoOffset: Date = new Date(deserializedDate);
 
     const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateNoOffset);
+    console.log("test original ", deserializedDate);
     console.log("test receive ", serializedDate);
     console.log("test expect 2021-03-25T00:00:00")
     expect(serializedDate).toEqual('2021-03-25T00:00:00');
