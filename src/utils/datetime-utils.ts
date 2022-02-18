@@ -21,20 +21,15 @@ export class DatetimeUtils {
 
   static serializeDateValue(date: Date | undefined): string | undefined {
     if (!date || !DatetimeUtils.isValidDate(date)) {
-      console.log("first")
       return undefined;
     }
-    console.log("data ", date)
-    console.log("offset ", date.getTimezoneOffset())
     const offset: number = date.getTimezoneOffset();
     if (offset === 0) {
-      console.log("second ", date.toISOString())
       return date.toISOString();
     }
 
     const pad: (num: number) => string = (num: number) => {
       const norm = Math.floor(Math.abs(num));
-      console.log("third ", (norm < 10 ? '0' : '') + norm )
       return (norm < 10 ? '0' : '') + norm;
     };
     return (
