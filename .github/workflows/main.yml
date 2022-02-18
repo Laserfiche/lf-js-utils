@@ -59,11 +59,11 @@ jobs:
           node-version:  '14.x'
 
 
-#       - name: 'npm install'
-#         run: 'npm install'
+      - name: 'npm install'
+        run: 'npm install'
 
-#       - name: 'npm run lint'
-#         run: 'npm run lint'
+      - name: 'npm run lint'
+        run: 'npm run lint'
 
 #       - name: npm run test
 #         run: 'npm run test:ci'
