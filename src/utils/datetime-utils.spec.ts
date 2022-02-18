@@ -10,41 +10,7 @@ describe('DatetimeUtils', () => {
     const originalDateString: string = '2021-03-25';
     const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
     const dateNoOffset: Date = new Date(deserializedDate);
-    function test(date) {
-      if (!date || !DatetimeUtils.isValidDate(date)) {
-        return undefined;
-      }
-    
-      const offset: number = date.getTimezoneOffset();
-      if (offset === 0) {
-        return date.toISOString();
-      }
-    
-      const pad: (num: number) => string = (num: number) => {
-        const norm = Math.floor(Math.abs(num));
-        return (norm < 10 ? '0' : '') + norm;
-      };
-      console.log(date.getFullYear() +
-      '-' +
-      pad(date.getMonth() + 1) +
-      '-' +
-      pad(date.getDate()) +
-      'T' +
-      pad(date.getHours()) +
-      ':' +
-      pad(date.getMinutes()) +
-      ':' +
-      pad(date.getSeconds()))
-      return (
-        date.getFullYear() +
-        '-' +
-        pad(date.getMonth() + 1) +
-        '-' +
-        pad(date.getDate()) +
-        'T' 
-      );
-    }
-    const serializedDate: string | undefined = test(dateNoOffset);
+    const serializedDate: string | undefined =  DatetimeUtils.serializeDateValue(dateNoOffset);
     expect(serializedDate).toEqual('2021-03-25T00:00:00');
   });
 
