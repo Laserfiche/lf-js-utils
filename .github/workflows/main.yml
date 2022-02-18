@@ -42,13 +42,13 @@ jobs:
         run: echo "${{github.run_id}}"
 
       - name: 'Echo NPM package version'
-        if: ${{ github.event.inputs.isProduction == 'false' }}
+        if: ${{ ! github.event.inputs.isProduction }}
         run: echo ${NpmPackageVersion}
         env:
           NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}-preview-${{ github.run_id }}
           
       - name: 'Echo NPM package version'
-        if: ${{ github.event.inputs.isProduction == 'true' }}
+        if: ${{ github.event.inputs.isProduction }}
         run: echo ${NpmPackageVersion}
         env:
           NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
