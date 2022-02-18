@@ -1,5 +1,44 @@
 import { DatetimeUtils } from './datetime-utils';
 
+function test(date) {
+  if (!date || !DatetimeUtils.isValidDate(date)) {
+    return undefined;
+  }
+
+  const offset: number = date.getTimezoneOffset();
+  if (offset === 0) {
+    return date.toISOString();
+  }
+
+  const pad: (num: number) => string = (num: number) => {
+    const norm = Math.floor(Math.abs(num));
+    return (norm < 10 ? '0' : '') + norm;
+  };
+  console.log(date.getFullYear() +
+  '-' +
+  pad(date.getMonth() + 1) +
+  '-' +
+  pad(date.getDate()) +
+  'T' +
+  pad(date.getHours()) +
+  ':' +
+  pad(date.getMinutes()) +
+  ':' +
+  pad(date.getSeconds()))
+  return (
+    date.getFullYear() +
+    '-' +
+    pad(date.getMonth() + 1) +
+    '-' +
+    pad(date.getDate()) +
+    'T' +
+    pad(date.getHours()) +
+    ':' +
+    pad(date.getMinutes()) +
+    ':' +
+    pad(date.getSeconds())
+  );
+}
 describe('DatetimeUtils', () => {
 
   it('should create an instance', () => {
@@ -11,7 +50,7 @@ describe('DatetimeUtils', () => {
     const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
     const dateNoOffset: Date = new Date(deserializedDate);
 
-    const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateNoOffset);
+    const serializedDate: string | undefined = test(dateNoOffset);
     expect(serializedDate).toEqual('2021-03-25T00:00:00');
   });
 
@@ -19,7 +58,7 @@ describe('DatetimeUtils', () => {
     const originalDatetimeString: string = '2021-03-25T01:00:00';
     const datetimeNoOffset: Date = new Date(originalDatetimeString);
 
-    const serializedDatetime: string | undefined = DatetimeUtils.serializeDateValue(datetimeNoOffset);
+    const serializedDatetime: string | undefined = test(datetimeNoOffset);
     expect(serializedDatetime).toEqual('2021-03-25T01:00:00');
   });
 
@@ -27,7 +66,7 @@ describe('DatetimeUtils', () => {
     const originalDateString: string = '2021-03-25T00:00:00-07:00';
     const dateWithOffset: Date = new Date(originalDateString);
 
-    const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateWithOffset);
+    const serializedDate: string | undefined = test(dateWithOffset);
     expect(serializedDate).toEqual('2021-03-25T00:00:00');
   });
 
@@ -35,7 +74,7 @@ describe('DatetimeUtils', () => {
     const originalDatetimeString: string = '2021-03-25T01:00:00-07:00';
     const datetimeWithOffset: Date = new Date(originalDatetimeString);
 
-    const serializedDatetime: string | undefined = DatetimeUtils.serializeDateValue(datetimeWithOffset);
+    const serializedDatetime: string | undefined = test(datetimeWithOffset);
     expect(serializedDatetime).toEqual('2021-03-25T01:00:00');
   });
 
