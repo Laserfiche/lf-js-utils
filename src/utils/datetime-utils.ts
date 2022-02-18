@@ -25,7 +25,7 @@ export class DatetimeUtils {
       return undefined;
     }
     console.log("data ", date)
-    console.log("offset ", date.getTimezoneOffset(); )
+    console.log("offset ", date.getTimezoneOffset())
     const offset: number = date.getTimezoneOffset();
     if (offset === 0) {
       console.log("second ", date.toISOString())
