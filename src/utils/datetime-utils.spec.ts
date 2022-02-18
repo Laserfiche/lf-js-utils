@@ -19,6 +19,7 @@ describe('DatetimeUtils', () => {
   it('should serialize a datetime with no offset and not change the value', () => {
     const originalDatetimeString: string = '2021-03-25T01:00:00';
     const datetimeNoOffset: Date = new Date(originalDatetimeString);
+    console.log("time zone", Intl.DateTimeFormat().resolvedOptions().timeZone)
 
     const serializedDatetime: string | undefined = DatetimeUtils.serializeDateValue(datetimeNoOffset);
     expect(serializedDatetime).toEqual('2021-03-25T01:00:00');
