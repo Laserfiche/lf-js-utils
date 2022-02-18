@@ -136,9 +136,7 @@ describe('DatetimeUtils', () => {
         'T' +
         pad(date.getHours()) +
         ':' +
-        pad(date.getMinutes()) +
-        ':' +
-        pad(date.getSeconds())
+        pad(date.getMinutes()) 
       );
     }
     const serializedDate: string | undefined = test(dateWithOffset);
