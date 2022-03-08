@@ -1,5 +1,5 @@
 {
-  "name": "@laserfiche/laserfiche-ui-components-core",
+  "name": "@laserfichedev/laserfiche-ui-components-core",
   "version": "1.0.0",
   "description": "A library containing utility functions for use with laserfiche-ui-components",
   "main": "dist/index.js",
