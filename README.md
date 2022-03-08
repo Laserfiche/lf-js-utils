@@ -58,7 +58,7 @@ loading = localizationService.getString('LOADING');  # loading -> "ag lódáil..
 
 resourceType  = { language: string, resource: object };
 
-# DatetimeUtils
+## DatetimeUtils
 `DatetimeUtils` is a collection of utility methods that handles basic datetime 
 
 <table>
@@ -104,7 +104,7 @@ Example
   </tr>
   </table>
   
-# Other Utility Functions
+## Other Utility Functions
 <table>
 <tr>
 <th>
