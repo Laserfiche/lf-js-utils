@@ -1,10 +1,6 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Build
-# Controls when the workflow will run
 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
@@ -13,8 +9,13 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
-      isProduction:
-        description: 'production build'
+      publishProduction:
+        description: 'Publish to npm production'
+        type: boolean
+        required: true
+        default: 'false'
+      publishPreview:
+        description: 'Publish to npm preview'
         type: boolean
         required: true
         default: 'false'
@@ -23,56 +24,122 @@ env:
   MAJOR_VERSION: 2
   MINOR_VERSION: 0
   PATCH_VERSION: 2
+  publishProduction: 'false'
+  publishPreview: 'false'
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    environment: preview # TODO: setup preview with secrets 
       
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
 
-      - name: 'Echo build number'
-        run: echo "${{github.run_id}}"
-
-      - name: 'Echo NPM package version'
-        if: ${{ ! github.event.inputs.isProduction }}
-        run: echo ${NpmPackageVersion}
-        env:
-          NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}-preview-${{ github.run_id }}
-          
-      - name: 'Echo NPM package version'
-        if: ${{ github.event.inputs.isProduction }}
-        run: echo ${NpmPackageVersion}
-        env:
-          NpmPackageVersion: ${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
+      - name: Echo build number
+        run: echo ${{github.run_id}}
+        
+      - name: Set up variable -- publishProduction
+        if: ${{ github.event_name == 'workflow_dispatch'}}
+        run: echo "publishProduction=${{ github.event.inputs.publishProduction }}" >> $GITHUB_ENV
+        
+      - name: set up variable -- publishPreview
+        if: ${{ github.event_name == 'workflow_dispatch'}}
+        run: echo "publishPreview=${{ github.event.inputs.publishPreview }}" >> $GITHUB_ENV
+        
+      - name: set up variable -- NpmPackageVersion-prod
+        if: ${{ env.publishProduction == 'true'}}
+        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
+        
+      - name: Set up variable -- NpmPackageVersion-preview
+        if: ${{ env.publishProduction  == 'false'}}
+        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
+        
+      - name: Echo NPM package version
+        run: echo ${{ env.NpmPackageVersion }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
           node-version:  '14.x'
 
-      - name: Set Timezone
+      # this step is for the DatetimeUtil unit tests in npm test, because Github workflow runner runs in UTC time by default
+      - name: Set Timezone  
         uses: szenius/set-timezone@v1.0
         with:
-          timezoneLinux: America/Los_Angeles # this is because Github workflow runner runs in UTC time
-          timezoneMacos: America/Los_Angeles # but we expect the local timezone to be in GMT-8 for 
-          timezoneWindows: America/Los_Angeles # DatetimeUtil unit tests
+          timezoneLinux: America/Los_Angeles
+          timezoneMacos: America/Los_Angeles
+          timezoneWindows: America/Los_Angeles
     
-      - name: 'npm install'
-        run: 'npm install'
+      - name: Npm install
+        run: npm install
 
-      - name: 'npm run lint'
-        run: 'npm run lint'
+      - name: Npm run lint
+        run: npm run lint
 
-      - name: npm run test
-        run: 'npm run test:ci'
+      - name: Npm run test
+        run: npm run test:ci
 
+      - name: Npm version
+        run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: npm-publish-artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ./dist    
 
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: npm-publish-packagejson
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ./package.json 
 
+      - name: npm publish
+        run: npm publish  --tag next # TODO: make access public
+        if: ${{ env.publishPreview == 'true'}}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+
+  publishNPMProduction:
+    runs-on: ubuntu-latest
+    environment: production # TODO: setup production with secrets and approval
+    needs: [ build ] # wait for build to finish
+    if: ${{  github.event.inputs.publishProduction == 'true'}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download a Build Artifact -- dist
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-artifact
+          path: ./dist
+
+      - name: Download a Build Artifact -- package.json
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-packagejson
+          path: ./
+
+      - name: Echo Workflow Input publishProduction
+        run: echo ${{ env.publishProduction }}
+
+      - name: Npm publish
+        run: npm publish --tag latest # TODO: make access public
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
