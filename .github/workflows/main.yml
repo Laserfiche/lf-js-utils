@@ -39,29 +39,9 @@ jobs:
       NPM_REGISTRY: dummy
     steps:
       - uses: actions/checkout@v2
-
-
+      
       - name: Echo build number
         run: echo ${{github.run_id}}
-        
-      - name: Set up variable -- publishProduction
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: echo "publishProduction=${{ github.event.inputs.publishProduction }}" >> $GITHUB_ENV
-        
-      - name: set up variable -- publishPreview
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: echo "publishPreview=${{ github.event.inputs.publishPreview }}" >> $GITHUB_ENV
-        
-      - name: set up variable -- NpmPackageVersion-prod
-        if: ${{ env.publishProduction == 'true'}}
-        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-        
-      - name: Set up variable -- NpmPackageVersion-preview
-        if: ${{ env.publishProduction  == 'false'}}
-        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
-        
-      - name: Echo NPM package version
-        run: echo ${{ env.NpmPackageVersion }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
@@ -85,9 +65,6 @@ jobs:
       - name: Npm run test
         run: npm run test:ci
           
-      - name: Npm version
-        run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
-          
       - name: Npm run build
         run: npm run build
           
@@ -98,69 +75,54 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: ./dist    
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.3.1
-        with:
-          name: npm-publish-packagejson
-          # A file, directory or wildcard pattern that describes what to upload
-          path: ./package.json 
-
-  publishNPMPreview:
+  publishNPM:
     runs-on: ubuntu-latest
-    environment: preview
+    environment: publish
     needs: [ build ] # wait for build to finish
-    if: ${{  github.event.inputs.publishPreview == 'true' && github.event.inputs.publishProduction == 'false' }}
+    if: ${{  github.event.inputs.publishPreview == 'true' || github.event.inputs.publishProduction == 'true' }}
     steps:
       - uses: actions/checkout@v2
-
+      
+      - name: Set up variable -- publishProduction
+        run: echo "publishProduction=${{ github.event.inputs.publishProduction }}" >> $GITHUB_ENV
+        
+      - name: set up variable -- publishPreview
+        run: echo "publishPreview=${{ github.event.inputs.publishPreview }}" >> $GITHUB_ENV
+        
+      - name: set up variable -- NpmPackageVersion for prod
+        if: ${{ env.publishProduction == 'true'}}
+        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
+        
+      - name: Set up variable -- NpmPackageVersion for preview
+        if: ${{ env.publishProduction  == 'false'}}
+        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
+        
+      - name: Echo NPM package version
+        run: echo ${{ env.NpmPackageVersion }}
+        
+      - name: Npm version
+        run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
+        
       - name: Download a Build Artifact -- dist
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
           path: ./dist
 
-      - name: Download a Build Artifact -- package.json
-        uses: actions/download-artifact@v2.1.0
-        with:
-          name: npm-publish-packagejson
-          path: ./
-
       - name: Echo Workflow Input publishProduction
         run: echo ${{ env.publishProduction }}
 
-      - name: Npm publish
+      - name: Npm publish preview
+        if: ${{ env.publishPreview == 'true' && env.publishProduction == 'false' }}
         run: npm publish  --access public  --tag next
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
-
           
-  publishNPMProduction:
-    runs-on: ubuntu-latest
-    environment: production
-    needs: [ build ] # wait for build to finish
-    if: ${{  github.event.inputs.publishProduction == 'true' && github.ref_name == 'main' }}
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download a Build Artifact -- dist
-        uses: actions/download-artifact@v2.1.0
-        with:
-          name: npm-publish-artifact
-          path: ./dist
-
-      - name: Download a Build Artifact -- package.json
-        uses: actions/download-artifact@v2.1.0
-        with:
-          name: npm-publish-packagejson
-          path: ./
-
-      - name: Echo Workflow Input publishProduction
-        run: echo ${{ env.publishProduction }}
-
-      - name: Npm publish
+      - name: Npm publish production
+        if: ${{ env.publishProduction == 'true' &&   github.ref_name == 'main' }}
         run: npm publish  --access public  --tag latest
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
