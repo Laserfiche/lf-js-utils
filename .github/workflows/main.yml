@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [ build ] # wait for build to finish
-    if: ${{  github.event.inputs.publishProduction == 'true'}}
+    if: ${{  github.event.inputs.publishProduction == 'true' && github.ref_name == 'main' }}
     steps:
       - uses: actions/checkout@v2
 
