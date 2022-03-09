@@ -32,7 +32,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: preview
+    environment: build
       
     steps:
       - uses: actions/checkout@v2
@@ -76,7 +76,6 @@ jobs:
       - name: Npm install
         run: npm install
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
@@ -84,7 +83,6 @@ jobs:
       - name: Npm run lint
         run: npm run lint
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
@@ -92,7 +90,6 @@ jobs:
       - name: Npm run test
         run: npm run test:ci
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
@@ -100,7 +97,6 @@ jobs:
       - name: Npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
@@ -108,7 +104,6 @@ jobs:
       - name: Npm run build
         run: npm run build
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
@@ -127,15 +122,38 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: ./package.json 
 
+  publishNPMPreview:
+    runs-on: ubuntu-latest
+    environment: preview
+    needs: [ build ] # wait for build to finish
+    if: ${{  github.event.inputs.publishPreview == 'true' && github.event.inputs.publishProduction == 'false' }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download a Build Artifact -- dist
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-artifact
+          path: ./dist
+
+      - name: Download a Build Artifact -- package.json
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-packagejson
+          path: ./
+
+      - name: Echo Workflow Input publishProduction
+        run: echo ${{ env.publishProduction }}
+
       - name: Npm publish
-        run: npm publish  --access public --tag next
-        if: ${{ env.publishPreview == 'true' && env.publishProduction == 'false' }}
+        run: npm publish  --access public  --tag next
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
 
+          
   publishNPMProduction:
     runs-on: ubuntu-latest
     environment: production
