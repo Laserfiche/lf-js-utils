@@ -32,8 +32,11 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: build
-      
+    env:
+      NPM_TOKEN: dummy
+      NPM_USERNAME: dummy
+      NPM_EMAIL: dummy
+      NPM_REGISTRY: dummy
     steps:
       - uses: actions/checkout@v2
 
@@ -75,43 +78,18 @@ jobs:
     
       - name: Npm install
         run: npm install
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
       - name: Npm run lint
         run: npm run lint
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
       - name: Npm run test
         run: npm run test:ci
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
       - name: Npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
       - name: Npm run build
         run: npm run build
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
