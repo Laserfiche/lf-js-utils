@@ -82,35 +82,15 @@ jobs:
           
       - name: Npm run lint
         run: npm run lint
-        env:
-          NPM_TOKEN: dummy
-          NPM_USERNAME: dummy
-          NPM_EMAIL: dummy
-          NPM_REGISTRY: dummy
           
       - name: Npm run test
         run: npm run test:ci
-        env:
-          NPM_TOKEN: dummy
-          NPM_USERNAME: dummy
-          NPM_EMAIL: dummy
-          NPM_REGISTRY: dummy
           
       - name: Npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
-        env:
-          NPM_TOKEN: dummy
-          NPM_USERNAME: dummy
-          NPM_EMAIL: dummy
-          NPM_REGISTRY: dummy
           
       - name: Npm run build
         run: npm run build
-        env:
-          NPM_TOKEN: dummy
-          NPM_USERNAME: dummy
-          NPM_EMAIL: dummy
-          NPM_REGISTRY: dummy
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
