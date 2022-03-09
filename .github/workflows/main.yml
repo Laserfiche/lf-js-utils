@@ -105,6 +105,14 @@ jobs:
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
+      - name: Npm run build
+        run: npm run build
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+          
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
         with:
@@ -119,7 +127,7 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: ./package.json 
 
-      - name: npm publish
+      - name: Npm publish
         run: npm publish  --access public --tag next
         if: ${{ env.publishPreview == 'true'}}
         env:
@@ -130,7 +138,7 @@ jobs:
 
   publishNPMProduction:
     runs-on: ubuntu-latest
-    environment: production # TODO: setup production with secrets and approval
+    environment: production
     needs: [ build ] # wait for build to finish
     if: ${{  github.event.inputs.publishProduction == 'true'}}
     steps:
