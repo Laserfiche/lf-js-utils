@@ -3,7 +3,7 @@ This project contains utility functions to be used with Laserfiche projects.
 
 # Getting started
 ```
-npm install @laserfiche/laserfiche-ui-components-core
+npm install @laserfichedev/laserfiche-ui-components-core
 ```
 # Documentation 
 
