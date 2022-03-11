@@ -20,7 +20,7 @@ Please use [Github Issues](https://github.com/Laserfiche/laserfiche-ui-component
 
 ## <a name="submit-pr"></a> PR Submission Guidelines
 
-- Search Github [Pull Requests](https://github.com/Laserfiche/laserfiche-ui-components-core/pulls) for PRs related to your sumbission. Make sure that this is not a duplication.
+- Search Github [Pull Requests](https://github.com/Laserfiche/laserfiche-ui-components-core/pulls) for PRs related to your submission. Make sure that this is not a duplication.
 - Link the issue addressed by the PR.
 - Add unit tests or document manual tests to validate the changes.
 - The PR should run the [workflow](https://github.com/Laserfiche/laserfiche-ui-components-core/actions/workflows/main.yml). You can manually dispatch the workflow to make sure the workflow runs without failure.
