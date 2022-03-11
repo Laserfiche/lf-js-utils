@@ -1,11 +1,20 @@
+// @ts-ignore
 import * as strings_ar from '../i18n/ar.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_en from '../i18n/en.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_es from '../i18n/es.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_fr from '../i18n/fr.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_it from '../i18n/it.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_ptBR from '../i18n/pt-BR.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_th from '../i18n/th.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_zhHans from '../i18n/zh-Hans.json' assert {type: 'json'};
+// @ts-ignore
 import * as strings_zhHant from '../i18n/zh-Hant.json' assert {type: 'json'};
 
 export type resourceType = { language: string, resource: object };
