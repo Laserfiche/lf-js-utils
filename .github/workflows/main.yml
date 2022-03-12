@@ -63,14 +63,14 @@ jobs:
       - name: set up variable -- NpmPackageVersion and NpmTag for prod
         if: ${{ github.event.inputs.publishProduction }}
         run: |
-        echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-        echo "NpmTag='latest'" >> $GITHUB_ENV
+          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
+          echo "NpmTag='latest'" >> $GITHUB_ENV
         
       - name: Set up variable -- NpmPackageVersion and NpmTag for preview
         if: ${{ github.event.inputs.publishProduction }}
         run: |
-        echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
-        echo "NpmTag='next'" >> $GITHUB_ENV
+          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
+          echo "NpmTag='next'" >> $GITHUB_ENV
         
       - name: Echo NPM package version
         run: echo ${{ env.NpmPackageVersion }}
@@ -85,8 +85,8 @@ jobs:
           name: npm-publish-artifact
           # A file, directory or wildcard pattern that describes what to upload
           path: |
-          ./dist
-          ./package.json  
+            ./dist
+            ./package.json  
 
   publishNPM:
     runs-on: ubuntu-latest
