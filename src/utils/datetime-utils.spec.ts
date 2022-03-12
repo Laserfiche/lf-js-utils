@@ -7,7 +7,7 @@ describe('DatetimeUtils', () => {
   });
 
   it('should deserialize and serialize a date with no offset and not change the value', () => {
-    const originalDateString: string = '2021-03-25';
+    const originalDateString: string = '2021-03-25 UTC-0000';
     const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
     const dateNoOffset: Date = new Date(deserializedDate);
 
@@ -16,7 +16,7 @@ describe('DatetimeUtils', () => {
   });
 
   it('should serialize a datetime with no offset and not change the value', () => {
-    const originalDatetimeString: string = '2021-03-25T01:00:00';
+    const originalDatetimeString: string = '2021-03-25T01:00:00 UTC-0000';
     const datetimeNoOffset: Date = new Date(originalDatetimeString);
 
     const serializedDatetime: string | undefined = DatetimeUtils.serializeDateValue(datetimeNoOffset);
@@ -24,7 +24,7 @@ describe('DatetimeUtils', () => {
   });
 
   it('should serialize a date with an offset and remove the offset', () => {
-    const originalDateString: string = '2021-03-25T00:00:00-07:00';
+    const originalDateString: string = '2021-03-25T00:00:00 UTC-07:00';
     const dateWithOffset: Date = new Date(originalDateString);
 
     const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateWithOffset);
@@ -32,7 +32,7 @@ describe('DatetimeUtils', () => {
   });
 
   it('should serialize a datetime with an offset and remove the offset', () => {
-    const originalDatetimeString: string = '2021-03-25T01:00:00-07:00';
+    const originalDatetimeString: string = '2021-03-25T01:00:00 UTC-07:00';
     const datetimeWithOffset: Date = new Date(originalDatetimeString);
 
     const serializedDatetime: string | undefined = DatetimeUtils.serializeDateValue(datetimeWithOffset);
