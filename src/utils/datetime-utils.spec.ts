@@ -33,7 +33,7 @@ describe('DatetimeUtils', () => {
   });
 
   it('should serialize a datetime with an offset and remove the offset', () => {
-    const originalDatetimeString: string = '2021-03-25T01:00:00-07:00';
+    const originalDatetimeString: string = '2021-03-25T01:00:00';
     const origianlDateStringWithOffset = mockDateTimeOffset(originalDatetimeString);
     const datetimeWithOffset: Date = new Date(origianlDateStringWithOffset);
 
