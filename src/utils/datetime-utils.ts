@@ -26,7 +26,7 @@ export class DatetimeUtils {
 
     const offset: number = date.getTimezoneOffset();
     if (offset === 0) {
-      return date.toISOString();
+      return date.toISOString().slice(0, -5); // remove the UTC offset
     }
 
     const pad: (num: number) => string = (num: number) => {

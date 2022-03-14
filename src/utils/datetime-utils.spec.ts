@@ -7,7 +7,7 @@ describe('DatetimeUtils', () => {
   });
 
   it('should deserialize and serialize a date with no offset and not change the value', () => {
-    const originalDateString: string = '2021-03-25 UTC-0000';
+    const originalDateString: string = '2021-03-25';
     const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
     const dateNoOffset: Date = new Date(deserializedDate);
 
