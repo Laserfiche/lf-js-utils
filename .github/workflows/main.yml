@@ -64,13 +64,13 @@ jobs:
         if: ${{ github.event.inputs.publishProduction }}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-          echo "NpmTag='latest'" >> $GITHUB_ENV
+          echo "::set-output name=NpmTag::latest"
         
       - name: Set up variable -- NpmPackageVersion and NpmTag for preview
         if: ${{ github.event.inputs.publishProduction }}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
-          echo "NpmTag='next'" >> $GITHUB_ENV
+          echo "::set-output name=NpmTag::next"
         
       - name: Echo NPM package version
         run: echo ${{ env.NpmPackageVersion }}
@@ -99,7 +99,10 @@ jobs:
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
-          
+      
+      - name: echo tag
+        run: echo ${{ needs.build.outputs.NpmTag }}
+
       - name: Npm publish production
         run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
         env:
