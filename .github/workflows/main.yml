@@ -96,7 +96,7 @@ jobs:
     needs: [ build ] # wait for build to finish
     if: ${{  github.event.inputs.publishPreview == 'true' || github.event.inputs.publishProduction == 'true' }}
     steps:
-        
+      - uses: actions/checkout@v2
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
