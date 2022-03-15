@@ -37,6 +37,8 @@ jobs:
       NPM_USERNAME: dummy
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
+    outputs:
+      NpmTag: ${{ env.NpmTag }}
     steps:
       - uses: actions/checkout@v2
       
@@ -64,13 +66,13 @@ jobs:
         if: ${{ github.event.inputs.publishProduction }}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-          echo "::set-output name=NpmTag::latest"
+          echo "NpmTag='latest'" >> $GITHUB_ENV
         
       - name: Set up variable -- NpmPackageVersion and NpmTag for preview
         if: ${{ github.event.inputs.publishProduction }}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
-          echo "::set-output name=NpmTag::next"
+          echo "NpmTag='next'" >> $GITHUB_ENV
         
       - name: Echo NPM package version
         run: echo ${{ env.NpmPackageVersion }}
