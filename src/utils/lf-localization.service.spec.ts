@@ -1,11 +1,29 @@
 import { LfLocalizationService } from './lf-localization.service.js';
-
+import * as strings_ar from './../i18n/ar.json';
+import * as strings_en from './../i18n/en.json';
+import * as strings_es from './../i18n/es.json';
+import * as strings_fr from './../i18n/fr.json';
+import * as strings_it from './../i18n/it.json';
+import * as strings_ptBR from './../i18n/pt-BR.json';
+import * as strings_th from './../i18n/th.json';
+import * as strings_zhHant from './../i18n/zh-Hant.json';
 
 describe('LfLocalizationService', () => {
   let lfLocalizationService: LfLocalizationService;
 
-  beforeEach(() => {
-    lfLocalizationService = new LfLocalizationService();
+  let defaultResources: Map<string, object> = new Map<string, object>([
+    ['ar', strings_ar],
+    ['en', strings_en],
+    ['es', strings_es],
+    ['fr', strings_fr],
+    ['it', strings_it],
+    ['pt-BR', strings_ptBR],
+    ['th', strings_th],
+    ['zh-Hant', strings_zhHant]
+  ]);
+
+  beforeEach(async () => {
+    lfLocalizationService = new LfLocalizationService(defaultResources);
   });
 
   it('setLanguage assigns default language if specified does not exist', () => {
@@ -223,10 +241,6 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual('test res');
   });
 
-  it('when empty map of custom resources, throw error', () => {
-    expect(() => new LfLocalizationService(new Map())).toThrow();
-  });
-
   it('should be able to set custom json, fr-CA will default to fr if no fr-CA', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['fr', { "TEST_STRING": "french test" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
@@ -280,4 +294,11 @@ describe('LfLocalizationService', () => {
 
     expect(lfLocalizationService.getString('APPLY_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
   });
+
+  it('should add external resource', async () => {
+    await lfLocalizationService.addResourceFromUrl('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n/zh-Hans.json', 'zh-Hans')
+    lfLocalizationService.setLanguage('zh-Hans');
+    let localizedString = lfLocalizationService.getString('APPLY_CHANGES'); 
+    expect(localizedString).toEqual('您希望应用字段变更么？');
+  })
 });

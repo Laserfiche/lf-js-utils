@@ -1,4 +1,5 @@
 export type resourceType = { language: string, resource: object };
+require('isomorphic-fetch');
 
 export class LfLocalizationService {
   private readonly DEFAULT_LANGUAGE: string = 'en';
@@ -11,7 +12,7 @@ export class LfLocalizationService {
       resources = new Map();
     }
     if (resources.size === 0) {
-      throw new Error('No resources defined');
+      console.warn('No resources defined. Resources must be added.');
     }
     this.resources = resources;
     this.setDefaultLanguage();
@@ -29,14 +30,6 @@ export class LfLocalizationService {
     .then(json => {
       this.resources.set(code, json);
     })
-  }
-
-  public async addResourceFromLocalPath(path: string, code: string) {
-    var request = new XMLHttpRequest();
-    request.open("GET", path, false);
-    request.send(null);
-    const resource = JSON.parse(request.responseText);
-    this.resources.set(code, resource);
   }
 
   public debugMode: boolean = false;
