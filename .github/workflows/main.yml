@@ -101,7 +101,7 @@ jobs:
           name: npm-publish-artifact
           
       - name: Npm publish production
-        run: npm publish  --access public  --tag ${{ env.NpmTag }}
+        run: npm publish  --access public  --tag ${{ jobs.build.outputs.NpmTag }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
