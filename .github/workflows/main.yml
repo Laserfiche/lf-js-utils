@@ -102,8 +102,8 @@ jobs:
         with:
           name: npm-publish-artifact
       
-      - name: echo tag
-        run: echo ${{ needs.build.outputs.NpmTag }}
+      - name: npm ci
+        run: npm ci
 
       - name: Npm publish production
         run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
