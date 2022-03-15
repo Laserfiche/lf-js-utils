@@ -88,7 +88,8 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: |
             ./dist
-            ./package.json  
+            ./package.json
+            ./.npmrc
 
   publishNPM:
     runs-on: ubuntu-latest
@@ -96,14 +97,10 @@ jobs:
     needs: [ build ] # wait for build to finish
     if: ${{  github.event.inputs.publishPreview == 'true' || github.event.inputs.publishProduction == 'true' }}
     steps:
-      - uses: actions/checkout@v2
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
-      
-      - name: npm ci
-        run: npm ci
 
       - name: Npm publish production
         run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
