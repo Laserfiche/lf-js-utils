@@ -1,45 +1,14 @@
-// @ts-ignore
-import * as strings_ar from '../i18n/ar.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_en from '../i18n/en.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_es from '../i18n/es.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_fr from '../i18n/fr.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_it from '../i18n/it.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_ptBR from '../i18n/pt-BR.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_th from '../i18n/th.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_zhHans from '../i18n/zh-Hans.json' assert {type: 'json'};
-// @ts-ignore
-import * as strings_zhHant from '../i18n/zh-Hant.json' assert {type: 'json'};
-
 export type resourceType = { language: string, resource: object };
 
 export class LfLocalizationService {
   private readonly DEFAULT_LANGUAGE: string = 'en';
 
   private defaultResourceLanguage: string = '';
-
-  private defaultResources: Map<string, object> = new Map<string, object>([
-    ['ar', (strings_ar as any).default],
-    ['en', (strings_en as any).default],
-    ['es', (strings_es as any).default],
-    ['fr', (strings_fr as any).default],
-    ['it', (strings_it as any).default],
-    ['pt-BR', (strings_ptBR as any).default],
-    ['th', (strings_th as any).default],
-    ['zh-Hans', (strings_zhHans as any).default],
-    ['zh-Hant', (strings_zhHant as any).default]
-  ]);
   private _currentResource!: resourceType;
 
   constructor(resources?: Map<string, object>) {
     if (!resources) {
-      resources = this.defaultResources;
+      resources = new Map();
     }
     if (resources.size === 0) {
       throw new Error('No resources defined');
@@ -47,6 +16,27 @@ export class LfLocalizationService {
     this.resources = resources;
     this.setDefaultLanguage();
     this.setLanguage(navigator?.language ?? this.DEFAULT_LANGUAGE);
+  }
+
+  public async addResourceFromUrl(url: string, code: string) {
+    await fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
+    .then(json => {
+      this.resources.set(code, json);
+    })
+  }
+
+  public async addResourceFromLocalPath(path: string, code: string) {
+    var request = new XMLHttpRequest();
+    request.open("GET", path, false);
+    request.send(null);
+    const resource = JSON.parse(request.responseText);
+    this.resources.set(code, resource);
   }
 
   public debugMode: boolean = false;
