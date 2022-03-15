@@ -1,4 +1,5 @@
 import { LfLocalizationService } from './lf-localization.service.js';
+require('isomorphic-fetch');
 import * as strings_ar from './../i18n/ar.json';
 import * as strings_en from './../i18n/en.json';
 import * as strings_es from './../i18n/es.json';
@@ -11,7 +12,7 @@ import * as strings_zhHant from './../i18n/zh-Hant.json';
 describe('LfLocalizationService', () => {
   let lfLocalizationService: LfLocalizationService;
 
-  let defaultResources: Map<string, object> = new Map<string, object>([
+  const defaultResources: Map<string, object> = new Map<string, object>([
     ['ar', strings_ar],
     ['en', strings_en],
     ['es', strings_es],
@@ -298,7 +299,7 @@ describe('LfLocalizationService', () => {
   it('should add external resource', async () => {
     await lfLocalizationService.addResourceFromUrl('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n/zh-Hans.json', 'zh-Hans')
     lfLocalizationService.setLanguage('zh-Hans');
-    let localizedString = lfLocalizationService.getString('APPLY_CHANGES'); 
+    const localizedString = lfLocalizationService.getString('APPLY_CHANGES'); 
     expect(localizedString).toEqual('您希望应用字段变更么？');
   })
 });

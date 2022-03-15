@@ -1,5 +1,4 @@
 export type resourceType = { language: string, resource: object };
-require('isomorphic-fetch');
 
 export class LfLocalizationService {
   private readonly DEFAULT_LANGUAGE: string = 'en';
