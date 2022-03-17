@@ -26,7 +26,7 @@ describe('LfLocalizationService', () => {
 
   it('getStringAsync assigns default language if specified does not exist', async () => {
     const resources = new Map([['test', {'TEST_STRING': 'test string'}]])
-    let lfLocalizationService = new LfLocalizationService(resources);
+    lfLocalizationService = new LfLocalizationService(resources);
     lfLocalizationService.setLanguage('fr-CA');
     expect(await lfLocalizationService.getStringAsync('TEST_STRING')).toEqual('test string');
     expect(lfLocalizationService.currentResource?.language).toEqual('test');
