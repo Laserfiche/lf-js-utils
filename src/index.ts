@@ -8,6 +8,5 @@ export * from './utils/filter-utils.js';
 export * from './utils/lf-localization.service.js';
 export * from './utils/mime-type-utils.js';
 export * from './utils/path-utils.js';
-export * from './utils/saml-token-utils.js';
 export * from './utils/time-utils.js';
 export * from './utils/validate-defined.js';
