@@ -35,9 +35,19 @@ export function convertUint8ArrayToString(uint8array: Uint8Array): string {
 }
 
 export function convertStringToBase64(nonBase64String: string): string {
-    return btoa(nonBase64String);
+    let base64string : string;
+    try { base64string= btoa(nonBase64String) }
+    catch {
+        base64string = Buffer.from(nonBase64String).toString('base64')
+    }
+    return base64string;
 }
 
 export function convertBase64toString(base64String: string): string {
-    return atob(base64String);
+    let nonBase64String : string;
+    try { nonBase64String = atob(base64String) }
+    catch {
+        nonBase64String = Buffer.from(base64String, 'base64').toString();
+    }
+    return nonBase64String;
 }

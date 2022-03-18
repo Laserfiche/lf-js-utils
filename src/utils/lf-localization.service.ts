@@ -24,7 +24,12 @@ export class LfLocalizationService implements ILocalizationService {
       this.resourcesFolderUrl = resources;
       this._resources = new Map();
     }
-    this.setLanguage(navigator?.language ?? this.DEFAULT_LANGUAGE);
+    try {
+      this.setLanguage(window?.navigator?.language ?? this.DEFAULT_LANGUAGE);
+    }
+    catch {
+      this.setLanguage(this.DEFAULT_LANGUAGE);
+    }
     this.setDefaultLanguage();
   }
 
