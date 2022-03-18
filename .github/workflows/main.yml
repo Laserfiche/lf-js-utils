@@ -1,4 +1,4 @@
-name: laserfiche-ui-components-core-CI
+name: lf-js-utils-CI
 
 on:
   push:
@@ -63,13 +63,13 @@ jobs:
         run: npm run build
         
       - name: set up variable -- NpmPackageVersion and NpmTag for prod
-        if: ${{ github.event.inputs.publishProduction }}
+        if: ${{ github.event.inputs.publishProduction == 'true'}}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
           echo "NpmTag='latest'" >> $GITHUB_ENV
         
       - name: Set up variable -- NpmPackageVersion and NpmTag for preview
-        if: ${{ github.event.inputs.publishProduction }}
+        if: ${{ github.event.inputs.publishPreview == 'true'}}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
           echo "NpmTag='next'" >> $GITHUB_ENV
@@ -102,7 +102,7 @@ jobs:
         with:
           name: npm-publish-artifact
 
-      - name: Npm publish production
+      - name: Npm publish
         run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
