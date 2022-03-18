@@ -1,4 +1,4 @@
-name: laserfiche-ui-components-core-CI
+name: lf-js-utils-CI
 
 on:
   push:
