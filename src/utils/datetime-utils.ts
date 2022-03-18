@@ -24,11 +24,6 @@ export class DatetimeUtils {
       return undefined;
     }
 
-    const offset: number = date.getTimezoneOffset();
-    if (offset === 0) {
-      return date.toISOString();
-    }
-
     const pad: (num: number) => string = (num: number) => {
       const norm = Math.floor(Math.abs(num));
       return (norm < 10 ? '0' : '') + norm;

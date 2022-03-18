@@ -1,4 +1,4 @@
-name: Build
+name: lf-js-utils-CI
 
 on:
   push:
@@ -32,112 +32,78 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: preview # TODO: setup preview with secrets 
-      
+    env:
+      NPM_TOKEN: dummy
+      NPM_USERNAME: dummy
+      NPM_EMAIL: dummy
+      NPM_REGISTRY: dummy
+    outputs:
+      NpmTag: ${{ env.NpmTag }}
     steps:
       - uses: actions/checkout@v2
-
-
+      
       - name: Echo build number
         run: echo ${{github.run_id}}
-        
-      - name: Set up variable -- publishProduction
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: echo "publishProduction=${{ github.event.inputs.publishProduction }}" >> $GITHUB_ENV
-        
-      - name: set up variable -- publishPreview
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: echo "publishPreview=${{ github.event.inputs.publishPreview }}" >> $GITHUB_ENV
-        
-      - name: set up variable -- NpmPackageVersion-prod
-        if: ${{ env.publishProduction == 'true'}}
-        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-        
-      - name: Set up variable -- NpmPackageVersion-preview
-        if: ${{ env.publishProduction  == 'false'}}
-        run: echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
-        
-      - name: Echo NPM package version
-        run: echo ${{ env.NpmPackageVersion }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
           node-version:  '14.x'
 
-      # this step is for the DatetimeUtil unit tests in npm test, because Github workflow runner runs in UTC time by default
-      - name: Set Timezone  
-        uses: szenius/set-timezone@v1.0
-        with:
-          timezoneLinux: America/Los_Angeles
-          timezoneMacos: America/Los_Angeles
-          timezoneWindows: America/Los_Angeles
-    
-      - name: Npm install
-        run: npm install
+      - name: Npm ci
+        run: npm ci
 
       - name: Npm run lint
         run: npm run lint
-
+  
       - name: Npm run test
         run: npm run test:ci
 
+      - name: Npm run build
+        run: npm run build
+        
+      - name: set up variable -- NpmPackageVersion and NpmTag for prod
+        if: ${{ github.event.inputs.publishProduction == 'true'}}
+        run: |
+          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
+          echo "NpmTag='latest'" >> $GITHUB_ENV
+        
+      - name: Set up variable -- NpmPackageVersion and NpmTag for preview
+        if: ${{ github.event.inputs.publishPreview == 'true'}}
+        run: |
+          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
+          echo "NpmTag='next'" >> $GITHUB_ENV
+        
+      - name: Echo NPM package version
+        run: echo ${{ env.NpmPackageVersion }}
+        
       - name: Npm version
+        if: ${{ env.NpmPackageVersion }}
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
-          
+ 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
         with:
           name: npm-publish-artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path: ./dist    
+          path: |
+            ./dist
+            ./package.json
+            ./.npmrc
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.3.1
-        with:
-          name: npm-publish-packagejson
-          # A file, directory or wildcard pattern that describes what to upload
-          path: ./package.json 
-
-      - name: npm publish
-        run: npm publish  --tag next # TODO: make access public
-        if: ${{ env.publishPreview == 'true'}}
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
-
-  publishNPMProduction:
+  publishNPM:
     runs-on: ubuntu-latest
-    environment: production # TODO: setup production with secrets and approval
+    environment: publish
     needs: [ build ] # wait for build to finish
-    if: ${{  github.event.inputs.publishProduction == 'true'}}
+    if: ${{  github.event.inputs.publishPreview == 'true' || github.event.inputs.publishProduction == 'true' }}
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Download a Build Artifact -- dist
+      - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
-          path: ./dist
-
-      - name: Download a Build Artifact -- package.json
-        uses: actions/download-artifact@v2.1.0
-        with:
-          name: npm-publish-packagejson
-          path: ./
-
-      - name: Echo Workflow Input publishProduction
-        run: echo ${{ env.publishProduction }}
 
       - name: Npm publish
-        run: npm publish --tag latest # TODO: make access public
+        run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}

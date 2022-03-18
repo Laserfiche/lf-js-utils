@@ -1,12 +1,21 @@
-import * as strings_ar from '../i18n/ar.json';
-import * as strings_en from '../i18n/en.json';
-import * as strings_es from '../i18n/es.json';
-import * as strings_fr from '../i18n/fr.json';
-import * as strings_it from '../i18n/it.json';
-import * as strings_ptBR from '../i18n/pt-BR.json';
-import * as strings_th from '../i18n/th.json';
-import * as strings_zhHans from '../i18n/zh-Hans.json';
-import * as strings_zhHant from '../i18n/zh-Hant.json';
+// @ts-ignore
+import * as strings_ar from '../i18n/ar.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_en from '../i18n/en.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_es from '../i18n/es.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_fr from '../i18n/fr.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_it from '../i18n/it.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_ptBR from '../i18n/pt-BR.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_th from '../i18n/th.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_zhHans from '../i18n/zh-Hans.json' assert {type: 'json'};
+// @ts-ignore
+import * as strings_zhHant from '../i18n/zh-Hant.json' assert {type: 'json'};
 
 export type resourceType = { language: string, resource: object };
 
@@ -16,15 +25,15 @@ export class LfLocalizationService {
   private defaultResourceLanguage: string = '';
 
   private defaultResources: Map<string, object> = new Map<string, object>([
-    ['ar', strings_ar],
-    ['en', strings_en],
-    ['es', strings_es],
-    ['fr', strings_fr],
-    ['it', strings_it],
-    ['pt-BR', strings_ptBR],
-    ['th', strings_th],
-    ['zh-Hans', strings_zhHans],
-    ['zh-Hant', strings_zhHant]
+    ['ar', (strings_ar as any).default],
+    ['en', (strings_en as any).default],
+    ['es', (strings_es as any).default],
+    ['fr', (strings_fr as any).default],
+    ['it', (strings_it as any).default],
+    ['pt-BR', (strings_ptBR as any).default],
+    ['th', (strings_th as any).default],
+    ['zh-Hans', (strings_zhHans as any).default],
+    ['zh-Hant', (strings_zhHant as any).default]
   ]);
   private _currentResource!: resourceType;
 

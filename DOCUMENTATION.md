@@ -11,20 +11,20 @@ let localizationService: LfLocalizationService = new LfLocalizationService();
 let loading = localizationService.getString('LOADING');  // loading -> "loading..."
 
 // switch default language
-localizationService.setDefaultLanguage('ar');
+localizationService.setLanguage('ar');
 loading = localizationService.getString('LOADING');  // loading -> "جارٍ التحميل..."
 
 // adding custom language resource
-localizationService = new LfLocalizationService([
-    ['jp', {
-    "LOADING": "読み込み中..."
-    }],
-    ['ir', {
-    "LOADING": "ag lódáil..."
-    }],
-]);
-localizationService.setDefaultLanguage('ir');
-loading = localizationService.getString('LOADING');  # loading -> "ag lódáil..."
+let localizationService = new LfLocalizationService(new Map([
+  ['jp', {
+  "LOADING": "読み込み中..."
+  }],
+  ['ir', {
+  "LOADING": "ag lódáil..."
+  }]
+]));
+localizationService.setLanguage('ir');
+loading = localizationService.getString('LOADING');  // loading -> "ag lódáil..."
 ```
 
 ### API
