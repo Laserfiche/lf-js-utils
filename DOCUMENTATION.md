@@ -1,18 +1,18 @@
 ## LfLocalizationService
 
-`LfLocalizationService` is a service that handles internationalization and localization, mapping text to its corresponding translated texts in the selected language. We provide [language resources files in JSON](https://github.com/Laserfiche/laserfiche-ui-components-core/tree/main/src/i18n), but you can also add your own translation resource following our API.
+`LfLocalizationService` is a service that handles internationalization and localization, mapping text to its corresponding translated texts in the selected language. We provide lf-resource-library(coming soon), but you can also add your own translation resource map following our API.
 
 ### Example Usage
 ```ts
 import { LfLocalizationService } from '@laserfiche/laserfiche-ui-components-core';
 
 // use default language resource
-let localizationService: LfLocalizationService = new LfLocalizationService();
-let loading = localizationService.getString('LOADING');  // loading -> "loading..."
+let localizationService: LfLocalizationService = new LfLocalizationService('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n');
+let loading = await localizationService.getStringAsync('LOADING');  // loading -> "loading..."
 
 // switch default language
 localizationService.setLanguage('ar');
-loading = localizationService.getString('LOADING');  // loading -> "جارٍ التحميل..."
+loading = await localizationService.getStringAsync('LOADING');  // loading -> "جارٍ التحميل..."
 
 // adding custom language resource
 let localizationService = new LfLocalizationService(new Map([
@@ -24,7 +24,7 @@ let localizationService = new LfLocalizationService(new Map([
   }]
 ]));
 localizationService.setLanguage('ir');
-loading = localizationService.getString('LOADING');  // loading -> "ag lódáil..."
+loading = await localizationService.getStringAsync('LOADING');  // loading -> "ag lódáil..."
 ```
 
 ### API
@@ -33,18 +33,16 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
 
 |Name | Description|
 |--|--|
-|debugMode: boolean| Default to false. TODO|
-|readonly resources: Map<string, object>| The default language resource map. |
+|debugMode: boolean| Default to false. In debug mode, getStringAsync returns the pseudo language of the translated string.|
     
 #### Methods
 
 |Name | Description|
 |--|--|
-|constructor(resources?: Map<string, object>);       | Users can provide custom language resource, or use the provided language resources. |
+|constructor(resources?: Map<string, object> | string);       | Users can provide custom language resource map or an url pointing to the folder of the resource files. |
 |setLanguage(language: string): resourceType;        | Sets the default language. |
-|get currentResource(): resourceType;                | Gets the current selected language's resource mapping. |
-|getString(key: string, params?: string[]): string;  | Gets the translated key using the current selected language. |
-
+|get currentResource(): resourceType | undefined;                | Gets the current selected language's resource mapping, can be undefined because we lazy load resource at getStringAsync. |
+|async getStringAsync(key: string, params?: string[]): string;  | Load the resource file if necessary, and gets the translated key using the current selected language.  |
 #### Types
 
 resourceType  = { language: string, resource: object };
@@ -66,176 +64,20 @@ Example
 </tr>
 <tr>
   <td> static deserializeDateValue(date: string \| undefined): string </td>
-  <td> ?    </td>
+  <td>  Takes in a timezone-less string representation of a date, and reconstruct the date given the client's timezone, returns the date with timezone in string.  </td>
   <td> <pre> 
   const originalDateString: string = '2021-03-25';
   const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
-  // ? </pre></td>
+  // deserializedDate -> '2021-03-25T00:00:00.000Z', adds timezone offset </pre></td>
 </tr>
 <tr>
   <td> static serializeDateValue(date: Date | undefined): string | undefined  </td>
-  <td> ?  </td>
+  <td> Removes the timezone offset of the given date and returns the ISO string format without the offset (YYYY-MM-DDTHH:MM:SS) </td>
   <td> <pre>
-  const originalDateString: string = '2021-03-25T00:00:00-07:00';
+  const originalDateString: string = '2021-03-25T00:00:00-07:00'; // assume the offset is the timezone is in PDT
   const dateWithOffset: Date = new Date(originalDateString);
   const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateWithOffset);
-  // serializedDate -> '2021-03-25T00:00:00' </pre> </td>
-  </tr>
- <tr>
-  <td>static isValidDate(date: Date): boolean  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
- <tr>
-  <td>static compareDateStrings(first: string, second: string): boolean  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
+  // serializedDate -> '2021-03-25T00:00:00', removes the offset </pre> </td>
   </tr>
   </table>
   
-## Other Utility Functions
-<table>
-<tr>
-<th>
-Name
-</th>
-<th>
-Description
-</th>
-<th>
-Example
-</th>
-</tr>
-<tr>
-  <td> convertBase64ToUint8Array(base64: string): Uint8Array </td>
-  <td> ?    </td>
-  <td> <pre> 
-   </pre></td>
-</tr>
-<tr>
-  <td> async convertReaderToBase64Async(reader: ReadableStreamDefaultReader<Uint8Array> | undefined)  </td>
-  <td> ?  </td>
-  <td> <pre>
-   </pre> </td>
-  </tr>
- <tr>
-  <td> convertUint8ArrayToString(uint8array: Uint8Array): string  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
- <tr>
-  <td> convertStringToBase64(nonBase64String: string): string  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-   <tr>
-  <td> convertBase64toString(base64String: string): string  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-     <tr>
-  <td> clone<T>(object: T): T  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  <tr>
-  <td> filterObjectsByName<T extends ObjectWithName>(nodesToFilter?: T[], filterText?: string): T[] | undefined  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-   <tr>
-  <td> getMIMETypeFromExtension(extension: string | undefined): string </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
- <tr>
-  <td> getIconPathFromExtension(ext: string | undefined, shortcut: boolean = false): string[] </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-  <tr>
-  <td>  getIconPathFromId(iconId: string, shortcut: boolean = false): string[]  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
- <tr>
-  <td>  getSingleIconPathById(iconId: string)  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
- <tr>
-  <td>  getIconIdFromExtension(ext: string | undefined): string   </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-<tr>
-  <td>  getBaseName(path: string): string   </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-<tr>
-  <td>  sanitizeFileName(fileName: string): string   </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-  
-<tr>
-  <td>  removeFileExtension(fileName: string)   </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-  
-<tr>
-  <td>  getFileExtension(fileName: string): string | undefined  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-  
-<tr>
-  <td>   combinePaths(path1: string, path2: string): string  </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
- <tr>
-  <td>  getCleanedExtension(extension: string | undefined): string | undefined </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
-<tr>
-  <td>  getListOfFolderNames(path: string): string[]   </td>
-  <td> ?  </td>
-  <td> <pre> ?
-   </pre> </td>
-  </tr>
-  
- </table>
