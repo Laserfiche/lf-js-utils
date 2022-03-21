@@ -1,3 +1,6 @@
+/**
+ * MIME types
+ */
 export enum MIMETypes {
     text_plain = 'text/plain',
     text_html = 'text/html',
@@ -569,6 +572,12 @@ const extensionToMIMETypeDict: Record<string, string> = {
 };
 /* eslint-enable */
 
+/**
+ * Determines the file extension's corresponding MIME type
+ * or 'application/unknown' if none match
+ * @param extension a file extension
+ * @returns the corresponding MIME type
+ */
 export function getMIMETypeFromExtension(extension: string | undefined): string {
     const defaultMimeType = 'application/unknown';
     if (extension) {

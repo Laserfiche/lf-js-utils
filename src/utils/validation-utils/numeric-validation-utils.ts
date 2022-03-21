@@ -27,6 +27,16 @@ interface LFToken {
   startIndex: number;
 }
 
+/**
+ * Given a string representing a Laserfiche numeric field, and a check constraint, 
+ * determines if the numeric field satisfies the constraint
+ * @param value 
+ * @param numericConstraint e.g. '>=100 and <=999'. Please reference the laserfiche documentation
+ * for more information:
+ * https://www.laserfiche.com/support/webhelp/Laserfiche/10/en-US/administration/#../Subsystems/
+ * LFAdmin/Content/Restricting_Field_Data_to_a_Specific_Format.htm?Highlight=constraintformat
+ * @returns true if value satisfies the numeric constraint
+ */
 export function evaluateNumericValidationExpression(value: string, numericConstraint: string): boolean {
   const valueAsNumber: number = parseFloat(value);
   if (isNaN(valueAsNumber)) {
@@ -247,6 +257,7 @@ function addComparer(jsTokens: JSToken[], value: string, notValue: string, start
   }
 }
 
+/** @internal */
 export const numeric_testables = {
   JSTokenType,
   LFTokenType,
