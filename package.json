@@ -30,7 +30,5 @@
     "tslib": "^2.3.1",
     "typescript": "^4.5.4"
   },
-  "exports": {
-    "main": "./index"
-  }
+  "exports":  "./dist/index.js"
 }
