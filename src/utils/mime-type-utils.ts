@@ -576,7 +576,7 @@ const extensionToMIMETypeDict: Record<string, string> = {
  * Determines the file extension's corresponding MIME type
  * or 'application/unknown' if none match
  * @param extension a file extension
- * @returns the corresponding MIME type
+ * @returns the corresponding MIME type or 'application/unknown'
  */
 export function getMIMETypeFromExtension(extension: string | undefined): string {
     const defaultMimeType = 'application/unknown';
@@ -590,7 +590,6 @@ export function getMIMETypeFromExtension(extension: string | undefined): string 
             return mimeType;
         }
         else {
-            // TODO how to notify us when un-supported extension is used
             console.error('Extension is not supported: ', cleanedExtension);
             return defaultMimeType;
         }
@@ -598,27 +597,21 @@ export function getMIMETypeFromExtension(extension: string | undefined): string 
     return defaultMimeType;
 }
 
-export function getIconPathFromExtension(ext: string | undefined, shortcut: boolean = false): string[] {
-    const iconId: string = getIconIdFromExtension(ext);
-    return getIconPathFromId(iconId, shortcut);
+/**
+ * Returns the url to an svg icon from https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg.
+ * @param iconId 
+ * @returns the url
+ */
+export function getDocumentIconUrlFromIconId(iconId: string): string {
+    return `https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg#${iconId}`; // TODO: get from lf-resource-library
 }
 
-export function getIconPathFromId(iconId: string, shortcut: boolean = false): string[] {
-    const allIcons: string[] = [];
-    const icon: string = getSingleIconPathById(iconId);
-    allIcons.push(icon);
-    if (shortcut) {
-        const shortcutOverlay = getSingleIconPathById('shortcut-overlay');
-        allIcons.push(shortcutOverlay);
-    }
-    return allIcons;
-}
-
-export function getSingleIconPathById(iconId: string) {
-    return `static-assets/lf_addin_icons.svg#${iconId}`;
-}
-
-export function getIconIdFromExtension(ext: string | undefined): string {
+/**
+ * Returns the icon id given a file extension from https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg.
+ * @param ext 
+ * @returns icon id
+ */
+export function getDocumentIconIdFromExtension(ext: string | undefined): string {
     const suffix: string = '-20';
     switch (ext) {
         case undefined:
