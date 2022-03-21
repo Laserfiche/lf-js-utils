@@ -1,10 +1,6 @@
-import { DatetimeUtils } from './datetime-utils.js';
+import * as DatetimeUtils from './datetime-utils.js';
 
 describe('DatetimeUtils', () => {
-
-  it('should create an instance', () => {
-    expect(new DatetimeUtils()).toBeTruthy();
-  });
 
   it('should deserialize and serialize a date with no offset and not change the value', () => {
     const originalDateString: string = '2021-03-25';
