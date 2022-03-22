@@ -17,7 +17,6 @@ export function getDocumentIconIdFromExtension(ext: string | undefined): string 
     switch (ext) {
         case undefined:
         case '':
-            console.log('hereer')
             return 'document' + suffix;
         case 'ascx':
         case 'aspx':
@@ -95,7 +94,6 @@ export function getDocumentIconIdFromExtension(ext: string | undefined): string 
         case 'lfb':
             return 'edoc-briefcase' + suffix;
         default:
-            console.log(ext)
             return 'edoc-generic' + suffix;
     }
 }
