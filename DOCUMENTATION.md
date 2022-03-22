@@ -33,7 +33,7 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
 
 |Name | Description|
 |--|--|
-|debugMode: boolean| Default to false. TODO|
+|debugMode: boolean| Default to false.|
 |readonly resources: Map<string, object>| The default language resource map. |
     
 #### Methods

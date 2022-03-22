@@ -1,6 +1,3 @@
-// TODO make individual methods, export, delete the class
-
-
 /**
  * Given a string that represents a date object with no timezone offset,
  * adds the offset based on the client's current timezone, and returns it as a string

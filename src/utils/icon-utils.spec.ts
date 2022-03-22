@@ -1,6 +1,6 @@
 import { getDocumentIconIdFromExtension, getDocumentIconUrlFromIconId } from './icon-utils';
 
-describe('MimeTypeUtils', () => {
+describe('IconUtils', () => {
     it('should return Icon url given an Icon id', () => {
         // Arrange
         const expectedResultByInput = {
