@@ -4,7 +4,7 @@
  * @param date e.g. 2021-03-25, PDT timezone
  * @returns the date with an added offset of the current time "2021-03-25T07:00:00.000Z"
  */
-export function deserializeDateValue(date: string | undefined): string { //TODO: add more unit tests
+export function deserializeDateValue(date: string | undefined): string {
   if (!date) {
     return '';
   }
