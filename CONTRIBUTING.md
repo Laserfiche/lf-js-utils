@@ -12,18 +12,17 @@ We encourage and appreciate feedback and contribution from the community!
 
 ## <a name="question"></a> Question or Problem?
 
-Please post general questions on [StackOverflow](https://stackoverflow.com/questions/tagged/laserfiche-ui-components) where the questions should be tagged with tag `laserfiche-ui-components`.
+Please post general questions on [Laserfiche Answers](https://answers.laserfiche.com/). Please include *lf-js-utils* for reference.
 
 ## <a name="issue"></a> Issue and Feature Requests
 
-Please use [Github Issues](https://github.com/Laserfiche/lf-js-utils/issues) for bugs report or features request. 
-
+Search [Github Issues](https://github.com/Laserfiche/lf-js-utils/issues) for existing bugs report or features request related to your question. Please submit an Issue or Feature Request if your issues or requests have not been addressed.
 ## <a name="submit-pr"></a> PR Submission Guidelines
 
 - Search Github [Pull Requests](https://github.com/Laserfiche/lf-js-utils/pulls) for PRs related to your submission. Make sure that this is not a duplication.
 - Link the issue addressed by the PR.
 - Add unit tests or document manual tests to validate the changes.
-- The PR should run the [workflow](https://github.com/Laserfiche/lf-js-utils/actions/workflows/main.yml). You can manually dispatch the workflow to make sure the workflow runs without failure.
+- Workflow shall triggers all unit tests. For a pull request to be accepted, all unit tests must pass when run workflow.
 
 After the submission, core members of the project will review the code. 
 
@@ -32,3 +31,4 @@ Please follow the rules as you work on the code:
 
 - Please add unit tests for each fixed bug or added feature.
 - Please use clean and informative names.
+- Leave the code better than you find it.
