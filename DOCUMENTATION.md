@@ -1,48 +1,40 @@
-## LfLocalizationService
-
-`LfLocalizationService` is a service that handles internationalization and localization, mapping text to its corresponding translated texts in the selected language. We provide lf-resource-library(coming soon), but you can also add your own translation resource map following our API.
+`LfLocalizationService` is a service that handles internationalization and localization, mapping text to its corresponding translated texts in the selected language. We provide [language resources files in JSON](https://github.com/Laserfiche/laserfiche-ui-components-core/tree/main/src/i18n), but you can also add your own translation resource following our API.
 
 ### Example Usage
 ```ts
 import { LfLocalizationService } from '@laserfiche/laserfiche-ui-components-core';
-
 // use default language resource
-let localizationService: LfLocalizationService = new LfLocalizationService('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n');
-let loading = await localizationService.getStringAsync('LOADING');  // loading -> "loading..."
-
+let localizationService: LfLocalizationService = new LfLocalizationService();
+let loading = localizationService.getString('LOADING');  // loading -> "loading..."
 // switch default language
 localizationService.setLanguage('ar');
-loading = await localizationService.getStringAsync('LOADING');  // loading -> "جارٍ التحميل..."
-
+loading = localizationService.getString('LOADING');  // loading -> "جارٍ التحميل..."
 // adding custom language resource
 let localizationService = new LfLocalizationService(new Map([
-  ['jp', {
-  "LOADING": "読み込み中..."
-  }],
-  ['ir', {
-  "LOADING": "ag lódáil..."
+	@@ -24,7 +24,7 @@ let localizationService = new LfLocalizationService(new Map([
   }]
 ]));
 localizationService.setLanguage('ir');
-loading = await localizationService.getStringAsync('LOADING');  // loading -> "ag lódáil..."
+loading = localizationService.getString('LOADING');  // loading -> "ag lódáil..."
 ```
 
 ### API
-
-#### Properties
+	@@ -33,18 +33,16 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
 
 |Name | Description|
 |--|--|
-|debugMode: boolean| Default to false. In debug mode, getStringAsync returns the pseudo language of the translated string.|
-    
+|debugMode: boolean| Default to false. TODO|
+|readonly resources: Map<string, object>| The default language resource map. |
+
 #### Methods
 
 |Name | Description|
 |--|--|
-|constructor(resources?: Map<string, object> | string);       | Users can provide custom language resource map or an url pointing to the folder of the resource files. |
+|constructor(resources?: Map<string, object>);       | Users can provide custom language resource, or use the provided language resources. |
 |setLanguage(language: string): resourceType;        | Sets the default language. |
-|get currentResource(): resourceType | undefined;                | Gets the current selected language's resource mapping, can be undefined because we lazy load resource at getStringAsync. |
-|async getStringAsync(key: string, params?: string[]): string;  | Load the resource file if necessary, and gets the translated key using the current selected language.  |
+|get currentResource(): resourceType;                | Gets the current selected language's resource mapping. |
+|getString(key: string, params?: string[]): string;  | Gets the translated key using the current selected language. |
+
 #### Types
 
 resourceType  = { language: string, resource: object };
