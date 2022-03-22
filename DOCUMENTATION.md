@@ -1,17 +1,26 @@
+## LfLocalizationService
+
 `LfLocalizationService` is a service that handles internationalization and localization, mapping text to its corresponding translated texts in the selected language. We provide [language resources files in JSON](https://github.com/Laserfiche/laserfiche-ui-components-core/tree/main/src/i18n), but you can also add your own translation resource following our API.
 
 ### Example Usage
 ```ts
 import { LfLocalizationService } from '@laserfiche/laserfiche-ui-components-core';
+
 // use default language resource
 let localizationService: LfLocalizationService = new LfLocalizationService();
 let loading = localizationService.getString('LOADING');  // loading -> "loading..."
+
 // switch default language
 localizationService.setLanguage('ar');
 loading = localizationService.getString('LOADING');  // loading -> "جارٍ التحميل..."
+
 // adding custom language resource
 let localizationService = new LfLocalizationService(new Map([
-	@@ -24,7 +24,7 @@ let localizationService = new LfLocalizationService(new Map([
+  ['jp', {
+  "LOADING": "読み込み中..."
+  }],
+  ['ir', {
+  "LOADING": "ag lódáil..."
   }]
 ]));
 localizationService.setLanguage('ir');
@@ -19,13 +28,14 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
 ```
 
 ### API
-	@@ -33,18 +33,16 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
+
+#### Properties
 
 |Name | Description|
 |--|--|
 |debugMode: boolean| Default to false. TODO|
 |readonly resources: Map<string, object>| The default language resource map. |
-
+    
 #### Methods
 
 |Name | Description|
@@ -36,6 +46,7 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
 |getString(key: string, params?: string[]): string;  | Gets the translated key using the current selected language. |
 
 #### Types
+
 
 resourceType  = { language: string, resource: object };
 
