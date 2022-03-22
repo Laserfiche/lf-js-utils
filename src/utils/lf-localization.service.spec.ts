@@ -1,58 +1,54 @@
 import { LfLocalizationService } from './lf-localization.service.js';
-require('isomorphic-fetch');
+
 
 describe('LfLocalizationService', () => {
   let lfLocalizationService: LfLocalizationService;
 
-  // TODO: load from lf-resource-library
-  const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n';
-
-  beforeEach(async () => {
-    lfLocalizationService = new LfLocalizationService(resourcesFolder);
+  beforeEach(() => {
+    lfLocalizationService = new LfLocalizationService();
   });
 
-  it('getStringAsync assigns default language if specified does not exist', async () => {
+  it('setLanguage assigns default language if specified does not exist', () => {
     lfLocalizationService.setLanguage('nonexistent');
 
-    expect(await lfLocalizationService.getStringAsync('LOADING')).toEqual('Loading...');
-    expect(lfLocalizationService.currentResource?.language).toEqual('en');
+    expect(lfLocalizationService.currentResource.language).toEqual('en');
   });
 
-  it('getStringAsync assigns default language if specified does not exist', async () => {
+  it('setLanguage assigns default language if specified does not exist', () => {
     lfLocalizationService.setLanguage('fr-CA');
 
-    expect(await lfLocalizationService.getStringAsync('LOADING')).toEqual('Charger...');
-    expect(lfLocalizationService.currentResource?.language).toEqual('fr');
+    expect(lfLocalizationService.currentResource.language).toEqual('fr');
   });
 
-  it('getStringAsync assigns default language if specified does not exist', async () => {
+  it('setLanguage assigns default language if specified does not exist', () => {
     const resources = new Map([['test', {'TEST_STRING': 'test string'}]])
     lfLocalizationService = new LfLocalizationService(resources);
+
     lfLocalizationService.setLanguage('fr-CA');
-    expect(await lfLocalizationService.getStringAsync('TEST_STRING')).toEqual('test string');
-    expect(lfLocalizationService.currentResource?.language).toEqual('test');
+
+    expect(lfLocalizationService.currentResource.language).toEqual('test');
   });
 
-  it('getString gets English when no language specified', async () => {
+  it('getString gets English when no language specified', () => {
     // Arrange
     const stringKey: string = 'INVALID_FIELD_REQUIRED_FIELD_EMPTY';
     const englishValue: string = 'Required field is empty';
 
     // Act
-    const localizedString = await lfLocalizationService.getStringAsync(stringKey);
+    const localizedString = lfLocalizationService.getString(stringKey);
 
     // Assert
     expect(localizedString).toEqual(englishValue);
   });
 
-  it('getString gets Spanish when spanish is specified', async () => {
+  it('getString gets Spanish when spanish is specified', () => {
     // Arrange
     const stringKey: string = 'EMPTY_FILE_EXPLORER';
     const spanishValue: string = 'Esta carpeta está vacía.';
 
     // Act
     lfLocalizationService.setLanguage('es');
-    const localizedString = await lfLocalizationService.getStringAsync(stringKey);
+    const localizedString = lfLocalizationService.getString(stringKey);
 
     // Assert
     expect(localizedString).toEqual(spanishValue);
@@ -203,81 +199,85 @@ describe('LfLocalizationService', () => {
     expect(hasError).toBeTruthy();
   });
 
-  it('should be able to set custom json', async () => {
+  it('should be able to set custom json', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['es', { "TEST_STRING": "prueba" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
 
-    let localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    let localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
 
     lfLocalizationService.setLanguage('es');
-    localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('prueba');
   });
 
-  it('should be able to set custom json, default to English if translation does not exist', async () => {
+  it('should be able to set custom json, default to English if translation does not exist', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['es', { "TEST_STRING": "prueba" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
 
-    let localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    let localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
 
     lfLocalizationService.setLanguage('ar');
-    localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
   });
 
-  it('should be able to set custom json, fr-CA will default to fr if no fr-CA', async () => {
+  it('when empty map of custom resources, throw error', () => {
+    expect(() => new LfLocalizationService(new Map())).toThrow();
+  });
+
+  it('should be able to set custom json, fr-CA will default to fr if no fr-CA', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['fr', { "TEST_STRING": "french test" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
 
-    let localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    let localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
 
     lfLocalizationService.setLanguage('fr-CA');
-    localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('french test');
   });
 
-  it('should be able to set custom json, fr-CA should use fr-CA if exists', async () => {
+  it('should be able to set custom json, fr-CA should use fr-CA if exists', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['fr', { "TEST_STRING": "french test" }], ['fr-CA', { "TEST_STRING": "french CA test" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
 
-    let localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    let localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
 
     lfLocalizationService.setLanguage('fr');
-    localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('french test');
 
     lfLocalizationService.setLanguage('fr-CA');
-    localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('french CA test');
   });
 
-  it('should be able to set custom json, fr-CA will default to en if no fr-CA or no fr', async () => {
+  it('should be able to set custom json, fr-CA will default to en if no fr-CA or no fr', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['es', { "TEST_STRING": "prueba" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
 
-    let localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    let localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
 
     lfLocalizationService.setLanguage('fr-CA');
-    localizedString = await lfLocalizationService.getStringAsync('TEST_STRING');
+    localizedString = lfLocalizationService.getString('TEST_STRING');
     expect(localizedString).toEqual('test res');
   });
 
-  it('should create pseudo language in debug mode for english', async () => {
+  it('should create pseudo language in debug mode for english', () => {
     lfLocalizationService.debugMode = true;
 
-    expect(await lfLocalizationService.getStringAsync('APPLY_CHANGES')).toEqual('_Ḓǿ ẏǿŭ ẇȧƞŧ ŧǿ ȧƥƥŀẏ ẏǿŭř ƒīḗŀḓ ƈħȧƞɠḗş?_');
+    expect(lfLocalizationService.getString('APPLY_CHANGES')).toEqual('_Ḓǿ ẏǿŭ ẇȧƞŧ ŧǿ ȧƥƥŀẏ ẏǿŭř ƒīḗŀḓ ƈħȧƞɠḗş?_');
   });
 
-  it('should create pseudo language in debug mode for spanish', async () => {
+  it('should create pseudo language in debug mode for spanish', () => {
     lfLocalizationService.debugMode = true;
 
     lfLocalizationService.setLanguage('es');
 
-    expect(await lfLocalizationService.getStringAsync('APPLY_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
+    expect(lfLocalizationService.getString('APPLY_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
   });
 });
