@@ -31,25 +31,4 @@
    return url;
  }
  
- export function getEntryWebAccessUrl(nodeId: string, repoId: string, waUrl: string, isContainer: boolean): string | undefined {
-   if (nodeId?.length === 0 || repoId?.length === 0 || waUrl?.length === 0) {
-     return undefined;
-   }
-   let newUrl: string = '';
-   if (isContainer) {
-     const queryParams: QueryParameter[] = [
-       ['repo', repoId]
-     ];
-     newUrl = combineURLs(waUrl ?? '', 'Browse.aspx', queryParams);
-     newUrl += `#?id=${encodeURIComponent(nodeId)}`;
-   }
-   else {
-     const queryParams: QueryParameter[] = [
-       ['repo', repoId],
-       ['docid', nodeId]
-     ];
-     newUrl = combineURLs(waUrl ?? '', 'DocView.aspx', queryParams);
-   }
-   return newUrl;
- }
  
