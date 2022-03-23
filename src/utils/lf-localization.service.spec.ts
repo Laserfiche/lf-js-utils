@@ -344,4 +344,14 @@ describe('LfLocalizationService', () => {
       lfLocalizationService.extractCodeFromUrl(url)
     }).toThrow(error);
   });
+
+  it('extractCodeFromUrl should throw if the url format is unexpected', () => {
+    const url = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.2--preview/laserfiche-base/zhg.json';
+    const error = 'Unexpected URL format.';
+
+    expect(() => {
+    // @ts-ignore
+      lfLocalizationService.extractCodeFromUrl(url)
+    }).toThrow(error);
+  });
 });
