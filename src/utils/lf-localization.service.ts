@@ -11,7 +11,7 @@ export interface ILocalizationService {
 export class LfLocalizationService implements ILocalizationService {
 
   /**
-   * whether or not to psedo language
+   * Whether or not to use psedo language
    */
   public debugMode: boolean = false;
 
@@ -37,8 +37,8 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * checks if the file exists in _resources, if not adds the language file to _resources
-   * sets default language
+   * Checks if the file exists in _resources, if not adds the language file to _resources,
+   * and sets default language
    *  
    * @param url the url to the language file
    */
@@ -52,9 +52,9 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * sets currentResource given the language code
-   * falls back to language without area code if language is not found in resource
-   * falls back to default language if neither language or language without area code is not found
+   * Sets currentResource given the language code,
+   * falls back to language without area code if language is not found in resource,
+   * falls back to default language if neither language or language without area code is not found,
    * if default language is also not found, gives a console warning without set currentResource
    */
   public setLanguage(language: string): void {
@@ -85,14 +85,14 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * returns the current language resource in use
+   * Returns the current language resource in use
    */
   public get currentResource(): resourceType | undefined {
     return this._currentResource;
   }
 
   /**
-   * returns the translated formated string if exists,
+   * Returns the translated formated string if exists,
    * falls back to default resource if translated string doesn't exist in current resource
    * throws an error if current resource does not exist
    * @param key the string to translate 
@@ -160,7 +160,7 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * sets defaultResourceLanguage if DEFAULT_LANGUAGE exists in _resources
+   * Sets defaultResourceLanguage if DEFAULT_LANGUAGE exists in _resources
    * otherwise, if _resources exists, sets the first language resource in _resources to be defaultResourceLanguage
    */
   private setDefaultLanguage() {
