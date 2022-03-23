@@ -83,7 +83,7 @@ Example
   <td> static serializeDateValue(date: Date | undefined): string | undefined  </td>
   <td> Removes the timezone offset of the given date and returns the ISO string format without the offset (YYYY-MM-DDTHH:MM:SS) </td>
   <td> <pre>
-  const originalDateString: string = '2021-03-25T00:00:00-07:00'; // assume the offset is the timezone is in PDT
+  const originalDateString: string = '2021-03-25T00:00:00-07:00'; // assume the offset matches the timezone (PDT)
   const dateWithOffset: Date = new Date(originalDateString);
   const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateWithOffset);
   // serializedDate -> '2021-03-25T00:00:00', removes the offset </pre> </td>
