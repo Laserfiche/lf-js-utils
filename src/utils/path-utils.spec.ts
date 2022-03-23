@@ -1,13 +1,12 @@
 import {
   createDisplayPath,
-  getBaseName,
+  getLastPathSegment,
   getFileExtension,
   getListOfFolderNames,
   removeFileExtension,
   sanitizeFileName,
-  replaceImporterUserToken,
-  containsImporterUserToken,
-  combinePaths
+  combinePaths,
+  getCleanedExtension
 } from './path-utils';
 
 describe('path-utils', () => {
@@ -18,14 +17,15 @@ describe('path-utils', () => {
       '\\hello\\world': 'world',
       '\\hello\\world\\': 'world',
       '\\hello\\world\\\\': '',
-      '': ''
+      '': '',
+      'hello': 'hello'
     };
 
     // Act, Assert
     // eslint-disable-next-line guard-for-in
     for (const input in expectedResultByInput) {
       const expectedResult = expectedResultByInput[input];
-      expect(getBaseName(input)).toEqual(expectedResult);
+      expect(getLastPathSegment(input)).toEqual(expectedResult);
     }
   });
 
@@ -182,88 +182,6 @@ describe('path-utils', () => {
     expect(doubleFolder4FolderNames).toEqual(expectedDoubleFolderNames);
   });
 
-  it('replaceImporterUserToken should replace ImporterUser token with username', () => {
-    // Arrange
-    const justImporterUser = '%(ImporterUser)';
-    const prefixAndImporterUser = 'Hello there %(ImporterUser)';
-    const suffixAndImporterUser = '%(ImporterUser) was here';
-    const allCapsImporterUser = '%(IMPORTERUSER) was here';
-    const doubleImporterUser = '%(ImporterUser)%(IMPORTERUSER)';
-    const noImporterUser = 'Hello there';
-    const lowercaseImporterUser = ' %(importeruser) was here';
-    const username = 'USERNAME';
-
-    // Act
-    const replacedJustImporterUser: string = replaceImporterUserToken(justImporterUser, username);
-    const replacedPrefixAndImporterUser: string = replaceImporterUserToken(prefixAndImporterUser, username);
-    const replacedSuffixAndImporterUser: string = replaceImporterUserToken(suffixAndImporterUser, username);
-    const replacedAllCapsImporterUser: string = replaceImporterUserToken(allCapsImporterUser, username);
-    const replacedDoubleImporterUser: string = replaceImporterUserToken(doubleImporterUser, username);
-    const replacedNoImporterUser: string = replaceImporterUserToken(noImporterUser, username);
-    const replacedLowercaseImporterUser: string = replaceImporterUserToken(lowercaseImporterUser, username);
-
-    // Assert
-    expect(replacedJustImporterUser).toEqual('USERNAME');
-    expect(replacedPrefixAndImporterUser).toEqual('Hello there USERNAME');
-    expect(replacedSuffixAndImporterUser).toEqual('USERNAME was here');
-    expect(replacedAllCapsImporterUser).toEqual('USERNAME was here');
-    expect(replacedDoubleImporterUser).toEqual('USERNAMEUSERNAME');
-    expect(replacedNoImporterUser).toEqual('Hello there');
-    expect(replacedLowercaseImporterUser).toEqual(' USERNAME was here');
-  });
-
-  it('replaceImporterUserToken should not replace ImporterUser token if username is undefined', () => {
-    // Arrange
-    const justImporterUser = '%(ImporterUser)';
-    const prefixAndImporterUser = 'Hello there %(ImporterUser)';
-    const suffixAndImporterUser = '%(ImporterUser) was here';
-    const noImporterUser = 'Hello there';
-    const lowercaseImporterUser = ' %(importeruser) was here';
-    const username: undefined = undefined;
-
-    // Act
-    const replacedJustImporterUser: string = replaceImporterUserToken(justImporterUser, username);
-    const replacedPrefixAndImporterUser: string = replaceImporterUserToken(prefixAndImporterUser, username);
-    const replacedSuffixAndImporterUser: string = replaceImporterUserToken(suffixAndImporterUser, username);
-    const replacedNoImporterUser: string = replaceImporterUserToken(noImporterUser, username);
-    const replacedLowercaseImporterUser: string = replaceImporterUserToken(lowercaseImporterUser, username);
-
-    // Assert
-    expect(replacedJustImporterUser).toEqual('%(ImporterUser)');
-    expect(replacedPrefixAndImporterUser).toEqual('Hello there %(ImporterUser)');
-    expect(replacedSuffixAndImporterUser).toEqual('%(ImporterUser) was here');
-    expect(replacedNoImporterUser).toEqual('Hello there');
-    expect(replacedLowercaseImporterUser).toEqual(' %(importeruser) was here');
-  });
-
-  it('containsImporterUserToken should return true if token exists', () => {
-    // Arrange
-    const endWithImporterUser = 'Hello there %(ImporterUser)';
-    const startWithImporterUser = ' %(ImporterUser) was here';
-    const lowercaseImporterUser = ' %(importeruser) was here';
-
-    // Act
-
-    // Assert
-    expect(containsImporterUserToken(endWithImporterUser)).toBeTruthy();
-    expect(containsImporterUserToken(startWithImporterUser)).toBeTruthy();
-    expect(containsImporterUserToken(lowercaseImporterUser)).toBeTruthy();
-  });
-
-  it('containsImporterUserToken should return false if token does not exist', () => {
-    // Arrange
-    const noImporterUser = 'Test';
-    const startImporterUser = 'Hello there %(Impor';
-    const endImporterUser = 'erUser) was here';
-
-    // Act
-
-    // Assert
-    expect(containsImporterUserToken(noImporterUser)).toBeFalsy();
-    expect(containsImporterUserToken(startImporterUser)).toBeFalsy();
-    expect(containsImporterUserToken(endImporterUser)).toBeFalsy();
-  });
-
   it('combinePaths should create combined display path', () => {
     // Arrange
     const pathEndSlash = 'end with slash\\';
@@ -281,4 +199,22 @@ describe('path-utils', () => {
     expect(combinePaths(pathStartEndSlash, pathMiddleSlash)).toEqual('\\full path test\\test\\path\\');
 
   });
+
+  it('should prepend . if not exist in getCleanedExtension', () => {
+    // Arrange
+    const expectedResultByInput = {
+      '': undefined,
+      'a': '.a',
+      '.a': '.a',
+      '.a ': '.a ',
+      '.a.b': '.a.b'
+    };
+
+    // Act, Assert
+    // eslint-disable-next-line guard-for-in
+    for (const input in expectedResultByInput) {
+      const expectedResult = expectedResultByInput[input];
+      expect(getCleanedExtension(input)).toEqual(expectedResult);
+    }
+  })
 });

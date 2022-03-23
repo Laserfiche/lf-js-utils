@@ -46,7 +46,12 @@ export class LfLocalizationService {
     }
     this.resources = resources;
     this.setDefaultLanguage();
-    this.setLanguage(navigator?.language ?? this.DEFAULT_LANGUAGE);
+    try {
+      this.setLanguage(window?.navigator?.language ?? this.DEFAULT_LANGUAGE);
+    }
+    catch {
+      this.setLanguage(this.DEFAULT_LANGUAGE);
+    }
   }
 
   public debugMode: boolean = false;

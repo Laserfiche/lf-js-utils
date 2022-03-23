@@ -49,12 +49,21 @@ function replaceCharacterClasses(constraint: string): string {
     return newConstraint;
 }
 
+/**
+ * Given a string representing a laserfiche text constraint, returns the corresponding regex
+ * @param textConstraint // e.g. 'Phone Number'. Please reference the laserfiche documentation
+ * for more information:
+ * https://www.laserfiche.com/support/webhelp/Laserfiche/10/en-US/administration/#../Subsystems/
+ * LFAdmin/Content/Restricting_Field_Data_to_a_Specific_Format.htm?Highlight=constraintformat
+ * @returns the corresponding regex
+ */
 export function formatTextConstraint(textConstraint: string): string {
     const constraintWithReplacedCharClasses: string = replaceCharacterClasses(textConstraint);
     const strictConstraint: string = createStrictRegexConstraint(constraintWithReplacedCharClasses);
     return strictConstraint;
 }
 
+/** @internal */
 export const text_testables = {
     createStrictRegexConstraint,
     replaceCharacterClasses

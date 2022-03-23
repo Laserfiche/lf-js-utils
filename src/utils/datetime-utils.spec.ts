@@ -1,10 +1,6 @@
-import { DatetimeUtils } from './datetime-utils.js';
+import * as DatetimeUtils from './datetime-utils.js';
 
 describe('DatetimeUtils', () => {
-
-  it('should create an instance', () => {
-    expect(new DatetimeUtils()).toBeTruthy();
-  });
 
   it('should deserialize and serialize a date with no offset and not change the value', () => {
     const originalDateString: string = '2021-03-25';
@@ -13,6 +9,26 @@ describe('DatetimeUtils', () => {
 
     const serializedDate: string | undefined = DatetimeUtils.serializeDateValue(dateNoOffset);
     expect(serializedDate).toEqual('2021-03-25T00:00:00');
+  });
+
+  it('deserialized date is timezone in miliseconds ahead of the original date', () => {
+    const originalDateString: string = '2021-03-25';
+    const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
+    const dateNoOffset: Date = new Date(deserializedDate);
+    const originalDate: Date = new Date(originalDateString);
+    const timeDiff: number = dateNoOffset.getTime() - originalDate.getTime();
+    const offsetInMs = new Date().getTimezoneOffset()*60000;
+    expect(timeDiff).toEqual(offsetInMs);
+  });
+
+  it('deserialized datetime is timezone in miliseconds ahead of the original datetime', () => {
+    const originalDateTimeString: string = '2021-03-25T01:00';
+    const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateTimeString);
+    const dateNoOffset: Date = new Date(deserializedDate);
+    const originalDate: Date = new Date(originalDateTimeString);
+    const timeDiff: number = dateNoOffset.getTime() - originalDate.getTime();
+    const offsetInMs = new Date().getTimezoneOffset()*60000;
+    expect(timeDiff).toEqual(offsetInMs);
   });
 
   it('should serialize a datetime with no offset and not change the value', () => {
@@ -48,6 +64,7 @@ describe('DatetimeUtils', () => {
  * @param originalDateString 
  * @returns timestamp with the offset based on the current timezone
  * example: in PDT, timezone offset is -7 h 
+ * mockDateTimeOffset(2021-03-25T00:00:00) -> 2021-03-25T01:00:00-07:00
  */
 function mockDateTimeOffset(originalDateString: string) : string {
   const dateWithoutOffset: Date = new Date(originalDateString);

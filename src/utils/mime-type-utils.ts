@@ -1,3 +1,6 @@
+/**
+ * MIME types
+ */
 export enum MIMETypes {
     text_plain = 'text/plain',
     text_html = 'text/html',
@@ -569,6 +572,12 @@ const extensionToMIMETypeDict: Record<string, string> = {
 };
 /* eslint-enable */
 
+/**
+ * Determines the file extension's corresponding MIME type
+ * or 'application/unknown' if none match
+ * @param extension a file extension
+ * @returns the corresponding MIME type or 'application/unknown'
+ */
 export function getMIMETypeFromExtension(extension: string | undefined): string {
     const defaultMimeType = 'application/unknown';
     if (extension) {
@@ -581,116 +590,9 @@ export function getMIMETypeFromExtension(extension: string | undefined): string 
             return mimeType;
         }
         else {
-            // TODO how to notify us when un-supported extension is used
             console.error('Extension is not supported: ', cleanedExtension);
             return defaultMimeType;
         }
     }
     return defaultMimeType;
-}
-
-export function getIconPathFromExtension(ext: string | undefined, shortcut: boolean = false): string[] {
-    const iconId: string = getIconIdFromExtension(ext);
-    return getIconPathFromId(iconId, shortcut);
-}
-
-export function getIconPathFromId(iconId: string, shortcut: boolean = false): string[] {
-    const allIcons: string[] = [];
-    const icon: string = getSingleIconPathById(iconId);
-    allIcons.push(icon);
-    if (shortcut) {
-        const shortcutOverlay = getSingleIconPathById('shortcut-overlay');
-        allIcons.push(shortcutOverlay);
-    }
-    return allIcons;
-}
-
-export function getSingleIconPathById(iconId: string) {
-    return `static-assets/lf_addin_icons.svg#${iconId}`;
-}
-
-export function getIconIdFromExtension(ext: string | undefined): string {
-    const suffix: string = '-20';
-    switch (ext) {
-        case undefined:
-        case '':
-            return 'document' + suffix;
-        case 'ascx':
-        case 'aspx':
-        case 'cs':
-        case 'css':
-        case 'htm':
-        case 'html':
-        case 'js':
-        case 'jsproj':
-        case 'vbs':
-        case 'xml':
-            return 'edoc-code' + suffix;
-        case 'avi':
-        case 'mov':
-        case 'mpeg':
-        case 'rm':
-        case 'wmv':
-        case 'mp4':
-        case 'webm':
-        case 'ogv':
-        case 'ogg':
-            return 'edoc-movie' + suffix;
-        case 'bmp':
-        case 'gif':
-        case 'jpeg':
-        case 'jpg':
-        case 'png':
-        case 'tif':
-        case 'tiff':
-            return 'image' + suffix;
-        case 'config':
-            return 'edoc-config' + suffix;
-        case 'doc':
-        case 'docx':
-        case 'dot':
-            return 'edoc-wordprocessing' + suffix;
-        case 'mdb':
-        case 'accdb':
-            return 'edoc-database' + suffix;
-        case 'pdf':
-            return 'edoc-pdf' + suffix;
-        case 'ppt':
-        case 'pptx':
-            return 'edoc-presentation' + suffix;
-        case 'qfx':
-            return 'edoc-qfx' + suffix;
-        case 'reg':
-            return 'edoc-registry' + suffix;
-        case 'rtf':
-        case 'txt':
-            return 'edoc-text' + suffix;
-        case 'wav':
-        case 'mp2':
-        case 'mp3':
-        case 'opus':
-        case 'oga':
-            return 'edoc-audio' + suffix;
-        case 'wfx':
-            return 'edoc-wfx' + suffix;
-        case 'csv':
-        case 'xls':
-        case 'xlsm':
-        case 'xlsx':
-            return 'edoc-spreadsheet' + suffix;
-        case 'zip':
-        case 'gz':
-        case 'rar':
-        case '7z':
-            return 'edoc-zip' + suffix;
-        case 'msg':
-        case 'eml':
-            return 'email' + suffix;
-        case 'lnk':
-            return 'link' + suffix;
-        case 'lfb':
-            return 'edoc-briefcase' + suffix;
-        default:
-            return 'edoc-generic' + suffix;
-    }
 }
