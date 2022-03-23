@@ -73,7 +73,7 @@ Example
 </tr>
 <tr>
   <td> static deserializeDateValue(date: string \| undefined): string </td>
-  <td>  Takes in a timezone-less string representation of a date, and reconstruct the date given the client's timezone, returns the date with timezone in string.  </td>
+  <td>  Given a string reprentation of a date with no timezone offset, returns the string representation of the date including the user's timezone offset.  </td>
   <td> <pre> 
   const originalDateString: string = '2021-03-25';
   const deserializedDate: string = DatetimeUtils.deserializeDateValue(originalDateString);
