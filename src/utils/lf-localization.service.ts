@@ -44,7 +44,7 @@ export class LfLocalizationService implements ILocalizationService {
    */
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
     const code = this.extractCodeFromUrl(url);
-    let resource = this._resources.get(code);
+    const resource = this._resources.get(code);
     if (!resource) {
         await this.addResourceFromUrlAsync(url, code);
     }
