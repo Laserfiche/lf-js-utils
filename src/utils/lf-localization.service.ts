@@ -151,8 +151,8 @@ export class LfLocalizationService implements ILocalizationService {
     console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.`);
     const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
     if (languageWithoutDash != this._selectedLanguage) {
-      const setCurrentResourceSuccess = this.setLanguageResource(languageWithoutDash);
-      if (setCurrentResourceSuccess) return;
+      const setCurrentResourceFallBackSuccess = this.setLanguageResource(languageWithoutDash);
+      if (setCurrentResourceFallBackSuccess) return;
       this.setLanguageResource(this.DEFAULT_LANGUAGE);
     }
   }
