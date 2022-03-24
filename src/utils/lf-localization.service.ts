@@ -135,7 +135,6 @@ export class LfLocalizationService implements ILocalizationService {
    * @param code format languagecode2-country/regioncode2
    */
   private async addResourceFromUrlAsync(url: string, code: string): Promise<Object> {
-    console.log('url', url)
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error("HTTP error " + response.status);
