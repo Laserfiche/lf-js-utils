@@ -27,8 +27,8 @@ localizationService.setLanguage('ir');
 loading = localizationService.getString('LOADING');  // loading -> "ag lódáil..."
 
 // add external resource
-localizationService.initResourcesFromUrlAsync('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n/fr.json');
 lfLocalizationService.setLanguage('fr');
+localizationService.initResourcesFromUrlAsync('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n');
 loading = localizationService.getString('LOADING');  // loading -> "Charger..."
 ```
 
@@ -46,10 +46,10 @@ loading = localizationService.getString('LOADING');  // loading -> "Charger..."
 |Name | Description|
 |--|--|
 |constructor(resources?: Map<string, object>);       | Users can provide custom language resource, or use the provided language resources. |
-|setLanguage(language: string): resourceType;        | Sets the default language. |
-|get currentResource(): resourceType;                | Gets the current selected language's resource mapping. |
+|setLanguage(language: string): void;        | Sets the default language. |
+|get currentResource(): resourceType | undefined;                | Gets the current selected language's resource mapping. |
 |getString(key: string, params?: string[]): string;  | Gets the translated key using the current selected language. |
-|initResourcesFromUrlAsync(url: string): Promise<void>;  | Initializes the service with the language source given its url. |
+|initResourcesFromUrlAsync(url: string): Promise<void>;  | Initializes the service with the selected language, given the url to a folder containing resources.
 
 #### Types
 
