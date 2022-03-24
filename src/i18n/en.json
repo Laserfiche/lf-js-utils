@@ -59,5 +59,6 @@
     "TOKEN_PARENT_FRIENDLYNAME": "Parent Field",
     "TOKEN_TIME_FRIENDLYNAME": "Time",
     "TOKEN_USERNAME_FRIENDLYNAME": "User Name",
-    "YES": "Yes"
+    "YES": "Yes",
+    "DEFAULT": "default"
 }
