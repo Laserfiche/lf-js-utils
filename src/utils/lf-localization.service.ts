@@ -16,14 +16,16 @@ export class LfLocalizationService implements ILocalizationService {
   public debugMode: boolean = false;
 
   private readonly DEFAULT_LANGUAGE: string = 'en';
-  private defaultResourceLanguage: string = '';
   private _currentResource?: resourceType;
   private _resources: Map<string, object>;
+  private _selectedLanguage: string = this.DEFAULT_LANGUAGE;
 
   constructor(resources?: Map<string, object> | undefined) {
     if (resources) {
+      if (!resources.get(this.DEFAULT_LANGUAGE)) {
+        throw new Error(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in provided map.`)
+      }
       this._resources = resources;
-      this.setDefaultLanguage();
     }
     else {
       this._resources = new Map();
@@ -40,15 +42,40 @@ export class LfLocalizationService implements ILocalizationService {
    * Checks if the file exists in _resources, if not adds the language file to _resources,
    * and sets default language
    *  
-   * @param url the url to the language file
+   * @param url the url to the language file's folder
    */
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
-    const code = this.extractCodeFromUrl(url);
-    const resource = this._resources.get(code);
-    if (!resource) {
-        await this.addResourceFromUrlAsync(url, code);
+    this._resources = new Map();
+    if (!url.endsWith('\/')) {
+      url = url.concat('\/');
     }
-    this.setDefaultLanguage();
+    try {
+      await this.addResourceFromUrlAsync(`${url}${this.DEFAULT_LANGUAGE}.json`, this.DEFAULT_LANGUAGE);
+      this.setResource(this.DEFAULT_LANGUAGE);
+    }
+    catch {
+      throw new Error(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in URL.`);
+    }
+    try {
+      await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
+      this.setResource(this._selectedLanguage);
+    }
+    catch {
+      const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
+      if (languageWithoutDash != this._selectedLanguage) {
+        try {
+          await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
+          this.setResource(languageWithoutDash);
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found in URL. Fall back to ${languageWithoutDash}.`);
+        }
+        catch {
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found in URL.`);
+        }
+      }
+      console.warn(`Selected language resource ${this._selectedLanguage} is not found in URL.`);
+    }                                         // TODO: decide whether or not to do this
+    // we use setLanguage to know what language to set to, but that doesn't mean the language exists
+    // so we need to use setLanguage after initResourceAsync
   }
 
   /**
@@ -58,30 +85,8 @@ export class LfLocalizationService implements ILocalizationService {
    * if default language is also not found, gives a console warning without set currentResource
    */
   public setLanguage(language: string): void {
-    console.log("default language", this.defaultResourceLanguage)
-    const resource = this._resources.get(language);
-
-    if (resource) {
-      this._currentResource = { language, resource };
-    }
-    else {
-      const languageWithoutDash: string = language.split('-')[0];
-      const customShorterStringResources = this._resources.get(languageWithoutDash);
-      if (customShorterStringResources) {
-        this._currentResource = { language: languageWithoutDash, resource: customShorterStringResources };
-        console.warn(`Resource '${language}' not found. Call initAsync to load the source from url first. Falling back to ${languageWithoutDash}.`)
-      }
-      else {
-        const defaultResources = this._resources.get(this.defaultResourceLanguage);
-        if (defaultResources) {
-          this._currentResource = { language: this.defaultResourceLanguage, resource: defaultResources! };
-          console.warn(`Resource '${language}' not found. Call initAsync to load the source from url first. Falling back to ${this.defaultResourceLanguage}.`)
-        }
-        else {
-          console.warn(`Resource '${language}' not found. Call initAsync to load the source from url first.`);
-        }
-      }
-    }
+    this._selectedLanguage = language;
+    this.setResource(language);
   }
 
   /**
@@ -101,17 +106,17 @@ export class LfLocalizationService implements ILocalizationService {
    */
   public getString(key: string, params?: string[]): string {
     if (!this._currentResource) {
-      throw new Error('current Resource not found. Call setLanguage to set current language.');
+      throw new Error('Current resource not found. Call setLanguage to set current language.');
     }
     let localizedString = this._currentResource?.resource[key];
     if (!localizedString) {
-      const defaultResource = this._resources?.get(this.defaultResourceLanguage);
+      const defaultResource = this._resources?.get(this.DEFAULT_LANGUAGE);
       localizedString = defaultResource![key];
       if (localizedString) {
-        console.warn(`Resource '${key}' not found in ${this._currentResource?.language}. Falling back to ${this.defaultResourceLanguage}.`);
+        console.warn(`Resource '${key}' not found in ${this._currentResource?.language}. Falling back to ${this.DEFAULT_LANGUAGE}.`);
       }
       else {
-        throw new Error(`Resource '${key}' not found. Call initAsync to load the source from url first.`);
+        throw new Error(`Resource '${key}' not found. Use initResourcesFromUrlAsync to load resource.`);
       }
     }
     try {
@@ -123,13 +128,14 @@ export class LfLocalizationService implements ILocalizationService {
       return this.convertToPseudoLanguage(localizedString);
     }
   }
-  
+
   /**
    * Fetchs the remote json file and add it to this._resources
    * @param url the remote url to the resource file
    * @param code format languagecode2-country/regioncode2
    */
-  private async addResourceFromUrlAsync(url: string, code: string) : Promise<Object> {
+  private async addResourceFromUrlAsync(url: string, code: string): Promise<Object> {
+    console.log('url', url)
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error("HTTP error " + response.status);
@@ -137,38 +143,6 @@ export class LfLocalizationService implements ILocalizationService {
       const json = await response.json();
       this._resources.set(code, json);
       return json;
-    }
-  }
-
-  /**
-   * Extracts the language code from the given url
-   * Throws an error if url format is unexpected
-   * @param url 
-   * @returns code extracted from url
-   */
-  private extractCodeFromUrl(url: string): string {
-    const fileStart = url.lastIndexOf('/');
-    const fileString = url.substring(fileStart+1);
-    const code = fileString.split('.')[0];
-    const regex = new RegExp('^[a-z]{2}(-[a-zA-Z]+)?$', 'g');
-    if (code.match(regex)) {
-      return code;
-    }
-    else {
-      throw new Error('Unexpected URL format.');
-    }
-  }
-
-  /**
-   * Sets defaultResourceLanguage if DEFAULT_LANGUAGE exists in _resources
-   * otherwise, if _resources exists, sets the first language resource in _resources to be defaultResourceLanguage
-   */
-  private setDefaultLanguage() {
-    if (this._resources?.get(this.DEFAULT_LANGUAGE)) {
-      this.defaultResourceLanguage = this.DEFAULT_LANGUAGE;
-    }
-    else if (this._resources?.size > 0) {
-      this.defaultResourceLanguage = this._resources?.keys().next().value;
     }
   }
 
@@ -186,6 +160,35 @@ export class LfLocalizationService implements ILocalizationService {
       }
     }
     return pseudoLocalizedText + '_';
+  }
+
+  /**
+   * Sets _currentResource based on given language, if language exists in _resource, 
+   * else,  set to  without dash if exists in _resource, 
+   * else, set to default language which is guaranteed to exist.
+   * @param language 
+   * @returns 
+   */
+  private setResource(language: string): void {
+    const resource = this._resources.get(language);
+    if (resource) {
+      this._currentResource = { language: language, resource: resource };
+    }
+    else {
+      console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.`);
+      const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
+      if (languageWithoutDash != this._selectedLanguage) {
+        const languageWithoutDashResource = this._resources.get(languageWithoutDash);
+        if (languageWithoutDashResource) {
+          this._currentResource = { language: languageWithoutDash, resource: languageWithoutDashResource };
+          return;
+        }
+      }
+      const defaultResource = this._resources.get(this.DEFAULT_LANGUAGE);
+      if (defaultResource) {
+        this._currentResource = { language: this.DEFAULT_LANGUAGE, resource: defaultResource };
+      }
+    }
   }
 
   private formatString(stringToFormat: string, params?: string[]): string {

@@ -38,7 +38,7 @@ loading = localizationService.getString('LOADING');  // loading -> "Charger..."
 
 |Name | Description|
 |--|--|
-|debugMode: boolean| Whether or not to use psedo language. Default to false. |
+|debugMode: boolean| When true, returns pseudo language string. Defaults to false. |
 |readonly resources: Map<string, object>| The default language resource map. |
     
 #### Methods
