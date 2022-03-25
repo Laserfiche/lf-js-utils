@@ -105,7 +105,7 @@ describe('LfLocalizationService', () => {
     const englishValue: string = 'This folder is empty.';
 
     // Act
-    lfLocalizationService.setLanguage('nonexist');
+    lfLocalizationService.setLanguage('nonexistent');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
     const localizedString = lfLocalizationService.getString(stringKey);
@@ -114,10 +114,26 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual(englishValue);
   });
 
-  it('getString gets english when selected language exists but string does not exist', async () => {
+  it(`getString gets english when selected language exists,
+   but string does not exist in selected language but in default language`, async () => {
     // Arrange
     const stringKey: string = 'DEFAULT';
     const englishValue: string = 'default';
+
+    // Act
+    lfLocalizationService.setLanguage('zh-Hant');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    const localizedString = lfLocalizationService.getString(stringKey);
+
+    // Assert
+    expect(localizedString).toEqual(englishValue);
+  });
+
+  it(`getString should return key when selected language resource exists,
+   but string does not exist in neither selected language or default language`, async () => {
+    // Arrange
+    const stringKey: string = 'NON_EXISTENT_STRING';
+    const englishValue: string = '<< NON_EXISTENT_STRING >>';
 
     // Act
     lfLocalizationService.setLanguage('zh-Hant');
