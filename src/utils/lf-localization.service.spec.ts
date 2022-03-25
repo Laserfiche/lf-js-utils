@@ -15,13 +15,7 @@ describe('LfLocalizationService', () => {
     expect(lfLocalizationService.currentResource).toEqual(undefined);
   });
 
-  it('setLanguage does not set currentResource if language file does not exist in constructor and is not provided with initResourcesFromUrlAsync', () => {
-    lfLocalizationService.setLanguage('nonexistent');
-
-    expect(lfLocalizationService.currentResource).toEqual(undefined);
-  });
-
-  it('setLanguage does not set currentResource if language file does not exist in constructor and is not provided with initResourcesFromUrlAsync', () => {
+  it('setLanguage does not set currentResource if no resources were passed in constructor and initResourcesFromUrlAsync has not been called', () => {
     lfLocalizationService.setLanguage('fr-CA');
 
     expect(lfLocalizationService.currentResource).toEqual(undefined);
@@ -52,7 +46,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('setLanguage assigns default language if specified does not exist, but default exist', async () => {
-    lfLocalizationService.setLanguage('ja');
+    lfLocalizationService.setLanguage('nonexistent');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder)
 
     expect(lfLocalizationService.currentResource?.language).toEqual('en');
@@ -65,7 +59,24 @@ describe('LfLocalizationService', () => {
     expect(lfLocalizationService.currentResource?.language).toEqual('fr');
   });
 
-  it('getString should return key when no language specified', () => {
+  it('initResourcesFromUrlAsync should not set specified language if setLanguage is not called', async () => {
+
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    lfLocalizationService.setLanguage('fr');
+
+    expect(lfLocalizationService.currentResource?.language).toEqual('en');
+  });
+
+  it('initResourcesFromUrlAsync should specified language if setLanguage is called', async () => {
+
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    lfLocalizationService.setLanguage('fr');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+
+    expect(lfLocalizationService.currentResource?.language).toEqual('fr');
+  });
+
+  it('getString should return key when no map has been specified', () => {
     // Arrange
     const stringKey: string = 'INVALID_FIELD_REQUIRED_FIELD_EMPTY';
     const expectedString: string = '<< INVALID_FIELD_REQUIRED_FIELD_EMPTY >>';
@@ -94,8 +105,9 @@ describe('LfLocalizationService', () => {
     const englishValue: string = 'This folder is empty.';
 
     // Act
+    lfLocalizationService.setLanguage('nonexist');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
-    lfLocalizationService.setLanguage('es');
+
     const localizedString = lfLocalizationService.getString(stringKey);
 
     // Assert
@@ -108,8 +120,8 @@ describe('LfLocalizationService', () => {
     const englishValue: string = 'default';
 
     // Act
-    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
     lfLocalizationService.setLanguage('zh-Hant');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
     const localizedString = lfLocalizationService.getString(stringKey);
 
     // Assert

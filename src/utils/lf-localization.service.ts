@@ -17,7 +17,7 @@ export class LfLocalizationService implements ILocalizationService {
 
   private readonly DEFAULT_LANGUAGE: string = 'en';
   private _currentResource?: resourceType;
-  private _resources: Map<string, object>;
+  private _resources?: Map<string, object>;
   private _selectedLanguage: string = this.DEFAULT_LANGUAGE;
 
   constructor(resources?: Map<string, object> | undefined) {
@@ -28,7 +28,7 @@ export class LfLocalizationService implements ILocalizationService {
       this._resources = resources;
     }
     else {
-      this._resources = new Map();
+      console.warn('Resource is not defined. Call initResourcesFromUrlAsync to load resources.')
     }
     try {
       this.setLanguage(window?.navigator?.language ?? this.DEFAULT_LANGUAGE);
@@ -97,7 +97,7 @@ export class LfLocalizationService implements ILocalizationService {
    */
   public getString(key: string, params?: string[]): string {
     if (!this._currentResource) {
-      console.warn('Current resource not found. Call setLanguage to set current language.');
+      console.warn('Current resource not found.');
       return `<< ${key} >>`;
     }
     let localizedString = this._currentResource?.resource[key];
@@ -110,6 +110,7 @@ export class LfLocalizationService implements ILocalizationService {
       }
       else {
         console.warn(`Resource '${key}' not found. Use initResourcesFromUrlAsync to load resource.`);
+        return `<< ${key} >>`;
       }
     }
     try {
@@ -133,7 +134,7 @@ export class LfLocalizationService implements ILocalizationService {
       throw new Error("HTTP error " + response.status);
     } else {
       const json = await response.json();
-      this._resources.set(code, json);
+      this._resources!.set(code, json);
       return json;
     }
   }
@@ -148,12 +149,13 @@ export class LfLocalizationService implements ILocalizationService {
   private setResourceWithFallBack(language: string): void {
     const setCurrentResourceSuccess = this.setLanguageResource(language);
     if (setCurrentResourceSuccess) return;
-    console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.`);
     const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
     if (languageWithoutDash != this._selectedLanguage) {
       const setCurrentResourceFallBackSuccess = this.setLanguageResource(languageWithoutDash);
       if (setCurrentResourceFallBackSuccess) return;
       this.setLanguageResource(this.DEFAULT_LANGUAGE);
+      console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.
+      Fall back to use default language ${this.DEFAULT_LANGUAGE}.`);
     }
   }
 
@@ -163,7 +165,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @returns true of _currentResource is set, false if language doesn't exist in _resource
    */
   private setLanguageResource(language: string): boolean {
-    const resource = this._resources.get(language);
+    const resource = this._resources?.get(language);
     if (resource) {
       this._currentResource = { language: language, resource: resource };
       return true;

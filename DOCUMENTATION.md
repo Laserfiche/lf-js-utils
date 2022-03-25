@@ -45,10 +45,10 @@ loading = localizationService.getString('LOADING');  // loading -> "Charger..."
 
 |Name | Description|
 |--|--|
-|constructor(resources?: Map<string, object>);       | Users can provide custom language resource, or use the provided language resources. |
+|constructor(resources?: Map<string, object>);       | Users can provide languages resources through a map in the constructor, or later with a url via initResourcesFromUrlAsync. |
 |setLanguage(language: string): void;        | Sets the default language. |
 |get currentResource(): resourceType | undefined;                | Gets the current selected language's resource mapping. |
-|getString(key: string, params?: string[]): string;  | Gets the translated key using the current selected language. |
+|getString(key: string, params?: string[]): string;  | Gets the translated key using the current selected language. Returns key if no resource is found in selected language or english. |
 |initResourcesFromUrlAsync(url: string): Promise<void>;  | Initializes the service with the selected language, given the url to a folder containing resources.
 
 #### Types
