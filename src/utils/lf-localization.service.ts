@@ -48,27 +48,56 @@ export class LfLocalizationService implements ILocalizationService {
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
     this._resources = new Map();
     url = this.formatUrl(url);
-    try {
-      await this.addResourceFromUrlAsync(`${url}${this.DEFAULT_LANGUAGE}.json`, this.DEFAULT_LANGUAGE);
-    }
-    catch {
-      throw new Error(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in URL.`);
-    }
+    await this.getDefaultLanguageResourceAsync(url);
+    await this.getSelectedLanguageResourceAsync(url);
+  }
+
+  /**
+   * Loads the selected langauge resource given the url pointing to the folder of the resource,
+   * if HTTP receives 404 error, loads the non-region-specific language resource,
+   * throws error
+   * @param url 
+   */
+  private async getSelectedLanguageResourceAsync(url: string) {
     try {
       await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
       this.setLanguageResource(this._selectedLanguage);
     }
-    catch {
-      const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
+    catch (e: any) {
+      if (e.name == '404') {
+        const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
         try {
           await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
           this.setLanguageResource(languageWithoutDash);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found in URL. Fall back to ${languageWithoutDash}.`);
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found. Fall back to ${languageWithoutDash}.`);
         }
         catch {
           this.setLanguageResource(this.DEFAULT_LANGUAGE);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found in URL.`);
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found.`);
         }
+      }
+      else {
+        throw e;
+      }
+    }
+  }
+
+  /**
+   * Loads the default langauge resource given the url pointing to the folder of the resource,
+   * throws error
+   * @param url 
+   */
+  private async getDefaultLanguageResourceAsync(url: string) {
+    try {
+      await this.addResourceFromUrlAsync(`${url}${this.DEFAULT_LANGUAGE}.json`, this.DEFAULT_LANGUAGE);
+    }
+    catch (e: any) {
+      if (e.name == '404') {
+        throw new Error(`Required language resource ${this.DEFAULT_LANGUAGE} is not found.`);
+      }
+      else {
+        throw e;
+      }
     }
   }
 
@@ -131,7 +160,10 @@ export class LfLocalizationService implements ILocalizationService {
   private async addResourceFromUrlAsync(url: string, code: string): Promise<Object> {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("HTTP error " + response.status);
+      let error = new Error();
+      error.message = `HTTP error ${response.status} at ${url}`;
+      error.name = `${response.status}`;
+      throw error;
     } else {
       const json = await response.json();
       this._resources!.set(code, json);
