@@ -30,7 +30,7 @@ describe('LfLocalizationService', () => {
     }).toThrow(error);
   });
 
-  it('setLanguage assigns default language to the default language English if specified does not exist', () => {
+  it('setLanguage assigns curretResource to the default language English if specified does not exist', () => {
     const resources = new Map([['test', { 'TEST_STRING': 'test string' }], ['en', { 'TEST_STRING': 'test string' }]]);
     lfLocalizationService = new LfLocalizationService(resources);
     lfLocalizationService.setLanguage('fr-CA');
@@ -67,7 +67,7 @@ describe('LfLocalizationService', () => {
     expect(lfLocalizationService.currentResource?.language).toEqual('en');
   });
 
-  it('calling setLanguage before calling initResourcesFromUrlAsync should not set specified language', async () => {
+  it('calling setLanguage before calling initResourcesFromUrlAsync should set specified language', async () => {
 
     lfLocalizationService.setLanguage('fr');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
@@ -143,7 +143,7 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual(englishValue);
   });
 
-  it('should return error', async () => {
+  it('initResourcesFromUrlAsync should return error when getting HTTP error', async () => {
     // Arrange
     const mockedResponse = new Response(null, {"status": 500});
     const globalFetch = global.fetch;
