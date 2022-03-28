@@ -21,6 +21,9 @@ let localizationService = new LfLocalizationService(new Map([
   }],
   ['ir', {
   "LOADING": "ag lódáil..."
+  }],
+  ['en', {
+  "LOADING": "loading..."
   }]
 ]));
 localizationService.setLanguage('ir');
@@ -28,7 +31,7 @@ loading = localizationService.getString('LOADING');  // loading -> "ag lódáil.
 
 // add external resource
 lfLocalizationService.setLanguage('fr');
-localizationService.initResourcesFromUrlAsync('https://cdn.jsdelivr.net/npm/@laserfiche/laserfiche-ui-components-core@2.0.2--preview-1984093174/dist/i18n');
+await localizationService.initResourcesFromUrlAsync('https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0--preview-2042216176/resources/laserfiche-base');
 loading = localizationService.getString('LOADING');  // loading -> "Charger..."
 ```
 
