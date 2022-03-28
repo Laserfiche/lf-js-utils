@@ -160,7 +160,7 @@ export class LfLocalizationService implements ILocalizationService {
   private async addResourceFromUrlAsync(url: string, code: string): Promise<Object> {
     const response = await fetch(url);
     if (!response.ok) {
-      let error = new Error();
+      const error = new Error();
       error.message = `HTTP error ${response.status} at ${url}`;
       error.name = `${response.status}`;
       throw error;

@@ -145,7 +145,7 @@ describe('LfLocalizationService', () => {
 
   it('should return error', async () => {
     // Arrange
-    let mockedResponse = new Response(null, {"status": 500});
+    const mockedResponse = new Response(null, {"status": 500});
     const globalFetch = global.fetch;
     global.fetch = jest.fn(() =>
     Promise.resolve(mockedResponse));
