@@ -143,7 +143,16 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual(englishValue);
   });
 
-  it('initResourcesFromUrlAsync should return error when getting HTTP error', async () => {
+  it('initResourcesFromUrlAsync should return error when getting default language returns HTTP error 404', async () => {
+    // Arrange
+
+    const error = new Error();
+    error.message = 'Required language resource en is not found.';
+
+    await expect(lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)).rejects.toThrow(error);
+  })  
+  
+  it('initResourcesFromUrlAsync should return error when getting HTTP error other than 404', async () => {
     // Arrange
     const mockedResponse = new Response(null, {"status": 500});
     const globalFetch = global.fetch;
@@ -298,7 +307,7 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual('test res');
   });
 
-  it('should be able to set custom json, fr-CA will default to fr if no fr-CA', () => {
+  it('should be able to set custom json, fr-CA will default to fr if fr-CA does not exist', () => {
     const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['fr', { "TEST_STRING": "french test" }]]);
     lfLocalizationService = new LfLocalizationService(resources);
 

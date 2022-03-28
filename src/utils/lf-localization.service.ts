@@ -65,7 +65,7 @@ export class LfLocalizationService implements ILocalizationService {
   /**
    * Loads the selected langauge resource given the url pointing to the folder of the resource,
    * if HTTP receives 404 error, loads the non-region-specific language resource,
-   * throws error
+   * throws error otherwise
    * @param url 
    */
   private async getSelectedLanguageResourceAsync(url: string) {
@@ -94,7 +94,7 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Loads the default langauge resource given the url pointing to the folder of the resource,
-   * throws error
+   * throws error if resource not found
    * @param url 
    */
   private async getDefaultLanguageResourceAsync(url: string) {
@@ -206,7 +206,7 @@ export class LfLocalizationService implements ILocalizationService {
   /**
    * Sets _currentResource based on given language
    * @param language 
-   * @returns true of _currentResource is set, false if language doesn't exist in _resource
+   * @returns true if _currentResource is set, false if language doesn't exist in _resource
    */
   private setLanguageResource(language: string): boolean {
     const resource = this._resources?.get(language);
