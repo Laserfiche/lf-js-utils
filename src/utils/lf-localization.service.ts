@@ -38,7 +38,7 @@ export class LfLocalizationService implements ILocalizationService {
       this._resources = resources;
     }
     else {
-      console.warn('Resource is not defined. Call initResourcesFromUrlAsync to load resources.')
+      console.log('No static resources provided. Call initResourcesFromUrlAsync to load resources dynamically.')
     }
     try {
       this.setLanguage(window?.navigator?.language ?? this.DEFAULT_LANGUAGE);
@@ -57,7 +57,8 @@ export class LfLocalizationService implements ILocalizationService {
    */
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
     this._resources = new Map();
-    url = this.formatUrl(url);
+    this._currentResource = undefined;
+    url = this.terminateUrlWithSlash(url);
     await this.getDefaultLanguageResourceAsync(url);
     await this.getSelectedLanguageResourceAsync(url);
   }
@@ -72,6 +73,7 @@ export class LfLocalizationService implements ILocalizationService {
     try {
       await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
       this.setLanguageResource(this._selectedLanguage);
+      console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
     }
     catch (e: any) {
       if (e.code == '404') {
@@ -79,15 +81,15 @@ export class LfLocalizationService implements ILocalizationService {
         try {
           await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
           this.setLanguageResource(languageWithoutDash);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found. Fall back to ${languageWithoutDash}.`);
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
         }
         catch {
           this.setLanguageResource(this.DEFAULT_LANGUAGE);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found.`);
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
         }
       }
       else {
-        throw e;
+        console.error(e);
       }
     }
   }
@@ -103,7 +105,7 @@ export class LfLocalizationService implements ILocalizationService {
     }
     catch (e: any) {
       if (e.code == '404') {
-        throw new ResourceNotFoundError(`Required language resource ${this.DEFAULT_LANGUAGE} is not found.`);
+        throw new ResourceNotFoundError(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in ${url}${this.DEFAULT_LANGUAGE}.json.`);
       }
       else {
         throw e;
@@ -199,6 +201,7 @@ export class LfLocalizationService implements ILocalizationService {
       }
       else {
         console.warn('Resource is not found. Cannot set currentResource.');
+        this._currentResource = undefined;
       }
     }
   }
@@ -222,7 +225,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @param url 
    * @returns path with '/'
    */
-   private formatUrl(url: string) {
+   private terminateUrlWithSlash(url: string) {
     if (!url.endsWith('\/')) {
       url = url.concat('\/');
     }

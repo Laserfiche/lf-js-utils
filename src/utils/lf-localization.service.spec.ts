@@ -7,15 +7,14 @@ describe('LfLocalizationService', () => {
   // TODO: load from lf-resource-library
   const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0--preview-2042216176/resources/laserfiche-base';
 
-  beforeEach(() => {
-    lfLocalizationService = new LfLocalizationService();
-  });
 
   it('currentResource is undefined if language file does not exist in constructor and is not provided with initResourcesFromUrlAsync', () => {
+    lfLocalizationService = new LfLocalizationService();
     expect(lfLocalizationService.currentResource).toEqual(undefined);
   });
 
   it('setLanguage does not set currentResource if no resources were passed in constructor and initResourcesFromUrlAsync has not been called', () => {
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.setLanguage('fr-CA');
 
     expect(lfLocalizationService.currentResource).toEqual(undefined);
@@ -39,6 +38,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('setLanguage assigns specified language if specified exist', async () => {
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.setLanguage('fr');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
@@ -46,6 +46,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('setLanguage assigns default language if specified does not exist, but default exist', async () => {
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.setLanguage('nonexistent');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
@@ -53,6 +54,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('setLanguage assigns language without area code if specified does not exist, but language without area code exists', async () => {
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.setLanguage('fr-CA');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
@@ -60,7 +62,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('calling setLanguage after calling initResourcesFromUrlAsync should not set specified language', async () => {
-
+    lfLocalizationService = new LfLocalizationService();
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
     lfLocalizationService.setLanguage('fr');
 
@@ -68,7 +70,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('calling setLanguage before calling initResourcesFromUrlAsync should set specified language', async () => {
-
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.setLanguage('fr');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
@@ -77,6 +79,7 @@ describe('LfLocalizationService', () => {
 
   it('getString should return key when no map has been specified', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringKey: string = 'INVALID_FIELD_REQUIRED_FIELD_EMPTY';
     const expectedString: string = '<< INVALID_FIELD_REQUIRED_FIELD_EMPTY >>';
 
@@ -86,6 +89,7 @@ describe('LfLocalizationService', () => {
 
   it('getString gets Spanish when spanish is specified', async () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringKey: string = 'EMPTY_FILE_EXPLORER';
     const spanishValue: string = 'Esta carpeta está vacía.';
 
@@ -98,8 +102,24 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual(spanishValue);
   });
 
-  it('getString gets english when selected language does not exist', async () => {
+  it(`getString gets pt-BR when pt-BR is specified`, async () => {
+   // Arrange
+   lfLocalizationService = new LfLocalizationService();
+   const stringKey: string = 'EMPTY_FILE_EXPLORER';
+   const spanishValue: string = 'Esta pasta está vazia.';
+
+   // Act
+   lfLocalizationService.setLanguage('pt-BR');
+   await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+   const localizedString = lfLocalizationService.getString(stringKey);
+
+   // Assert
+   expect(localizedString).toEqual(spanishValue);
+ });
+ 
+ it('getString gets english when selected language does not exist', async () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringKey: string = 'EMPTY_FILE_EXPLORER';
     const englishValue: string = 'This folder is empty.';
 
@@ -116,6 +136,7 @@ describe('LfLocalizationService', () => {
   it(`getString gets english when selected language map exists,
    but string does not exist in selected language but in default language`, async () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringKey: string = 'DEFAULT';
     const englishValue: string = 'Default';
 
@@ -131,8 +152,9 @@ describe('LfLocalizationService', () => {
   it(`getString should return key when selected language map exists,
    but string does not exist in neither selected language or default language`, async () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringKey: string = 'NON_EXISTENT_STRING';
-    const englishValue: string = '<< NON_EXISTENT_STRING >>';
+    const notFoundValue: string = '<< NON_EXISTENT_STRING >>';
 
     // Act
     lfLocalizationService.setLanguage('zh-Hant');
@@ -140,20 +162,21 @@ describe('LfLocalizationService', () => {
     const localizedString = lfLocalizationService.getString(stringKey);
 
     // Assert
-    expect(localizedString).toEqual(englishValue);
+    expect(localizedString).toEqual(notFoundValue);
   });
 
   it('initResourcesFromUrlAsync should return error when getting default language returns HTTP error 404', async () => {
     // Arrange
-
+    lfLocalizationService = new LfLocalizationService();
     const error = new Error();
-    error.message = 'Required language resource en is not found.';
+    error.message = `Required language resource en is not found in ${resourcesFolder}nonexistent/en.json.`;
 
     await expect(lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)).rejects.toThrow(error);
   })  
   
   it('initResourcesFromUrlAsync should return error when getting HTTP error other than 404', async () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const mockedResponse = new Response(null, {"status": 500});
     const globalFetch = global.fetch;
     global.fetch = jest.fn(() =>
@@ -168,6 +191,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should not replace variables if there are no variables or params', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWithNoParams: string = 'Hi there';
     const params = undefined;
 
@@ -181,6 +205,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should throw if there are no variables to replace', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWithNoParams: string = 'Hi there';
     const params = ['One', 'Two'];
     const error = 'Expected 0 arguments. Actual arguments: 2';
@@ -193,6 +218,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should format string with 1 variable', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWith1Param: string = 'Hi there ${0}';
     const params = ['Patrick'];
 
@@ -207,6 +233,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should format string with 3 variables', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWith3Params: string = 'Hi there ${0} ${2} ${1}';
     const params = ['Patrick', 'Spongebob', 'Sandy'];
 
@@ -221,6 +248,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should throw error if there are too many params', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWith2Params: string = 'Hi there ${0} ${1}';
     const params = ['Patrick', 'Spongebob', 'Sandy'];
     const error = 'Expected 2 arguments. Actual arguments: 3';
@@ -233,6 +261,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should throw error if there are too few params', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWith3Params: string = 'Hi there ${0} ${2} ${1}';
     const params = ['Patrick', 'Spongebob'];
     const error = 'Expected 3 arguments. Actual arguments: 2';
@@ -245,6 +274,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should work for strings with 10+ variables', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWith10PlusParams: string = 'Hi there ${0} ${1} ${2} ${3} ${4} ${5} ${6} ${7} ${8} ${9} ${10} ${11}';
     const params = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'];
 
@@ -259,6 +289,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should work for strings with variables that appear twice', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWithRepeatedParams: string = 'Hi there ${0} ${1} ${0}';
     const params = ['zero', 'one'];
 
@@ -273,6 +304,7 @@ describe('LfLocalizationService', () => {
 
   it('formatString should throw error if variables are repeated, and there are too many params', () => {
     // Arrange
+    lfLocalizationService = new LfLocalizationService();
     const stringWithRepeatedParams: string = 'Hi there ${0} ${1} ${0}';
     const params = ['zero', 'one', 'zero'];
     const error = 'Expected 2 arguments. Actual arguments: 3';
@@ -348,6 +380,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('should create pseudo language in debug mode for english', async () => {
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.debugMode = true;
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
@@ -355,6 +388,7 @@ describe('LfLocalizationService', () => {
   });
 
   it('should create pseudo language in debug mode for spanish', async () => {
+    lfLocalizationService = new LfLocalizationService();
     lfLocalizationService.debugMode = true;
     lfLocalizationService.setLanguage('es');
 
