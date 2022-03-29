@@ -4,8 +4,7 @@ require('isomorphic-fetch');
 describe('LfLocalizationService', () => {
   let lfLocalizationService: LfLocalizationService;
 
-  // TODO: load from lf-resource-library
-  const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0--preview-2042216176/resources/laserfiche-base';
+  const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/laserfiche-base';
 
 
   it('currentResource is undefined if language file does not exist in constructor and is not provided with initResourcesFromUrlAsync', () => {
@@ -127,22 +126,6 @@ describe('LfLocalizationService', () => {
     lfLocalizationService.setLanguage('nonexistent');
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-    const localizedString = lfLocalizationService.getString(stringKey);
-
-    // Assert
-    expect(localizedString).toEqual(englishValue);
-  });
-
-  it(`getString gets english when selected language map exists,
-   but string does not exist in selected language but in default language`, async () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringKey: string = 'DEFAULT';
-    const englishValue: string = 'Default';
-
-    // Act
-    lfLocalizationService.setLanguage('zh-Hant');
-    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
     const localizedString = lfLocalizationService.getString(stringKey);
 
     // Assert
