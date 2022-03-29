@@ -81,8 +81,7 @@ export class LfLocalizationService implements ILocalizationService {
         try {
           await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
           this.setLanguageResource(languageWithoutDash);
-          console.log(`Loaded resource from ${url}${languageWithoutDash}.json.`);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.. Fall back to ${languageWithoutDash}.`);
+          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
         }
         catch {
           this.setLanguageResource(this.DEFAULT_LANGUAGE);
