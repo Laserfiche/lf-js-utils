@@ -1,14 +1,14 @@
 /**
- * Returns the url to an svg icon from https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg.
+ * Returns the url to an svg icon from https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/icons/document-icons.svg.
  * @param iconId 
  * @returns the url
  */
  export function getDocumentIconUrlFromIconId(iconId: string): string {
-    return `https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg#${iconId}`; // TODO: get from lf-resource-library
+    return `https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/icons/document-icons.svg#${iconId}`;
 }
 
 /**
- * Returns the icon id given a file extension from https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg.
+ * Returns the icon id given a file extension from https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/icons/document-icons.svg.
  * @param ext 
  * @returns icon id
  */
