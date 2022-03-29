@@ -50,12 +50,20 @@ function replaceCharacterClasses(constraint: string): string {
 }
 
 /**
- * Given a string representing a laserfiche text constraint, returns the corresponding regex
- * @param textConstraint // e.g. 'Phone Number'. Please reference the laserfiche documentation
+ * Given a string representing a laserfiche text constraint, returns the corresponding regex as string
+ * @param textConstraint // e.g. '\[\[:alnum:\]\]\[\[:alnum:\]\]\[\[:alnum:\]\]'. Please reference the laserfiche documentation
  * for more information:
- * https://www.laserfiche.com/support/webhelp/Laserfiche/10/en-US/administration/#../Subsystems/
- * LFAdmin/Content/Restricting_Field_Data_to_a_Specific_Format.htm?Highlight=constraintformat
+ * https://www.laserfiche.com/support/webhelp/Laserfiche/10/en-US/administration/#../Subsystems/LFAdmin/Content/Restricting_Field_Data_to_a_Specific_Format.htm?Highlight=constraintformat
  * @returns the corresponding regex
+ * @example
+ * ```typescript
+ * const newContraint = formatTextConstraint('\[\[:alnum:\]\]\[\[:alnum:\]\]\[\[:alnum:\]\]'); 
+ * // newContraint -> ^\[0-9A-Za-z\]\[0-9A-Za-z\]\[0-9A-Za-z\]\$
+ * const regex = new RegExp(newContraint);
+ * regex.test('ab1'); // true
+ * regex.test('a'); // false
+ * ```
+ * 
  */
 export function formatTextConstraint(textConstraint: string): string {
     const constraintWithReplacedCharClasses: string = replaceCharacterClasses(textConstraint);

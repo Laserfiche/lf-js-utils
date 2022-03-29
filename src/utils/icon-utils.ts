@@ -1,7 +1,11 @@
 /**
  * Returns the url to an svg icon from https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg.
- * @param iconId 
+ * @param iconId e.g. edoc-code-20
  * @returns the url
+ * @example
+ * ```typescript
+ * getDocumentIconUrlFromIconId('edoc-code-20'); // 'https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg#edoc-code-20'
+ * ```
  */
  export function getDocumentIconUrlFromIconId(iconId: string): string {
     return `https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg#${iconId}`; // TODO: get from lf-resource-library
@@ -11,6 +15,10 @@
  * Returns the icon id given a file extension from https://lfxstatic.com/Site/laserfiche-ui-components/3.0/lf_addin_icons.svg.
  * @param ext 
  * @returns icon id
+ * @example
+ * ```typescript
+ * getDocumentIconIdFromExtension('html'); // 'edoc-code-20'
+ * ```
  */
 export function getDocumentIconIdFromExtension(ext: string | undefined): string {
     const suffix: string = '-20';

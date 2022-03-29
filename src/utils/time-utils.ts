@@ -2,6 +2,10 @@
  * Creates a Promise that completes after the specified number of miliseconds
  * @param timeMs 
  * @returns 
+ * @example
+ * ```typescript
+ * await sleepAsync(3000); // returns in 3 seconds
+ * ```
  */
 export function sleepAsync(timeMs: number): Promise<void> {
   const promise = new Promise<void>((resolve) => {
@@ -16,6 +20,15 @@ export function sleepAsync(timeMs: number): Promise<void> {
  * @param timeoutFunc the function called after a timeout
  * @param timeoutMs miliseconds to wait for the test function to return true before timing out
  * @returns 
+ * @example
+ * ```typescript
+ * let test = 1;
+ * const trueFunc = () => {test == 1}
+ * const falseFunc = () => {test == 2}
+ * const timeoutFunc = () => {console.warn('timeout!')}
+ * waitForConditionAsync(trueFunc, timeoutFunc, 3000); // returns right away
+ * waitForConditionAsync(falseFunc, timeoutFunc, 3000); // returns in 0.05s
+ * ```
  */
 export async function waitForConditionAsync(func: () => boolean, timeoutFunc: () => void, timeoutMs: number = 2000): Promise<void> {
   const startTime = new Date().getTime();
