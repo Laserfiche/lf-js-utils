@@ -2,7 +2,7 @@ export type resourceType = { language: string, resource: object };
 
 export interface ILocalizationService {
   setLanguage(language: string): void;
-  get currentResource(): resourceType | undefined;
+  currentResource: resourceType | undefined;
   getString(key: string, params?: string[]): string;
   initResourcesFromUrlAsync(url: string): Promise<void>;
   debugMode: boolean;
