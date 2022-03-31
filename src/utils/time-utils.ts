@@ -45,6 +45,11 @@ export async function waitForConditionAsync(func: () => boolean, timeoutFunc: ()
 
 /**
  * Asynchronous method to force the method to complete asynchronously
+ * @example
+ * ```typescript
+ * this.isLoading = true;
+ * await yieldAsync();  // makes sure this.isLoading is true, and the subsequence call is based on this.isLoading being true
+ * ```
  */
  export function yieldAsync(): Promise<void> {
   const promise = new Promise<void>((resolve) => {
