@@ -2,7 +2,7 @@ export type resourceType = { language: string, resource: object };
 
 export interface ILocalizationService {
   setLanguage(language: string): void;
-  get currentResource(): resourceType | undefined;
+  currentResource: resourceType | undefined;
   getString(key: string, params?: string[]): string;
   initResourcesFromUrlAsync(url: string): Promise<void>;
   debugMode: boolean;
@@ -70,28 +70,33 @@ export class LfLocalizationService implements ILocalizationService {
    * @param url 
    */
   private async getSelectedLanguageResourceAsync(url: string) {
-    try {
-      await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
-      this.setLanguageResource(this._selectedLanguage);
-      console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
-    }
-    catch (e: any) {
-      if (e.code == '404') {
-        const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-        try {
-          await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
-          this.setLanguageResource(languageWithoutDash);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
+    if (!this.setLanguageResource(this._selectedLanguage)) {
+      try {
+        await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
+        this.setLanguageResource(this._selectedLanguage);
+        console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
+      }
+      catch (e: any) {
+        if (e.code == '404') {
+          const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
+          if (!this.setLanguageResource(languageWithoutDash)) {
+            try {
+              await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
+              this.setLanguageResource(languageWithoutDash);
+              console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
+            }
+            catch {
+              this.setLanguageResource(this.DEFAULT_LANGUAGE);
+              console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
+            }
+          }
         }
-        catch {
-          this.setLanguageResource(this.DEFAULT_LANGUAGE);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
+        else {
+          console.error(e);
         }
       }
-      else {
-        console.error(e);
-      }
     }
+
   }
 
   /**
