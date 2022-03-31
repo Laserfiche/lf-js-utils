@@ -78,14 +78,16 @@ export class LfLocalizationService implements ILocalizationService {
     catch (e: any) {
       if (e.code == '404') {
         const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-        try {
-          await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
-          this.setLanguageResource(languageWithoutDash);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
-        }
-        catch {
-          this.setLanguageResource(this.DEFAULT_LANGUAGE);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
+        if (!this.setLanguageResource(languageWithoutDash)) {
+          try {
+            await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
+            this.setLanguageResource(languageWithoutDash);
+            console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
+          }
+          catch {
+            this.setLanguageResource(this.DEFAULT_LANGUAGE);
+            console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
+          }
         }
       }
       else {
