@@ -59,18 +59,18 @@ jobs:
       - name: Npm run test
         run: npm run test:ci
 
-      # - name: Publish Unit Test Results
-      #   uses: EnricoMi/publish-unit-test-result-action@v1
-      #   with:
-      #     files: "junit.xml"
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
         with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: ./*.xml               # Path to test results
-          reporter: jest-junit        # Format of test results
+          files: "junit.xml"
+
+      # - name: Test Report
+      #   uses: dorny/test-reporter@v1
+      #   if: success() || failure()    # run this step even if previous step failed
+      #   with:
+      #     name: JEST Tests            # Name of the check run which will be created
+      #     path: ./*.xml               # Path to test results
+      #     reporter: jest-junit        # Format of test results
 
       - name: Npm run build
         run: npm run build
