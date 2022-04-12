@@ -59,10 +59,10 @@ jobs:
       - name: Npm run test
         run: npm run test:ci
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: "junit.xml"
+      # - name: Publish Unit Test Results
+      #   uses: EnricoMi/publish-unit-test-result-action@v1
+      #   with:
+      #     files: "junit.xml"
 
       - name: Test Report
         uses: dorny/test-reporter@v1
