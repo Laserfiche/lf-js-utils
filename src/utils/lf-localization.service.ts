@@ -24,6 +24,7 @@ export class LfLocalizationService implements ILocalizationService {
    * When true, returns pseudo language string. Defaults to false.
    */
   public debugMode: boolean = false;
+  // test change - do not merge
 
   private readonly DEFAULT_LANGUAGE: string = 'en';
   private _currentResource?: resourceType;
