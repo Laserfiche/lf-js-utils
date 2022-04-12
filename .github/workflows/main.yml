@@ -66,6 +66,7 @@ jobs:
           name: JEST Tests            # Name of the check run which will be created
           path: ./*.xml               # Path to test results
           reporter: jest-junit        # Format of test results
+          only-summary: 'true'
 
       - name: Npm run build
         run: npm run build
