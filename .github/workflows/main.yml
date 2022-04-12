@@ -64,6 +64,7 @@ jobs:
         if: always()
         with:
           files: "junit.xml"
+          report_individual_runs: "true"
 
       - name: Npm run build
         run: npm run build
