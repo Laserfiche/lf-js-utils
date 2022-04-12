@@ -63,7 +63,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
         with:
-          name: JEST Test
+          name: Jest Test Results
           path: ./*.xml
           reporter: jest-junit
           only-summary: 'true'
