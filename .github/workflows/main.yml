@@ -2,9 +2,9 @@ name: lf-js-utils-CI
 
 on:
   push:
-    branches: [ "\d+.x" ]
+    branches: [ '\d+.x' ]
   pull_request:
-    branches: [ "\d+.x" ]
+    branches: [ '\d+.x' ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
