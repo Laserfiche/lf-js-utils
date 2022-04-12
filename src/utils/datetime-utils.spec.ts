@@ -36,7 +36,7 @@ describe('DatetimeUtils', () => {
     const datetimeNoOffset: Date = new Date(originalDatetimeString);
 
     const serializedDatetime: string | undefined = DatetimeUtils.serializeDateValue(datetimeNoOffset);
-    expect(serializedDatetime).toEqual('2021-0');
+    expect(serializedDatetime).toEqual('2021-03-25T01:00:00');
   });
 
   it('should serialize a date with an offset and remove the offset', () => {
