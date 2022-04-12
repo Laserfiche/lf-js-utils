@@ -4,7 +4,6 @@ require('isomorphic-fetch');
 describe('LfLocalizationService', () => {
   let lfLocalizationService: LfLocalizationService;
 
-  // TODO: load from lf-resource-library
   const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/laserfiche-base';
 
 
@@ -203,7 +202,7 @@ describe('LfLocalizationService', () => {
   it('formatString should format string with 1 variable', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWith1Param: string = 'Hi there ${0}';
+    const stringWith1Param: string = 'Hi there {0}';
     const params = ['Patrick'];
 
     // Act
@@ -215,10 +214,24 @@ describe('LfLocalizationService', () => {
     expect(formattedString).toEqual(expectedFormattedString);
   });
 
+  it('formatString should format string with {} with text inside instead of number', () => {
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
+    const stringWith1Param: string = 'Hi there {test}';
+
+    // Act
+    //@ts-ignore
+    const formattedString: string = lfLocalizationService.formatString(stringWith1Param);
+
+    // Assert
+    const expectedFormattedString: string = 'Hi there {test}';
+    expect(formattedString).toEqual(expectedFormattedString);
+  });
+
   it('formatString should format string with 3 variables', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWith3Params: string = 'Hi there ${0} ${2} ${1}';
+    const stringWith3Params: string = 'Hi there {0} {2} {1}';
     const params = ['Patrick', 'Spongebob', 'Sandy'];
 
     // Act
@@ -233,7 +246,7 @@ describe('LfLocalizationService', () => {
   it('formatString should throw error if there are too many params', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWith2Params: string = 'Hi there ${0} ${1}';
+    const stringWith2Params: string = 'Hi there {0} {1}';
     const params = ['Patrick', 'Spongebob', 'Sandy'];
     const error = 'Expected 2 arguments. Actual arguments: 3';
 
@@ -246,7 +259,7 @@ describe('LfLocalizationService', () => {
   it('formatString should throw error if there are too few params', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWith3Params: string = 'Hi there ${0} ${2} ${1}';
+    const stringWith3Params: string = 'Hi there {0} {2} {1}';
     const params = ['Patrick', 'Spongebob'];
     const error = 'Expected 3 arguments. Actual arguments: 2';
 
@@ -259,7 +272,7 @@ describe('LfLocalizationService', () => {
   it('formatString should work for strings with 10+ variables', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWith10PlusParams: string = 'Hi there ${0} ${1} ${2} ${3} ${4} ${5} ${6} ${7} ${8} ${9} ${10} ${11}';
+    const stringWith10PlusParams: string = 'Hi there {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}';
     const params = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'];
 
     // Act
@@ -274,7 +287,7 @@ describe('LfLocalizationService', () => {
   it('formatString should work for strings with variables that appear twice', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWithRepeatedParams: string = 'Hi there ${0} ${1} ${0}';
+    const stringWithRepeatedParams: string = 'Hi there {0} {1} {0}';
     const params = ['zero', 'one'];
 
     // Act
@@ -286,10 +299,25 @@ describe('LfLocalizationService', () => {
     expect(formattedString).toEqual(expectedFormattedString);
   });
 
+  it('formatString should work for strings with variables that appear twice and have multiple brackets', () => {
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
+    const stringWithRepeatedParams: string = 'Hi there {{{0} {1} {0}}}';
+    const params = ['zero', 'one'];
+
+    // Act
+    //@ts-ignore
+    const formattedString: string = lfLocalizationService.formatString(stringWithRepeatedParams, params);
+
+    // Assert
+    const expectedFormattedString: string = 'Hi there {{zero one zero}}';
+    expect(formattedString).toEqual(expectedFormattedString);
+  });
+
   it('formatString should throw error if variables are repeated, and there are too many params', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringWithRepeatedParams: string = 'Hi there ${0} ${1} ${0}';
+    const stringWithRepeatedParams: string = 'Hi there {0} {1} {0}';
     const params = ['zero', 'one', 'zero'];
     const error = 'Expected 2 arguments. Actual arguments: 3';
 
