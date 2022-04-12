@@ -65,6 +65,7 @@ jobs:
         with:
           files: "junit.xml"
           report_individual_runs: "true"
+          check_run_annotations_branch: "*"
 
       - name: Npm run build
         run: npm run build
