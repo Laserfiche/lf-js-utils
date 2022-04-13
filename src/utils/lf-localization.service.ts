@@ -87,7 +87,7 @@ export class LfLocalizationService implements ILocalizationService {
    * const localizationService = new LfLocalizationService();
    * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/laserfiche-base';
    * localizationService.setLanguage('fr-CA');
-   * localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json
+   * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json
    * ```
    */
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
