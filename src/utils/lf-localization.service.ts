@@ -85,7 +85,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@1.0.0/resources/laserfiche-base';
+   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/laserfiche-base';
    * localizationService.setLanguage('fr-CA');
    * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json
    * ```
@@ -158,8 +158,13 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * localizationService.setLanguage('fr-CA');  // gives a warning since no resource exists
-   * 
+   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/laserfiche-base';
+   * localizationService.setLanguage('fr-CA');  // gives a warning since no resource exists at this point
+   * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json because language has been set to be fr-CA
+   * localizationService.currentLanguage // {'language': 'fr', 'resource': { ... }}
+   * ```
+   * @example
+   * ```typescript
    * const resource = new Map([
    *  ['jp', { "LOADING": "読み込み中..." }],
    *  ['ir', { "LOADING": "ag lódáil..." }], 
