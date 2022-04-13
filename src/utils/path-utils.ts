@@ -2,6 +2,12 @@
  * Returns the last past segment for a '\' delimited string
  * @param path to a folder or a file
  * @returns the last segment
+ * @example
+ * ```typescript
+ * getLastPathSegment('\\hello\\world\\'); // 'world'
+ * getLastPathSegment('\\hello\\'); // 'hello'
+ * getLastPathSegment('\\hello\\\\'); // ''
+ * ```
  */
 export function getLastPathSegment(path: string): string {
   if (path.endsWith('\\') && path.length > 0) {
@@ -16,6 +22,12 @@ export function getLastPathSegment(path: string): string {
  * Replaces '\' with '_' or 'File Name' if empty
  * @param fileName 
  * @returns sanitized file name supported by laserfiche repository
+ * @example
+ * ```typescript
+ * sanitizeFileName(' | \\ trimBetweenSpecial \\ | '); // '| _ trimBetweenSpecial _ |'
+ * sanitizeFileName('fake/folder/name\\'); // 'fake/folder/name_'
+ * sanitizeFileName('  '); // 'File Name'
+ * ```
  */
 export function sanitizeFileName(fileName: string): string {
   fileName = fileName.replace(/\\/g, '_');
@@ -30,6 +42,12 @@ export function sanitizeFileName(fileName: string): string {
  * Removes the file extension if exists
  * @param fileName 
  * @returns file name without extension
+ * @example
+ * ```typescript
+ * removeFileExtension('test.ext'); // test
+ * removeFileExtension('test.ext.doc'); // test.ext
+ * removeFileExtension('test'); // test
+ * ```
  */
 export function removeFileExtension(fileName: string): string {
   if (fileName.includes('.')) {
@@ -46,6 +64,12 @@ export function removeFileExtension(fileName: string): string {
  * Returns the file extension of a file, or undefined
  * @param fileName 
  * @returns the file extension, or undefined
+ * @example
+ * ```typescript
+ * getFileExtension('test.ext'); // 'ext'
+ * getFileExtension('test.doc.ext'); // 'ext'
+ * getFileExtension('test'); // undefined
+ * ```
  */
 export function getFileExtension(fileName: string): string | undefined {
   if (fileName.includes('.')) {
@@ -61,6 +85,11 @@ export function getFileExtension(fileName: string): string | undefined {
  * @param path1 
  * @param path2 
  * @returns the concatenated file path
+ * @example
+ * ```typescript
+ * combinePaths('end with slash\\', '\\start with slash'); // '\end with slash\start with slash\'
+ * combinePaths('test path', 'test\\path'); // '\test path\test\path\'
+ * ```
  */
 export function combinePaths(path1: string, path2: string): string {
   let combinedPath: string;
@@ -80,6 +109,14 @@ export function combinePaths(path1: string, path2: string): string {
  * Prepends a dot to file extension if dot doesn't exist
  * @param extension 
  * @returns file extension with a dot
+ * @example
+ * ```typescript
+ * getCleanedExtension(''); // undefined
+ * getCleanedExtension('a'); // '.a'
+ * getCleanedExtension('.a'); // '.a'
+ * getCleanedExtension('a.b'); // '.a.b'
+ * getCleanedExtension('.a.b'); // '.a.b'
+ * ```
  */
 export function getCleanedExtension(extension: string | undefined): string | undefined {
   if (extension) {
@@ -94,6 +131,14 @@ export function getCleanedExtension(extension: string | undefined): string | und
  * Returns the path segments as an array
  * @param path 
  * @returns the path segments
+ * @example
+ * ```typescript
+ * getListOfFolderNames('\\'); // []
+ * getListOfFolderNames(''); // []
+ * getListOfFolderNames('\\hello'); // ['hello']
+ * getListOfFolderNames('\\hello\\world'); // ['hello', 'world']
+ * getListOfFolderNames('\\hello\\world\\'); // ['hello', 'world']
+ * ```
  */
 export function getListOfFolderNames(path: string): string[] {
   const pathWithAllBackslashes: string = createDisplayPath(path);
@@ -106,6 +151,15 @@ export function getListOfFolderNames(path: string): string[] {
  * Ensures the path starts and ends with '\'
  * @param path 
  * @returns path with '\'
+ * @example
+ * ```typescript
+ * createDisplayPath('\\'); // '\'
+ * createDisplayPath('hi'); // '\hi\'
+ * createDisplayPath('hi\\'); // '\hi\'
+ * createDisplayPath('hi\\world'); // '\hi\world\'
+ * 
+ * 
+ * ```
  */
 export function createDisplayPath(path: string): string {
   let newPath: string = path;

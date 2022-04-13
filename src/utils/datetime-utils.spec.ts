@@ -57,6 +57,18 @@ describe('DatetimeUtils', () => {
     expect(serializedDatetime).toEqual('2021-03-25T01:00:00');
   });
 
+  it('isValidDate should returns true if date is valid', () => {
+    const datetimeString: string = '2021-03-25T01:00:00';
+    const datetime: Date = new Date(datetimeString);
+    expect(DatetimeUtils.isValidDate(datetime)).toBeTruthy();
+  });
+
+  it('isValidDate should returns false if date is not valid', () => {
+    const datetimeString: string = '2021-03-25T26:00:72';
+    const datetime: Date = new Date(datetimeString);
+    expect(DatetimeUtils.isValidDate(datetime)).toBeFalsy();
+  })
+
 });
 
 /**

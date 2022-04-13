@@ -9,7 +9,7 @@ export interface ILocalizationService {
 }
 
 class ResourceNotFoundError extends Error {
-  constructor( message: string, code?: number) {
+  constructor(message: string, code?: number) {
     super(message);
     const status = code?.toString() || '404';
     this.name = `ResourceNotFoundError`;
@@ -22,6 +22,17 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * When true, returns pseudo language string. Defaults to false.
+   * @example
+   * ```typescript
+   * const resource = new Map([
+   *  ['jp', { "LOADING": "読み込み中..." }],
+   *  ['ir', { "LOADING": "ag lódáil..." }], 
+   *  ['en', { "LOADING": "Loading..." }]
+   * ]);
+   * localizationService = new LfLocalizationService(resource);
+   * localizationService.debugMode = true;
+   * localizationService.getString('LOADING'); // '_ŀǿȧḓīƞɠ..._'
+   * ```
    */
   public debugMode: boolean = false;
 
@@ -30,6 +41,23 @@ export class LfLocalizationService implements ILocalizationService {
   private _resources?: Map<string, object>;
   private _selectedLanguage: string = this.DEFAULT_LANGUAGE;
 
+  /**
+ * 
+ * @example
+ * ```typescript
+ * const resource = new Map([
+ *  ['jp', { "LOADING": "読み込み中..." }],
+ *  ['ir', { "LOADING": "ag lódáil..." }], 
+ *  ['en', { "LOADING": "Loading..." }]  // have to provide 'en' in map
+ * ]);
+ * const localizationService = new LfLocalizationService(resource);
+ * 
+ * // or
+ * 
+ * const localizationService = new LfLocalizationService();
+ * // have to call initResourcesFromUrlAsync later to load resources dynamically
+ * ```
+ */
   constructor(resources?: Map<string, object> | undefined) {
     if (resources) {
       if (!resources.get(this.DEFAULT_LANGUAGE)) {
@@ -54,6 +82,13 @@ export class LfLocalizationService implements ILocalizationService {
    * (e.g.: if selected language is fr-CA, and fr-CA doesn't exists but fr exists, it loads fr)
    *  
    * @param url the url to the language file's folder
+   * @example
+   * ```typescript
+   * const localizationService = new LfLocalizationService();
+   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/laserfiche-base';
+   * localizationService.setLanguage('fr-CA');
+   * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json
+   * ```
    */
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
     this._resources = new Map();
@@ -120,6 +155,25 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Sets currentResource given the language code, fall back to available resource if necessary.
+   * @example
+   * ```typescript
+   * const localizationService = new LfLocalizationService();
+   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/laserfiche-base';
+   * localizationService.setLanguage('fr-CA');  // gives a warning since no resource exists at this point
+   * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json because language has been set to be fr-CA
+   * localizationService.currentLanguage // {'language': 'fr', 'resource': { ... }}
+   * ```
+   * @example
+   * ```typescript
+   * const resource = new Map([
+   *  ['jp', { "LOADING": "読み込み中..." }],
+   *  ['ir', { "LOADING": "ag lódáil..." }], 
+   *  ['en', { "LOADING": "Loading..." }]
+   * ]);
+   * localizationService = new LfLocalizationService(resource);
+   * localizationService.setLanguage('ir');  // set currentResource to ir
+   * localizationService.currentLanguage // {'language': 'ir', 'resource':{ "LOADING": "ag lódáil..." }}
+   * ```
    */
   public setLanguage(language: string): void {
     this._selectedLanguage = language;
@@ -127,8 +181,18 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * Returns the current language resource in use
-   */
+  * Returns the current language resource in use
+  * @example
+  * ```typescript
+  * const resource = new Map([
+  *  ['jp', { "LOADING": "読み込み中..." }],
+  *  ['ir', { "LOADING": "ag lódáil..." }], 
+  *  ['en', { "LOADING": "Loading..." }]
+  * ]);
+  * localizationService = new LfLocalizationService(resource);
+  * localizationService.currentResource // {'language': 'en', 'resource':{ "LOADING": "Loading..." }}
+  * ```
+  */
   public get currentResource(): resourceType | undefined {
     return this._currentResource;
   }
@@ -140,6 +204,18 @@ export class LfLocalizationService implements ILocalizationService {
    * @param key the string to translate 
    * @param params the tokens to replace in translated string if exist
    * @returns the translated string with tokens
+   * @example
+   * ```typescript
+   * const resource = new Map([
+   *  ['jp', { "LOADING": "読み込み中..." }],
+   *  ['ir', { "LOADING": "ag lódáil..." }], 
+   *  ['en', { "LOADING": "Loading..." }]
+   * ]);
+   * localizationService = new LfLocalizationService(resource);
+   * localizationService.getString('LOADING'); // 'Loading...'
+   * localizationService.setLanguage('ir');
+   * localizationService.getString('LOADING'); // 'ag lódáil...'
+   * ```
    */
   public getString(key: string, params?: string[]): string {
     if (!this._currentResource) {
@@ -230,7 +306,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @param url 
    * @returns path with '/'
    */
-   private terminateUrlWithSlash(url: string) {
+  private terminateUrlWithSlash(url: string) {
     if (!url.endsWith('\/')) {
       url = url.concat('\/');
     }

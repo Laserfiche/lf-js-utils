@@ -577,6 +577,11 @@ const extensionToMIMETypeDict: Record<string, string> = {
  * or 'application/unknown' if none match
  * @param extension a file extension
  * @returns the corresponding MIME type or 'application/unknown'
+ * @example
+ * ```typescript
+ * getMIMETypeFromExtension('.eml') // 'message/rfc822'
+ * getMIMETypeFromExtension(undefined) // 'application/unknown'
+ * ```
  */
 export function getMIMETypeFromExtension(extension: string | undefined): string {
     const defaultMimeType = 'application/unknown';

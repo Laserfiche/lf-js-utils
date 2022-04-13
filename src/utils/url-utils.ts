@@ -9,6 +9,19 @@
   * @param baseURL Base URL
   * @param relativeURL Relative URL to append
   * @param queryStringParams  Query string parameters
+  * @example
+  * ```typescript
+  * combineURLs('a/', 'b'); // 'a/b'
+  * combineURLs('a/', '/b'); // 'a/b'
+  * combineURLs('/a', 'b'); // '/a/b'
+  * const queryParams: QueryParameter[] = [
+      ['string', 'string1'],
+      ['bool', true],
+      ['number', 1],
+      ['text', 'Are you sure?'],
+    ];
+    combineURLs('a/', 'b', queryParams); // 'a/b?string=string1&bool=true&number=1&text=Are%20you%20sure%3F'
+  * ```
   */
  export function combineURLs(baseURL: string, relativeURL: string, queryStringParams?: QueryParameter[]): string {
    const end = baseURL[baseURL.length - 1];

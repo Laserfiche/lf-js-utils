@@ -21,6 +21,10 @@ describe('urlUtils', () => {
     expect(combineURLs('a/', '/b')).toEqual('a/b');
   });
 
+  it('combineURLs("/a","/b") return "/a/b"', () => {
+    expect(combineURLs('/a', '/b')).toEqual('/a/b');
+  });
+
   it('combineURLs("a/","b", []) return "a/b"', () => {
     const queryParams: QueryParameter[] = [];
     expect(combineURLs('a/', 'b', queryParams)).toEqual('a/b');

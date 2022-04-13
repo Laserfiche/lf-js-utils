@@ -23,7 +23,7 @@ on:
 env:
   MAJOR_VERSION: 3
   MINOR_VERSION: 0
-  PATCH_VERSION: 1
+  PATCH_VERSION: 2
   publishProduction: 'false'
   publishPreview: 'false'
 
@@ -70,6 +70,9 @@ jobs:
 
       - name: Npm run build
         run: npm run build
+
+      - name: Npm run generate-doc
+        run: npm run generate-doc
         
       - name: set up variable -- NpmPackageVersion and NpmTag for prod
         if: ${{ github.event.inputs.publishProduction == 'true'}}
