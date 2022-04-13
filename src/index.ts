@@ -6,4 +6,4 @@ export * from './utils/lf-localization.service.js';
 export * as MimeTypeUtils from './utils/mime-type-utils.js';
 export * as PathUtils from './utils/path-utils.js';
 export * as TimeUtils from './utils/time-utils.js';
-export * as ValidationUtils from './utils/validate-defined.js';
+export * from './utils/validate-defined.js';
