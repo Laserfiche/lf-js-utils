@@ -27,7 +27,7 @@ export function sleepAsync(timeMs: number): Promise<void> {
  * const falseFunc = () => {test == 2}
  * const timeoutFunc = () => {console.warn('timeout!')}
  * waitForConditionAsync(trueFunc, timeoutFunc, 3000); // returns right away
- * waitForConditionAsync(falseFunc, timeoutFunc, 3000); // returns in 3s
+ * waitForConditionAsync(falseFunc, timeoutFunc, 3000); // returns in 3s and console.warn('timeout!')
  * ```
  */
 export async function waitForConditionAsync(func: () => boolean, timeoutFunc: () => void, timeoutMs: number = 2000): Promise<void> {

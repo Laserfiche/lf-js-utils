@@ -580,7 +580,7 @@ const extensionToMIMETypeDict: Record<string, string> = {
  * @example
  * ```typescript
  * getMIMETypeFromExtension('.eml') // 'message/rfc822'
- * getMIMETypeFromExtension('undefined') // 'application/unknown'
+ * getMIMETypeFromExtension(undefined) // 'application/unknown'
  * ```
  */
 export function getMIMETypeFromExtension(extension: string | undefined): string {

@@ -114,6 +114,7 @@ export function combinePaths(path1: string, path2: string): string {
  * getCleanedExtension(''); // undefined
  * getCleanedExtension('a'); // '.a'
  * getCleanedExtension('.a'); // '.a'
+ * getCleanedExtension('a.b'); // '.a.b'
  * getCleanedExtension('.a.b'); // '.a.b'
  * ```
  */

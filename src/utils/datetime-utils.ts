@@ -41,7 +41,7 @@ export function deserializeDateValue(date: string | undefined): string {
  * @returns a corresponding ISO8601 string representating the localtime without offset 
  * @example
  * ```typescript
- * const originalDatetimeString: string = '2021-03-25T01:00:00';
+ * const originalDatetimeString: string = '2021-03-25T01:00:00-07:00';
  * const datetimeNoOffset: Date = new Date(originalDatetimeString);
  * // datetimeNoOffset -> Thu Mar 25 2021 01:00:00 GMT-0700 (Pacific Daylight Time)
  * 

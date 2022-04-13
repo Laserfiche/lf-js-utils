@@ -158,7 +158,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * localizationService.setLanguage('fr-CA');  // does nothing since no resource exists
+   * localizationService.setLanguage('fr-CA');  // gives a warning since no resource exists
    * 
    * const resource = new Map([
    *  ['jp', { "LOADING": "読み込み中..." }],

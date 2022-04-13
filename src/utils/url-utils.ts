@@ -12,6 +12,8 @@
   * @example
   * ```typescript
   * combineURLs('a/', 'b'); // 'a/b'
+  * combineURLs('a/', '/b'); // 'a/b'
+  * combineURLs('/a', 'b'); // '/a/b'
   * const queryParams: QueryParameter[] = [
       ['string', 'string1'],
       ['bool', true],
