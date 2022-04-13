@@ -2,7 +2,7 @@ export type resourceType = { language: string, resource: object };
 
 export interface ILocalizationService {
   setLanguage(language: string): void;
-  get currentResource(): resourceType | undefined;
+  currentResource: resourceType | undefined;
   getString(key: string, params?: string[]): string;
   initResourcesFromUrlAsync(url: string): Promise<void>;
   debugMode: boolean;
@@ -42,22 +42,22 @@ export class LfLocalizationService implements ILocalizationService {
   private _selectedLanguage: string = this.DEFAULT_LANGUAGE;
 
   /**
-   * 
-   * @example
-   * ```typescript
-   * const resource = new Map([
-   *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }], 
-   *  ['en', { "LOADING": "Loading..." }]  // have to provide 'en' in map
-   * ]);
-   * const localizationService = new LfLocalizationService(resource);
-   * 
-   * // or
-   * 
-   * const localizationService = new LfLocalizationService();
-   * // have to call initResourcesFromUrlAsync later to load resources dynamically
-   * ```
-   */
+ * 
+ * @example
+ * ```typescript
+ * const resource = new Map([
+ *  ['jp', { "LOADING": "読み込み中..." }],
+ *  ['ir', { "LOADING": "ag lódáil..." }], 
+ *  ['en', { "LOADING": "Loading..." }]  // have to provide 'en' in map
+ * ]);
+ * const localizationService = new LfLocalizationService(resource);
+ * 
+ * // or
+ * 
+ * const localizationService = new LfLocalizationService();
+ * // have to call initResourcesFromUrlAsync later to load resources dynamically
+ * ```
+ */
   constructor(resources?: Map<string, object> | undefined) {
     if (resources) {
       if (!resources.get(this.DEFAULT_LANGUAGE)) {
@@ -99,6 +99,61 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
+   * Loads the selected langauge resource given the url pointing to the folder of the resource,
+   * if HTTP receives 404 error, loads the non-region-specific language resource,
+   * throws error otherwise
+   * @param url 
+   */
+  private async getSelectedLanguageResourceAsync(url: string) {
+    if (!this.setLanguageResource(this._selectedLanguage)) {
+      try {
+        await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
+        this.setLanguageResource(this._selectedLanguage);
+        console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
+      }
+      catch (e: any) {
+        if (e.code == '404') {
+          const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
+          if (!this.setLanguageResource(languageWithoutDash)) {
+            try {
+              await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
+              this.setLanguageResource(languageWithoutDash);
+              console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
+            }
+            catch {
+              this.setLanguageResource(this.DEFAULT_LANGUAGE);
+              console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
+            }
+          }
+        }
+        else {
+          console.error(e);
+        }
+      }
+    }
+
+  }
+
+  /**
+   * Loads the default langauge resource given the url pointing to the folder of the resource,
+   * throws error if resource not found
+   * @param url 
+   */
+  private async getDefaultLanguageResourceAsync(url: string) {
+    try {
+      await this.addResourceFromUrlAsync(`${url}${this.DEFAULT_LANGUAGE}.json`, this.DEFAULT_LANGUAGE);
+    }
+    catch (e: any) {
+      if (e.code == '404') {
+        throw new ResourceNotFoundError(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in ${url}${this.DEFAULT_LANGUAGE}.json.`);
+      }
+      else {
+        throw e;
+      }
+    }
+  }
+
+  /**
    * Sets currentResource given the language code, fall back to available resource if necessary.
    * @example
    * ```typescript
@@ -121,18 +176,18 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * Returns the current language resource in use
-   * @example
-   * ```typescript
-   * const resource = new Map([
-   *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }], 
-   *  ['en', { "LOADING": "Loading..." }]
-   * ]);
-   * localizationService = new LfLocalizationService(resource);
-   * localizationService.currentResource // {'language': 'en', 'resource':{ "LOADING": "Loading..." }}
-   * ```
-   */
+  * Returns the current language resource in use
+  * @example
+  * ```typescript
+  * const resource = new Map([
+  *  ['jp', { "LOADING": "読み込み中..." }],
+  *  ['ir', { "LOADING": "ag lódáil..." }], 
+  *  ['en', { "LOADING": "Loading..." }]
+  * ]);
+  * localizationService = new LfLocalizationService(resource);
+  * localizationService.currentResource // {'language': 'en', 'resource':{ "LOADING": "Loading..." }}
+  * ```
+  */
   public get currentResource(): resourceType | undefined {
     return this._currentResource;
   }
@@ -182,56 +237,6 @@ export class LfLocalizationService implements ILocalizationService {
     catch {
       console.warn(`Given arguments for ${key} did not match required number of arguments.`);
       return this.convertToPseudoLanguage(localizedString);
-    }
-  }
-
-  /**
-   * Loads the selected langauge resource given the url pointing to the folder of the resource,
-   * if HTTP receives 404 error, loads the non-region-specific language resource,
-   * throws error otherwise
-   * @param url 
-   */
-  private async getSelectedLanguageResourceAsync(url: string) {
-    try {
-      await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
-      this.setLanguageResource(this._selectedLanguage);
-      console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
-    }
-    catch (e: any) {
-      if (e.code == '404') {
-        const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-        try {
-          await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
-          this.setLanguageResource(languageWithoutDash);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
-        }
-        catch {
-          this.setLanguageResource(this.DEFAULT_LANGUAGE);
-          console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
-        }
-      }
-      else {
-        console.error(e);
-      }
-    }
-  }
-
-  /**
-   * Loads the default langauge resource given the url pointing to the folder of the resource,
-   * throws error if resource not found
-   * @param url 
-   */
-  private async getDefaultLanguageResourceAsync(url: string) {
-    try {
-      await this.addResourceFromUrlAsync(`${url}${this.DEFAULT_LANGUAGE}.json`, this.DEFAULT_LANGUAGE);
-    }
-    catch (e: any) {
-      if (e.code == '404') {
-        throw new ResourceNotFoundError(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in ${url}${this.DEFAULT_LANGUAGE}.json.`);
-      }
-      else {
-        throw e;
-      }
     }
   }
 
@@ -320,16 +325,17 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   private formatString(stringToFormat: string, params?: string[]): string {
-    const expectedParams: RegExpMatchArray = stringToFormat.match(/\$\{\d*\}/g) ?? [];
+    const expectedParams: RegExpMatchArray = stringToFormat.match(/\{\d*\}/g) ?? [];
     const expectedNumParams: number = new Set(expectedParams).size;
     if ((expectedNumParams > 0 && params?.length !== expectedNumParams)
       || (expectedNumParams === 0 && params && params.length > 0)) {
       throw new Error(`Expected ${expectedNumParams} arguments. Actual arguments: ${params?.length ?? '0'}.`);
     }
+
     if (params && params.length > 0) {
       for (let i = 0; i < params.length; i++) {
         const replacement: string = params[i];
-        const varRegex: RegExp = new RegExp(`\\$\\{${i}\\}`, 'g');
+        const varRegex: RegExp = new RegExp(`\\{${i}\\}`, 'g');
         stringToFormat = stringToFormat.replace(varRegex, replacement);
       }
     }
