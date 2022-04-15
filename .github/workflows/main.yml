@@ -120,10 +120,10 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
-          node-version: '16'
+          node-version: '14'
 
-      - name: Npm tool version
-        run: npm -v
+      - name: Npm tool install
+        run: npm install -g npm@8
 
       - name: Npm publish
         run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
