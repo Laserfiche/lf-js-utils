@@ -1,4 +1,4 @@
-import { LfLocalizationService, formatString } from './lf-localization.service.js';
+import { LfLocalizationService } from './lf-localization.service.js';
 require('isomorphic-fetch');
 
 describe('LfLocalizationService', () => {
@@ -27,7 +27,7 @@ describe('LfLocalizationService', () => {
     }).toThrow(error);
   });
 
-  it('setLanguage assigns curretResource to the default language English if specified does not exist', () => {
+  it('setLanguage assigns currentResource to the default language English if specified does not exist', () => {
     const resources = new Map([
       ['test', { TEST_STRING: 'test string' }],
       ['en', { TEST_STRING: 'test string' }],
@@ -86,6 +86,21 @@ describe('LfLocalizationService', () => {
 
     // Assert
     expect(lfLocalizationService.getString(stringKey)).toEqual(expectedString);
+  });
+
+  it('getString with two parameters to be substituted', async () => {
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
+    const stringKey: string = 'MVFG_HEADER_FORMATTER';
+    const expectedValue: string = 'five of ten';
+
+    // Act
+    lfLocalizationService.setLanguage('en');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    const localizedString = lfLocalizationService.getString(stringKey, ['five', 'ten']);
+
+    // Assert
+    expect(localizedString).toEqual(expectedValue);
   });
 
   it('getString gets Spanish when spanish is specified', async () => {
@@ -167,182 +182,17 @@ describe('LfLocalizationService', () => {
     const mockedResponse = new Response(null, { status: 500 });
     const globalFetch = global.fetch;
     global.fetch = jest.fn(() => Promise.resolve(mockedResponse));
+    const resUrl = `${resourcesFolder}/en.json`;
 
-    const error = new Error();
-    error.message = `HTTP error 500 at ${resourcesFolder}/en.json`;
-
-    await expect(lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder)).rejects.toThrow(error);
-    global.fetch = globalFetch;
-  });
-
-  it('formatString should not replace variables if there are no variables or params', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWithNoParams: string = 'Hi there';
-    const params = undefined;
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWithNoParams, params);
-
-    // Assert
-    expect(formattedString).toEqual(stringWithNoParams);
-  });
-
-  it('formatString should throw if there are no variables to replace', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWithNoParams: string = 'Hi there';
-    const params = ['One', 'Two'];
-    const error = 'Expected 0 arguments. Actual arguments: 2';
-
-    expect(() => {
-      // @ts-ignore, Assert
-      formatString(stringWithNoParams, params);
-    }).toThrow(error);
-  });
-
-  it('formatString should format string with 1 variable', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWith1Param: string = 'Hi there {0}';
-    const params = ['Patrick'];
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWith1Param, params);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there Patrick';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should format string with {} with text inside instead of number', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWith1Param: string = 'Hi there {test}';
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWith1Param);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there {test}';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should format string with 3 variables', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWith3Params: string = 'Hi there {0} {2} {1}';
-    const params = ['Patrick', 'Spongebob', 'Sandy'];
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWith3Params, params);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there Patrick Sandy Spongebob';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should throw error if there are too many params', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWith2Params: string = 'Hi there {0} {1}';
-    const params = ['Patrick', 'Spongebob', 'Sandy'];
-    const error = 'Expected 2 arguments. Actual arguments: 3';
-
-    expect(() => {
-      // @ts-ignore, Assert
-      formatString(stringWith2Params, params);
-    }).toThrow(error);
-  });
-
-  it('formatString should throw error if there are too few params', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWith3Params: string = 'Hi there {0} {2} {1}';
-    const params = ['Patrick', 'Spongebob'];
-    const error = 'Expected 3 arguments. Actual arguments: 2';
-
-    expect(() => {
-      // @ts-ignore, Assert
-      formatString(stringWith3Params, params);
-    }).toThrow(error);
-  });
-
-  it('formatString should work for strings with 10+ variables', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWith10PlusParams: string = 'Hi there {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}';
-    const params = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'];
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWith10PlusParams, params);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there zero one two three four five six seven eight nine ten eleven';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should work for strings with variables that appear twice', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWithRepeatedParams: string = 'Hi there {0} {1} {0}';
-    const params = ['zero', 'one'];
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWithRepeatedParams, params);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there zero one zero';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should work for strings with variables that appear twice and have multiple brackets', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWithRepeatedParams: string = 'Hi there {{{0} {1} {0}}}';
-    const params = ['zero', 'one'];
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWithRepeatedParams, params);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there {{zero one zero}}';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should not replace variables that are not all numbers', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWithRepeatedParams: string = 'Hi there {{{0} {1} {0test}}}';
-    const params = ['zero', 'one'];
-
-    // Act
-    //@ts-ignore
-    const formattedString: string = formatString(stringWithRepeatedParams, params);
-
-    // Assert
-    const expectedFormattedString: string = 'Hi there {{zero one {0test}}}';
-    expect(formattedString).toEqual(expectedFormattedString);
-  });
-
-  it('formatString should throw error if variables are repeated, and there are too many params', () => {
-    // Arrange
-    lfLocalizationService = new LfLocalizationService();
-    const stringWithRepeatedParams: string = 'Hi there {0} {1} {0}';
-    const params = ['zero', 'one', 'zero'];
-    const error = 'Expected 2 arguments. Actual arguments: 3';
-
-    expect(() => {
-      // @ts-ignore, Assert
-      formatString(stringWithRepeatedParams, params);
-    }).toThrow(error);
+    try {
+      await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    } catch (e) {
+      const msg = (<Error>e).message;
+      expect(msg.includes('500')).toBeTruthy();
+      expect(msg.includes(resUrl)).toBeTruthy();
+    } finally {
+      global.fetch = globalFetch;
+    }
   });
 
   it('should be able to set custom json', () => {
