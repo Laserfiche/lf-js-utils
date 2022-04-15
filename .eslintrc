@@ -1,43 +1,12 @@
 {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-        "@typescript-eslint/ban-types": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/dot-notation": "off",
-        "@typescript-eslint/naming-convention": [
-          "error",
-          {
-            "selector": "enumMember",
-            "format": null
-          }
-        ],
-        "@typescript-eslint/no-inferrable-types": [
-          "off",
-          {
-            "ignoreParameters": true,
-            "ignoreProperties": true
-          }
-        ],
-        "@typescript-eslint/no-namespace": "off",
-        "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-shadow": "error",
-        "@typescript-eslint/no-var-requires": "off",
-        "no-console": "off",
-        "no-shadow": "off",
-        "no-underscore-dangle": "off",
-        "no-constant-condition": "off",
-        "no-useless-escape": "off",
-        "prefer-arrow/prefer-arrow-functions": "off",
-        "prefer-const": "error"
-    }
-  }
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ]
+}

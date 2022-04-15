@@ -1,11 +1,10 @@
-import { LfLocalizationService } from './lf-localization.service.js';
+import { LfLocalizationService, formatString } from './lf-localization.service.js';
 require('isomorphic-fetch');
 
 describe('LfLocalizationService', () => {
   let lfLocalizationService: LfLocalizationService;
 
   const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2/resources/laserfiche-base';
-
 
   it('currentResource is undefined if language file does not exist in constructor and is not provided with initResourcesFromUrlAsync', () => {
     lfLocalizationService = new LfLocalizationService();
@@ -20,16 +19,19 @@ describe('LfLocalizationService', () => {
   });
 
   it('constructor should throw if provided map does not include English', () => {
-    const resources = new Map([['test', { 'TEST_STRING': 'test string' }]]);
+    const resources = new Map([['test', { TEST_STRING: 'test string' }]]);
     const error = 'Required language resource en is not found in provided map.';
 
     expect(() => {
-      lfLocalizationService = new LfLocalizationService(resources)
+      lfLocalizationService = new LfLocalizationService(resources);
     }).toThrow(error);
   });
 
   it('setLanguage assigns curretResource to the default language English if specified does not exist', () => {
-    const resources = new Map([['test', { 'TEST_STRING': 'test string' }], ['en', { 'TEST_STRING': 'test string' }]]);
+    const resources = new Map([
+      ['test', { TEST_STRING: 'test string' }],
+      ['en', { TEST_STRING: 'test string' }],
+    ]);
     lfLocalizationService = new LfLocalizationService(resources);
     lfLocalizationService.setLanguage('fr-CA');
 
@@ -102,21 +104,21 @@ describe('LfLocalizationService', () => {
   });
 
   it(`getString gets pt-BR when pt-BR is specified`, async () => {
-   // Arrange
-   lfLocalizationService = new LfLocalizationService();
-   const stringKey: string = 'EMPTY_FILE_EXPLORER';
-   const spanishValue: string = 'Esta pasta está vazia.';
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
+    const stringKey: string = 'EMPTY_FILE_EXPLORER';
+    const spanishValue: string = 'Esta pasta está vazia.';
 
-   // Act
-   lfLocalizationService.setLanguage('pt-BR');
-   await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
-   const localizedString = lfLocalizationService.getString(stringKey);
+    // Act
+    lfLocalizationService.setLanguage('pt-BR');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    const localizedString = lfLocalizationService.getString(stringKey);
 
-   // Assert
-   expect(localizedString).toEqual(spanishValue);
- });
- 
- it('getString gets english when selected language does not exist', async () => {
+    // Assert
+    expect(localizedString).toEqual(spanishValue);
+  });
+
+  it('getString gets english when selected language does not exist', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
     const stringKey: string = 'EMPTY_FILE_EXPLORER';
@@ -154,23 +156,24 @@ describe('LfLocalizationService', () => {
     const error = new Error();
     error.message = `Required language resource en is not found in ${resourcesFolder}nonexistent/en.json.`;
 
-    await expect(lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)).rejects.toThrow(error);
-  })  
-  
+    await expect(lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)).rejects.toThrow(
+      error
+    );
+  });
+
   it('initResourcesFromUrlAsync should return error when getting HTTP error other than 404', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const mockedResponse = new Response(null, {"status": 500});
+    const mockedResponse = new Response(null, { status: 500 });
     const globalFetch = global.fetch;
-    global.fetch = jest.fn(() =>
-    Promise.resolve(mockedResponse));
+    global.fetch = jest.fn(() => Promise.resolve(mockedResponse));
 
     const error = new Error();
     error.message = `HTTP error 500 at ${resourcesFolder}/en.json`;
 
     await expect(lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder)).rejects.toThrow(error);
     global.fetch = globalFetch;
-  })
+  });
 
   it('formatString should not replace variables if there are no variables or params', () => {
     // Arrange
@@ -180,7 +183,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWithNoParams, params);
+    const formattedString: string = formatString(stringWithNoParams, params);
 
     // Assert
     expect(formattedString).toEqual(stringWithNoParams);
@@ -195,7 +198,7 @@ describe('LfLocalizationService', () => {
 
     expect(() => {
       // @ts-ignore, Assert
-      lfLocalizationService.formatString(stringWithNoParams, params);
+      formatString(stringWithNoParams, params);
     }).toThrow(error);
   });
 
@@ -207,7 +210,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWith1Param, params);
+    const formattedString: string = formatString(stringWith1Param, params);
 
     // Assert
     const expectedFormattedString: string = 'Hi there Patrick';
@@ -221,7 +224,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWith1Param);
+    const formattedString: string = formatString(stringWith1Param);
 
     // Assert
     const expectedFormattedString: string = 'Hi there {test}';
@@ -236,7 +239,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWith3Params, params);
+    const formattedString: string = formatString(stringWith3Params, params);
 
     // Assert
     const expectedFormattedString: string = 'Hi there Patrick Sandy Spongebob';
@@ -252,7 +255,7 @@ describe('LfLocalizationService', () => {
 
     expect(() => {
       // @ts-ignore, Assert
-      lfLocalizationService.formatString(stringWith2Params, params);
+      formatString(stringWith2Params, params);
     }).toThrow(error);
   });
 
@@ -265,7 +268,7 @@ describe('LfLocalizationService', () => {
 
     expect(() => {
       // @ts-ignore, Assert
-      lfLocalizationService.formatString(stringWith3Params, params);
+      formatString(stringWith3Params, params);
     }).toThrow(error);
   });
 
@@ -277,7 +280,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWith10PlusParams, params);
+    const formattedString: string = formatString(stringWith10PlusParams, params);
 
     // Assert
     const expectedFormattedString: string = 'Hi there zero one two three four five six seven eight nine ten eleven';
@@ -292,7 +295,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWithRepeatedParams, params);
+    const formattedString: string = formatString(stringWithRepeatedParams, params);
 
     // Assert
     const expectedFormattedString: string = 'Hi there zero one zero';
@@ -307,7 +310,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWithRepeatedParams, params);
+    const formattedString: string = formatString(stringWithRepeatedParams, params);
 
     // Assert
     const expectedFormattedString: string = 'Hi there {{zero one zero}}';
@@ -322,7 +325,7 @@ describe('LfLocalizationService', () => {
 
     // Act
     //@ts-ignore
-    const formattedString: string = lfLocalizationService.formatString(stringWithRepeatedParams, params);
+    const formattedString: string = formatString(stringWithRepeatedParams, params);
 
     // Assert
     const expectedFormattedString: string = 'Hi there {{zero one {0test}}}';
@@ -338,12 +341,15 @@ describe('LfLocalizationService', () => {
 
     expect(() => {
       // @ts-ignore, Assert
-      lfLocalizationService.formatString(stringWithRepeatedParams, params);
+      formatString(stringWithRepeatedParams, params);
     }).toThrow(error);
   });
 
   it('should be able to set custom json', () => {
-    const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['es', { "TEST_STRING": "prueba" }]]);
+    const resources: Map<string, object> = new Map([
+      ['en', { TEST_STRING: 'test res' }],
+      ['es', { TEST_STRING: 'prueba' }],
+    ]);
     lfLocalizationService = new LfLocalizationService(resources);
 
     let localizedString = lfLocalizationService.getString('TEST_STRING');
@@ -355,7 +361,10 @@ describe('LfLocalizationService', () => {
   });
 
   it('should be able to set custom json, default to English if translation does not exist', () => {
-    const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['es', { "TEST_STRING": "prueba" }]]);
+    const resources: Map<string, object> = new Map([
+      ['en', { TEST_STRING: 'test res' }],
+      ['es', { TEST_STRING: 'prueba' }],
+    ]);
     lfLocalizationService = new LfLocalizationService(resources);
 
     let localizedString = lfLocalizationService.getString('TEST_STRING');
@@ -367,7 +376,10 @@ describe('LfLocalizationService', () => {
   });
 
   it('should be able to set custom json, fr-CA will default to fr if fr-CA does not exist', () => {
-    const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['fr', { "TEST_STRING": "french test" }]]);
+    const resources: Map<string, object> = new Map([
+      ['en', { TEST_STRING: 'test res' }],
+      ['fr', { TEST_STRING: 'french test' }],
+    ]);
     lfLocalizationService = new LfLocalizationService(resources);
 
     let localizedString = lfLocalizationService.getString('TEST_STRING');
@@ -379,7 +391,11 @@ describe('LfLocalizationService', () => {
   });
 
   it('should be able to set custom json, fr-CA should use fr-CA if exists', () => {
-    const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['fr', { "TEST_STRING": "french test" }], ['fr-CA', { "TEST_STRING": "french CA test" }]]);
+    const resources: Map<string, object> = new Map([
+      ['en', { TEST_STRING: 'test res' }],
+      ['fr', { TEST_STRING: 'french test' }],
+      ['fr-CA', { TEST_STRING: 'french CA test' }],
+    ]);
     lfLocalizationService = new LfLocalizationService(resources);
 
     let localizedString = lfLocalizationService.getString('TEST_STRING');
@@ -395,7 +411,10 @@ describe('LfLocalizationService', () => {
   });
 
   it('should be able to set custom json, fr-CA will default to en if no fr-CA or no fr', () => {
-    const resources: Map<string, object> = new Map([['en', { "TEST_STRING": "test res" }], ['es', { "TEST_STRING": "prueba" }]]);
+    const resources: Map<string, object> = new Map([
+      ['en', { TEST_STRING: 'test res' }],
+      ['es', { TEST_STRING: 'prueba' }],
+    ]);
     lfLocalizationService = new LfLocalizationService(resources);
 
     let localizedString = lfLocalizationService.getString('TEST_STRING');
@@ -420,7 +439,6 @@ describe('LfLocalizationService', () => {
     lfLocalizationService.setLanguage('es');
 
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
-
 
     expect(lfLocalizationService.getString('APPLY_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
   });
