@@ -314,6 +314,21 @@ describe('LfLocalizationService', () => {
     expect(formattedString).toEqual(expectedFormattedString);
   });
 
+  it('formatString should not replace variables that are not all numbers', () => {
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
+    const stringWithRepeatedParams: string = 'Hi there {{{0} {1} {0test}}}';
+    const params = ['zero', 'one'];
+
+    // Act
+    //@ts-ignore
+    const formattedString: string = lfLocalizationService.formatString(stringWithRepeatedParams, params);
+
+    // Assert
+    const expectedFormattedString: string = 'Hi there {{zero one {0test}}}';
+    expect(formattedString).toEqual(expectedFormattedString);
+  });
+
   it('formatString should throw error if variables are repeated, and there are too many params', () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
