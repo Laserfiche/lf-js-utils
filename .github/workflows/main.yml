@@ -48,7 +48,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
-          node-version: '14.x'
+          node-version: '14'
 
       - name: Npm tool install
         run: npm install -g npm@8
@@ -116,6 +116,14 @@ jobs:
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '16'
+
+      - name: Npm tool version
+        run: npm -v
 
       - name: Npm publish
         run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
