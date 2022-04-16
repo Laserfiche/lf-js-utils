@@ -1,4 +1,6 @@
-export type resourceType = { language: string, resource: object };
+import { formatString } from './string-utils';
+
+export type resourceType = { language: string; resource: object };
 
 export interface ILocalizationService {
   setLanguage(language: string): void;
@@ -8,25 +10,22 @@ export interface ILocalizationService {
   debugMode: boolean;
 }
 
+const ResourceNotFoundError_NAME = 'ResourceNotFoundError';
 class ResourceNotFoundError extends Error {
-  constructor(message: string, code?: number) {
+  constructor(message: string) {
     super(message);
-    const status = code?.toString() || '404';
-    this.name = `ResourceNotFoundError`;
-    // @ts-ignore
-    this.code = status;
+    this.name = ResourceNotFoundError_NAME;
   }
 }
 
 export class LfLocalizationService implements ILocalizationService {
-
   /**
    * When true, returns pseudo language string. Defaults to false.
    * @example
    * ```typescript
    * const resource = new Map([
    *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }], 
+   *  ['ir', { "LOADING": "ag lódáil..." }],
    *  ['en', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
@@ -38,40 +37,40 @@ export class LfLocalizationService implements ILocalizationService {
 
   private readonly DEFAULT_LANGUAGE: string = 'en';
   private _currentResource?: resourceType;
-  private _resources?: Map<string, object>;
+  private _resources: Map<string, object> = new Map<string, object>();
   private _selectedLanguage: string = this.DEFAULT_LANGUAGE;
 
   /**
- * 
- * @example
- * ```typescript
- * const resource = new Map([
- *  ['jp', { "LOADING": "読み込み中..." }],
- *  ['ir', { "LOADING": "ag lódáil..." }], 
- *  ['en', { "LOADING": "Loading..." }]  // have to provide 'en' in map
- * ]);
- * const localizationService = new LfLocalizationService(resource);
- * 
- * // or
- * 
- * const localizationService = new LfLocalizationService();
- * // have to call initResourcesFromUrlAsync later to load resources dynamically
- * ```
- */
+   *
+   * @example
+   * ```typescript
+   * const resource = new Map([
+   *  ['jp', { "LOADING": "読み込み中..." }],
+   *  ['ir', { "LOADING": "ag lódáil..." }],
+   *  ['en', { "LOADING": "Loading..." }]  // have to provide 'en' in map
+   * ]);
+   * const localizationService = new LfLocalizationService(resource);
+   *
+   * // or
+   *
+   * const localizationService = new LfLocalizationService();
+   * // have to call initResourcesFromUrlAsync later to load resources dynamically
+   * ```
+   */
   constructor(resources?: Map<string, object> | undefined) {
     if (resources) {
       if (!resources.get(this.DEFAULT_LANGUAGE)) {
-        throw new ResourceNotFoundError(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in provided map.`)
+        throw new ResourceNotFoundError(
+          `Required language resource ${this.DEFAULT_LANGUAGE} is not found in provided map.`
+        );
       }
       this._resources = resources;
-    }
-    else {
-      console.log('No static resources provided. Call initResourcesFromUrlAsync to load resources dynamically.')
+    } else {
+      console.log('No static resources provided. Call initResourcesFromUrlAsync to load resources dynamically.');
     }
     try {
       this.setLanguage(window?.navigator?.language ?? this.DEFAULT_LANGUAGE);
-    }
-    catch {
+    } catch {
       this.setLanguage(this.DEFAULT_LANGUAGE);
     }
   }
@@ -80,7 +79,7 @@ export class LfLocalizationService implements ILocalizationService {
    * Resets the resource map to include remote language resource files: en by default, and
    * the closest selected language
    * (e.g.: if selected language is fr-CA, and fr-CA doesn't exists but fr exists, it loads fr)
-   *  
+   *
    * @param url the url to the language file's folder
    * @example
    * ```typescript
@@ -102,7 +101,7 @@ export class LfLocalizationService implements ILocalizationService {
    * Loads the selected langauge resource given the url pointing to the folder of the resource,
    * if HTTP receives 404 error, loads the non-region-specific language resource,
    * throws error otherwise
-   * @param url 
+   * @param url
    */
   private async getSelectedLanguageResourceAsync(url: string) {
     if (!this.setLanguageResource(this._selectedLanguage)) {
@@ -110,44 +109,44 @@ export class LfLocalizationService implements ILocalizationService {
         await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
         this.setLanguageResource(this._selectedLanguage);
         console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
-      }
-      catch (e: any) {
-        if (e.code == '404') {
+      } catch (e) {
+        if ((e as Error)?.name === ResourceNotFoundError_NAME) {
           const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
           if (!this.setLanguageResource(languageWithoutDash)) {
             try {
               await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
               this.setLanguageResource(languageWithoutDash);
-              console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`);
-            }
-            catch {
+              console.warn(
+                `Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`
+              );
+            } catch {
               this.setLanguageResource(this.DEFAULT_LANGUAGE);
-              console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
+              console.warn(
+                `Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`
+              );
             }
           }
-        }
-        else {
+        } else {
           console.error(e);
         }
       }
     }
-
   }
 
   /**
    * Loads the default langauge resource given the url pointing to the folder of the resource,
    * throws error if resource not found
-   * @param url 
+   * @param url
    */
   private async getDefaultLanguageResourceAsync(url: string) {
     try {
       await this.addResourceFromUrlAsync(`${url}${this.DEFAULT_LANGUAGE}.json`, this.DEFAULT_LANGUAGE);
-    }
-    catch (e: any) {
-      if (e.code == '404') {
-        throw new ResourceNotFoundError(`Required language resource ${this.DEFAULT_LANGUAGE} is not found in ${url}${this.DEFAULT_LANGUAGE}.json.`);
-      }
-      else {
+    } catch (e) {
+      if ((e as Error)?.name === ResourceNotFoundError_NAME) {
+        throw new ResourceNotFoundError(
+          `Required language resource ${this.DEFAULT_LANGUAGE} is not found in ${url}${this.DEFAULT_LANGUAGE}.json.`
+        );
+      } else {
         throw e;
       }
     }
@@ -167,7 +166,7 @@ export class LfLocalizationService implements ILocalizationService {
    * ```typescript
    * const resource = new Map([
    *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }], 
+   *  ['ir', { "LOADING": "ag lódáil..." }],
    *  ['en', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
@@ -181,18 +180,18 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-  * Returns the current language resource in use
-  * @example
-  * ```typescript
-  * const resource = new Map([
-  *  ['jp', { "LOADING": "読み込み中..." }],
-  *  ['ir', { "LOADING": "ag lódáil..." }], 
-  *  ['en', { "LOADING": "Loading..." }]
-  * ]);
-  * localizationService = new LfLocalizationService(resource);
-  * localizationService.currentResource // {'language': 'en', 'resource':{ "LOADING": "Loading..." }}
-  * ```
-  */
+   * Returns the current language resource in use
+   * @example
+   * ```typescript
+   * const resource = new Map([
+   *  ['jp', { "LOADING": "読み込み中..." }],
+   *  ['ir', { "LOADING": "ag lódáil..." }],
+   *  ['en', { "LOADING": "Loading..." }]
+   * ]);
+   * localizationService = new LfLocalizationService(resource);
+   * localizationService.currentResource // {'language': 'en', 'resource':{ "LOADING": "Loading..." }}
+   * ```
+   */
   public get currentResource(): resourceType | undefined {
     return this._currentResource;
   }
@@ -201,14 +200,14 @@ export class LfLocalizationService implements ILocalizationService {
    * Returns the translated formatted string if exists,
    * falls back to default resource if translated string doesn't exist in current resource
    * throws an error if current resource does not exist
-   * @param key the string to translate 
+   * @param key the string to translate
    * @param params the tokens to replace in translated string if exist
    * @returns the translated string with tokens
    * @example
    * ```typescript
    * const resource = new Map([
    *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }], 
+   *  ['ir', { "LOADING": "ag lódáil..." }],
    *  ['en', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
@@ -222,58 +221,27 @@ export class LfLocalizationService implements ILocalizationService {
       console.warn('Current resource not found.');
       return `<< ${key} >>`;
     }
-    let localizedString = this._currentResource?.resource[key];
+    let localizedString: string | undefined = this._currentResource?.resource[key];
     if (!localizedString) {
-      const defaultResource = this._resources?.get(this.DEFAULT_LANGUAGE);
-      localizedString = defaultResource![key];
+      const defaultResource = this._resources.get(this.DEFAULT_LANGUAGE);
+      if (defaultResource) {
+        localizedString = defaultResource[key];
+      }
       if (localizedString) {
         console.warn(`Resource '${key}' not found in ${this._currentResource?.language}.
         Falling back to ${this.DEFAULT_LANGUAGE}.`);
-      }
-      else {
+      } else {
         console.warn(`Resource '${key}' not found. Use initResourcesFromUrlAsync to load resource.`);
         return `<< ${key} >>`;
       }
     }
     try {
-      const formattedString: string = this.formatString(localizedString, params);
+      const formattedString: string = formatString(localizedString, params);
       return this.convertToPseudoLanguage(formattedString);
-    }
-    catch {
+    } catch {
       console.warn(`Given arguments for ${key} did not match required number of arguments.`);
       return this.convertToPseudoLanguage(localizedString);
     }
-  }
-
-  /**
-   * Returns the formatted string. 
-   * It will replace parameters of the format {x}, where x is a number and will be used as
-   * the index to find the value in the array of params
-   * @param stringToFormat The string to format
-   * @param params The params to replace
-   * @returns String with the params replaced. Will throw if the number of replacement parameters do not mat
-   * @example
-   * ```typescript
-   * const formattedString = formatString('Do you like {0} and {1}? I like {0}', ['apples', 'bananas'])
-   * // formattedString = 'Do you like apples and bananas? I like apples'
-   * ```
-   */
-  public formatString(stringToFormat: string, params?: string[]): string {
-    const expectedParams: RegExpMatchArray = stringToFormat.match(/\{\d+\}/g) ?? [];
-    const expectedNumParams: number = new Set(expectedParams).size;
-    if ((expectedNumParams > 0 && params?.length !== expectedNumParams)
-      || (expectedNumParams === 0 && params && params.length > 0)) {
-      throw new Error(`Expected ${expectedNumParams} arguments. Actual arguments: ${params?.length ?? '0'}.`);
-    }
-
-    if (params && params.length > 0) {
-      for (let i = 0; i < params.length; i++) {
-        const replacement: string = params[i];
-        const varRegex: RegExp = new RegExp(`\\{${i}\\}`, 'g');
-        stringToFormat = stringToFormat.replace(varRegex, replacement);
-      }
-    }
-    return stringToFormat;
   }
 
   /**
@@ -281,23 +249,25 @@ export class LfLocalizationService implements ILocalizationService {
    * @param url the remote url to the resource file
    * @param code format languagecode2-country/regioncode2
    */
-  private async addResourceFromUrlAsync(url: string, code: string): Promise<Object> {
+  private async addResourceFromUrlAsync(url: string, code: string): Promise<object> {
     const response = await fetch(url);
-    if (!response.ok) {
-      throw new ResourceNotFoundError(`HTTP error ${response.status} at ${url}`, response.status);
-    } else {
+    if (response.status === 404) {
+      throw new ResourceNotFoundError(`HTTP error ${response.status} at ${url}`);
+    } else if (response.status === 200) {
       const json = await response.json();
-      this._resources!.set(code, json);
+      this._resources.set(code, json);
       return json;
+    } else {
+      throw new Error(`addResourceFromUrlAsync(${url}) HTTP status ${response.status}.`);
     }
   }
 
   /**
-   * Sets _currentResource based on given language, if language exists in _resource, 
-   * else if language does not exist in _resource, set to the language without dash if exists in _resource, 
+   * Sets _currentResource based on given language, if language exists in _resource,
+   * else if language does not exist in _resource, set to the language without dash if exists in _resource,
    * else if language without dash doesn't exist, set to default language which is guaranteed to exist.
-   * @param language 
-   * @returns 
+   * @param language
+   * @returns
    */
   private setResourceWithFallBack(language: string): void {
     const setCurrentResourceSuccess = this.setLanguageResource(language);
@@ -310,8 +280,7 @@ export class LfLocalizationService implements ILocalizationService {
       if (setCurrentResourceFallBackDefaultSuccess) {
         console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.
       Fall back to use default language ${this.DEFAULT_LANGUAGE}.`);
-      }
-      else {
+      } else {
         console.warn('Resource is not found. Cannot set currentResource.');
         this._currentResource = undefined;
       }
@@ -320,11 +289,11 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Sets _currentResource based on given language
-   * @param language 
+   * @param language
    * @returns true if _currentResource is set, false if language doesn't exist in _resource
    */
   private setLanguageResource(language: string): boolean {
-    const resource = this._resources?.get(language);
+    const resource = this._resources.get(language);
     if (resource) {
       this._currentResource = { language: language, resource: resource };
       return true;
@@ -334,12 +303,12 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Ensures the url ends with '/'
-   * @param url 
+   * @param url
    * @returns path with '/'
    */
   private terminateUrlWithSlash(url: string) {
-    if (!url.endsWith('\/')) {
-      url = url.concat('\/');
+    if (!url.endsWith('/')) {
+      url = url.concat('/');
     }
     return url;
   }
@@ -352,8 +321,7 @@ export class LfLocalizationService implements ILocalizationService {
     for (const character of value) {
       if (this.ACCENTED_MAP[character]) {
         pseudoLocalizedText += this.ACCENTED_MAP[character];
-      }
-      else {
+      } else {
         pseudoLocalizedText += character;
       }
     }

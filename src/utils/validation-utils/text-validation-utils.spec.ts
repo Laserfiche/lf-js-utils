@@ -3,13 +3,13 @@ import { text_testables, formatTextConstraint } from './text-validation-utils';
 describe('TextValidationUtils', () => {
   it('should add ^ to beginning if not present', () => {
     // Arrange
-    const constraint: string = '\\d\\d\\d\$';
+    const constraint: string = '\\d\\d\\d$';
 
     // Act
     const newConstraint: string = text_testables.createStrictRegexConstraint(constraint);
 
     // Assert
-    const expected: string = '^\\d\\d\\d\$';
+    const expected: string = '^\\d\\d\\d$';
     expect(newConstraint).toEqual(expected);
   });
 
@@ -21,7 +21,7 @@ describe('TextValidationUtils', () => {
     const newConstraint: string = text_testables.createStrictRegexConstraint(constraint);
 
     // Assert
-    const expected: string = '^\\d\\d\\d\$';
+    const expected: string = '^\\d\\d\\d$';
     expect(newConstraint).toEqual(expected);
   });
 
@@ -33,13 +33,13 @@ describe('TextValidationUtils', () => {
     const newConstraint: string = text_testables.createStrictRegexConstraint(constraint);
 
     // Assert
-    const expected: string = '^\\d\\d\\d\$';
+    const expected: string = '^\\d\\d\\d$';
     expect(newConstraint).toEqual(expected);
   });
 
   it('should not add ^ to beginning and $ to end if both are present', () => {
     // Arrange
-    const constraint: string = '^\\d\\d\\d\$';
+    const constraint: string = '^\\d\\d\\d$';
 
     // Act
     const newConstraint: string = text_testables.createStrictRegexConstraint(constraint);
@@ -59,14 +59,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = '2';
     const tooLongVal: string = 'abcd';
     const notAlnumVal: string = '\\';
-    const constraint: string = '\[\[:alnum:\]\]\[\[:alnum:\]\]\[\[:alnum:\]\]';
+    const constraint: string = '[[:alnum:]][[:alnum:]][[:alnum:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^\[0-9A-Za-z\]\[0-9A-Za-z\]\[0-9A-Za-z\]\$';
+    const expected: string = '^[0-9A-Za-z][0-9A-Za-z][0-9A-Za-z]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -81,14 +81,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = 'aaaBaaa';
     const tooLongVal: string = 'aaaBaaaCa';
     const notAlphaVal: string = 'aaa1aaa2';
-    const constraint: string = 'aaa\[\[:alpha:\]\]aaa\[\[:alpha:\]\]';
+    const constraint: string = 'aaa[[:alpha:]]aaa[[:alpha:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^aaa\[A-Za-z\]aaa\[A-Za-z\]\$';
+    const expected: string = '^aaa[A-Za-z]aaa[A-Za-z]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -104,14 +104,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = ' bbb';
     const tooLongVal: string = ' bbb  ';
     const notBlankVal: string = 'sad';
-    const constraint: string = '\[\[:blank:\]\]bbb\[\[:blank:\]\]';
+    const constraint: string = '[[:blank:]]bbb[[:blank:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^\[ \t\]bbb\[ \t\]\$';
+    const expected: string = '^[ \t]bbb[ \t]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodValSpaces)).toBeTruthy();
@@ -127,14 +127,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = '12';
     const tooLongVal: string = '1234';
     const notDigitVal: string = 'sad';
-    const constraint: string = '\[\[:digit:\]\]\[\[:digit:\]\]\[\[:digit:\]\]';
+    const constraint: string = '[[:digit:]][[:digit:]][[:digit:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^\\d\\d\\d\$';
+    const expected: string = '^\\d\\d\\d$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -149,14 +149,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = 'llla';
     const tooLongVal: string = 'lllaaa';
     const notLowerVal: string = 'lllAA';
-    const constraint: string = 'lll\[\[:lower:\]\]\[\[:lower:\]\]';
+    const constraint: string = 'lll[[:lower:]][[:lower:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^lll\[a-z\]\[a-z\]\$';
+    const expected: string = '^lll[a-z][a-z]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -167,18 +167,18 @@ describe('TextValidationUtils', () => {
 
   it('should respect character class [[:print:]]', () => {
     // Arrange
-    const goodVal: string = 'ppp\|\|';
+    const goodVal: string = 'ppp||';
     const tooShortVal: string = 'pppa';
     const tooLongVal: string = 'pppaaa';
     const notPrintVal: string = 'ppp\t\t';
-    const constraint: string = 'ppp\[\[:print:\]\]\[\[:print:\]\]';
+    const constraint: string = 'ppp[[:print:]][[:print:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^ppp\[ -~\]\[ -~\]\$';
+    const expected: string = '^ppp[ -~][ -~]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -189,11 +189,11 @@ describe('TextValidationUtils', () => {
 
   it('should respect character class [[:punct:]]', () => {
     // Arrange
-    const goodVal: string = '\\ppp\|';
+    const goodVal: string = '\\ppp|';
     const tooShortVal: string = '!ppp';
-    const tooLongVal: string = '!ppp\?\?';
+    const tooLongVal: string = '!ppp??';
     const notPunctVal: string = 'ppppp';
-    const constraint: string = '\[\[:punct:\]\]ppp\[\[:punct:\]\]';
+    const constraint: string = '[[:punct:]]ppp[[:punct:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
@@ -201,7 +201,7 @@ describe('TextValidationUtils', () => {
 
     // Assert
     const expected: string =
-      '^\[~`!@#\$%\^&\*()\{\}\[\\];:"\\\'<,\.>\?/\\\\|_\+=\\-\]ppp\[~`!@#\$%\^&\*()\{\}\[\\];:"\\\'<,\.>\?/\\\\|_\+=\\-\]\$';
+      '^[~`!@#$%^&*(){}[\\];:"\\\'<,.>?/\\\\|_+=\\-]ppp[~`!@#$%^&*(){}[\\];:"\\\'<,.>?/\\\\|_+=\\-]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -216,14 +216,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = '    ';
     const tooLongVal: string = '      ';
     const notSpaceVal: string = 'p p p';
-    const constraint: string = '\[\[:space:\]\] \[\[:space:\]\] \[\[:space:\]\]';
+    const constraint: string = '[[:space:]] [[:space:]] [[:space:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^\\s \\s \\s\$';
+    const expected: string = '^\\s \\s \\s$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -238,14 +238,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = 'AB';
     const tooLongVal: string = 'ABCD';
     const notUpperVal: string = 'abc';
-    const constraint: string = '\[\[:upper:\]\]\[\[:upper:\]\]\[\[:upper:\]\]';
+    const constraint: string = '[[:upper:]][[:upper:]][[:upper:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^\[A-Z\]\[A-Z\]\[A-Z\]\$';
+    const expected: string = '^[A-Z][A-Z][A-Z]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -260,14 +260,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = 'AB';
     const tooLongVal: string = 'ABCD';
     const notXdigitVal: string = '!#%';
-    const constraint: string = '\[\[:xdigit:\]\]\[\[:xdigit:\]\]\[\[:xdigit:\]\]';
+    const constraint: string = '[[:xdigit:]][[:xdigit:]][[:xdigit:]]';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^\[0-9A-Fa-f\]\[0-9A-Fa-f\]\[0-9A-Fa-f\]\$';
+    const expected: string = '^[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -282,14 +282,14 @@ describe('TextValidationUtils', () => {
     const tooShortVal: string = 'wwwABwww';
     const tooLongVal: string = 'wwwABCDwww';
     const notWordVal: string = 'www!#%www';
-    const constraint: string = 'www\[\[:word:\]\]\[\[:word:\]\]\[\[:word:\]\]www';
+    const constraint: string = 'www[[:word:]][[:word:]][[:word:]]www';
 
     // Act
     const newConstraint: string = formatTextConstraint(constraint);
     const regex: RegExp = new RegExp(newConstraint);
 
     // Assert
-    const expected: string = '^www\\w\\w\\wwww\$';
+    const expected: string = '^www\\w\\w\\wwww$';
 
     expect(newConstraint).toEqual(expected);
     expect(regex.test(goodVal)).toBeTruthy();
@@ -297,5 +297,4 @@ describe('TextValidationUtils', () => {
     expect(regex.test(tooLongVal)).toBeFalsy();
     expect(regex.test(notWordVal)).toBeFalsy();
   });
-
 });
