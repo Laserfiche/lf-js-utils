@@ -1,5 +1,5 @@
 
-import { numeric_testables, evaluateNumericValidationExpression } from './numeric-validation-utils';
+import { numeric_testables, evaluateNumericValidationExpression } from './numeric-validation-utils.js';
 
 describe('NumericValidationUtils', () => {
   it('should validate a valid 4-digit number', () => {

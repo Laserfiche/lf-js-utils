@@ -1,4 +1,4 @@
-import { getMIMETypeFromExtension } from './mime-type-utils';
+import { getMIMETypeFromExtension } from './mime-type-utils.js';
 
 describe('MimeTypeUtils', () => {
   it('should get mime type for extension without period', () => {

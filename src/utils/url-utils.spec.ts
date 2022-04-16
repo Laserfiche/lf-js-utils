@@ -1,7 +1,7 @@
 import {
   QueryParameter,
   combineURLs,
-} from './url-utils';
+} from './url-utils.js';
 
 describe('urlUtils', () => {
 

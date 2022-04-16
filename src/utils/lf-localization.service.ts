@@ -1,4 +1,4 @@
-import { formatString } from './string-utils';
+import { formatString } from './string-utils.js';
 
 export type resourceType = { language: string; resource: object };
 

@@ -7,7 +7,7 @@ import {
   sanitizeFileName,
   combinePaths,
   getCleanedExtension
-} from './path-utils';
+} from './path-utils.js';
 
 describe('path-utils', () => {
   it('get base name', () => {

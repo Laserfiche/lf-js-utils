@@ -1,4 +1,4 @@
-import { formatString } from './string-utils';
+import { formatString } from './string-utils.js';
 
 describe('string-utils', () => {
   it('formatString should not replace variables if there are no variables or params', () => {
