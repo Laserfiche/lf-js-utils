@@ -7,14 +7,14 @@ describe('IconUtils', () => {
             '': 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#',
             'a': 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#a',
             undefined: 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#undefined'
-        }
+        };
         // Act, Assert
         // eslint-disable-next-line guard-for-in
         for (const input in expectedResultByInput) {
             const expectedResult = expectedResultByInput[input];
             expect(getDocumentIconUrlFromIconId(input)).toEqual(expectedResult);
         }
-    })
+    });
 
     it('should get document icon from extension', () => {
         // Arrange
@@ -48,5 +48,5 @@ describe('IconUtils', () => {
             expect(getDocumentIconIdFromExtension(input)).toEqual(expectedResult);
         }
         expect(getDocumentIconIdFromExtension(undefined)).toEqual('document-20');
-    })
+    });
 });
