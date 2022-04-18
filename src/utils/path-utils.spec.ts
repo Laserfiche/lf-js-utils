@@ -188,7 +188,7 @@ describe('path-utils', () => {
     const pathStartSlash = '\\start with slash';
     const pathStartEndSlash = '\\full path test\\';
     const pathNoSlash = 'test path';
-    const pathMiddleSlash = 'test\\path'
+    const pathMiddleSlash = 'test\\path';
     // Act
 
     // Assert
@@ -216,5 +216,5 @@ describe('path-utils', () => {
       const expectedResult = expectedResultByInput[input];
       expect(getCleanedExtension(input)).toEqual(expectedResult);
     }
-  })
+  });
 });

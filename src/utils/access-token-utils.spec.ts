@@ -8,7 +8,7 @@ describe('AccessTokenUtils', () => {
       header: { "typ": "JWT" },
       payload: { "csid": "123456789" },
       signature: "_signature"
-    }
+    };
     const expectedAccountId = '123456789';
 
     // Act
@@ -24,7 +24,7 @@ describe('AccessTokenUtils', () => {
       header: { "typ": "JWT" },
       payload: { "trid": "1008" },
       signature: "_signature"
-    }
+    };
     const expectedTrusteeId = '1008';
 
     // Act
@@ -42,7 +42,7 @@ describe('AccessTokenUtils', () => {
       webClientUrl: 'https://app.a.clouddev.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.a.clouddev.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.a.clouddev.laserfiche.com/repository/'
-    }
+    };
 
     // Act
     const endpoints = AccessTokenUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
@@ -58,7 +58,7 @@ describe('AccessTokenUtils', () => {
       webClientUrl: 'https://app.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.laserfiche.com/repository/'
-    }
+    };
 
     // Act
     const endpoints = AccessTokenUtils.getLfEndpoints(accountId);
@@ -75,7 +75,7 @@ describe('AccessTokenUtils', () => {
       webClientUrl: 'https://app.cloudtest.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.cloudtest.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.cloudtest.laserfiche.com/repository/'
-    }
+    };
 
     // Act
     const endpoints = AccessTokenUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
@@ -92,7 +92,7 @@ describe('AccessTokenUtils', () => {
       webClientUrl: 'https://app.cloudtest.laserfiche.ca/laserfiche',
       wsignoutUrl: 'https://accounts.cloudtest.laserfiche.ca/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.cloudtest.laserfiche.ca/repository/'
-    }
+    };
 
     // Act
     const endpoints = AccessTokenUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
@@ -108,7 +108,7 @@ describe('AccessTokenUtils', () => {
       webClientUrl: 'https://app.eu.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.eu.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.eu.laserfiche.com/repository/'
-    }
+    };
 
     // Act
     const endpoints = AccessTokenUtils.getLfEndpoints(accountId);
@@ -146,7 +146,7 @@ describe('AccessTokenUtils', () => {
         "iat": 1516239022
       },
       signature: 'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
-    }
+    };
 
     // Act
     const jwt = AccessTokenUtils.parseAccessToken(jwtString);
@@ -228,7 +228,7 @@ describe('AccessTokenUtils', () => {
 
     // Act
     expect(devEnvironmentSubDomain).toEqual(expectedDevEnvironmentSubDomain);
-  })
+  });
 
 
-})
+});
