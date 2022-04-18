@@ -67,15 +67,15 @@ describe('DatetimeUtils', () => {
     const datetimeString: string = '2021-03-25T26:00:72';
     const datetime: Date = new Date(datetimeString);
     expect(DatetimeUtils.isValidDate(datetime)).toBeFalsy();
-  })
+  });
 
 });
 
 /**
- * 
- * @param originalDateString 
+ *
+ * @param originalDateString
  * @returns timestamp with the offset based on the current timezone
- * example: in PDT, timezone offset is -7 h 
+ * example: in PDT, timezone offset is -7 h
  * mockDateTimeOffset(2021-03-25T00:00:00) -> 2021-03-25T01:00:00-07:00
  */
 function mockDateTimeOffset(originalDateString: string) : string {
