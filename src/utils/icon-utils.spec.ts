@@ -1,4 +1,4 @@
-import { getDocumentIconIdFromExtension, getDocumentIconUrlFromIconId } from './icon-utils';
+import { getDocumentIconIdFromExtension, getDocumentIconUrlFromIconId } from './icon-utils.js';
 
 describe('IconUtils', () => {
     it('should return Icon url given an Icon id', () => {
