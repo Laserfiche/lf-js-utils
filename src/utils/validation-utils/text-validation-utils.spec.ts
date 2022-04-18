@@ -1,4 +1,4 @@
-import { text_testables, formatTextConstraint } from './text-validation-utils';
+import { text_testables, formatTextConstraint } from './text-validation-utils.js';
 
 describe('TextValidationUtils', () => {
   it('should add ^ to beginning if not present', () => {

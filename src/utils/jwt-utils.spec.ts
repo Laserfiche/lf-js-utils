@@ -1,10 +1,10 @@
-import * as AccessTokenUtils from './access-token-utils.js';
+import * as JwtUtils from './jwt-utils.js';
 
-describe('AccessTokenUtils', () => {
+describe('JwtUtils', () => {
 
   it('getAccountIdFromLfJWT returns the account id', () => {
     // Arrange
-    const jwt: AccessTokenUtils.JWT = {
+    const jwt: JwtUtils.JWT = {
       header: { "typ": "JWT" },
       payload: { "csid": "123456789" },
       signature: "_signature"
@@ -12,7 +12,7 @@ describe('AccessTokenUtils', () => {
     const expectedAccountId = '123456789';
 
     // Act
-    const accountId = AccessTokenUtils.getAccountIdFromLfJWT(jwt);
+    const accountId = JwtUtils.getAccountIdFromLfJWT(jwt);
 
     // Assert
     expect(accountId).toEqual(expectedAccountId);
@@ -20,7 +20,7 @@ describe('AccessTokenUtils', () => {
 
   it('getTrusteeIdFromLfJWT returns the trustee id', () => {
     // Arrange
-    const jwt: AccessTokenUtils.JWT = {
+    const jwt: JwtUtils.JWT = {
       header: { "typ": "JWT" },
       payload: { "trid": "1008" },
       signature: "_signature"
@@ -28,7 +28,7 @@ describe('AccessTokenUtils', () => {
     const expectedTrusteeId = '1008';
 
     // Act
-    const trid = AccessTokenUtils.getTrusteeIdFromLfJWT(jwt);
+    const trid = JwtUtils.getTrusteeIdFromLfJWT(jwt);
 
     // Assert
     expect(trid).toEqual(expectedTrusteeId);
@@ -38,14 +38,14 @@ describe('AccessTokenUtils', () => {
     // Arrange
     const accountId = '123456789';
     const devEnvironmentSubDomain = 'a.clouddev';
-    const expectedEndpoints: AccessTokenUtils.LfEndpoints = {
+    const expectedEndpoints: JwtUtils.LfEndpoints = {
       webClientUrl: 'https://app.a.clouddev.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.a.clouddev.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.a.clouddev.laserfiche.com/repository/'
     };
 
     // Act
-    const endpoints = AccessTokenUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
+    const endpoints = JwtUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
 
     // Assert
     expect(endpoints).toEqual(expectedEndpoints);
@@ -54,14 +54,14 @@ describe('AccessTokenUtils', () => {
   it('getLfEndpoints returns the region-specific Laserfiche Cloud endpoints for production environment', () => {
     // Arrange
     const accountId = '123456789';
-    const expectedEndpoints: AccessTokenUtils.LfEndpoints = {
+    const expectedEndpoints: JwtUtils.LfEndpoints = {
       webClientUrl: 'https://app.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.laserfiche.com/repository/'
     };
 
     // Act
-    const endpoints = AccessTokenUtils.getLfEndpoints(accountId);
+    const endpoints = JwtUtils.getLfEndpoints(accountId);
 
     // Assert
     expect(endpoints).toEqual(expectedEndpoints);
@@ -71,14 +71,14 @@ describe('AccessTokenUtils', () => {
     // Arrange
     const accountId = '123456789';
     const devEnvironmentSubDomain = 'cloudtest';
-    const expectedEndpoints: AccessTokenUtils.LfEndpoints = {
+    const expectedEndpoints: JwtUtils.LfEndpoints = {
       webClientUrl: 'https://app.cloudtest.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.cloudtest.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.cloudtest.laserfiche.com/repository/'
     };
 
     // Act
-    const endpoints = AccessTokenUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
+    const endpoints = JwtUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
 
     // Assert
     expect(endpoints).toEqual(expectedEndpoints);
@@ -88,14 +88,14 @@ describe('AccessTokenUtils', () => {
     // Arrange
     const accountId = '1123456789';
     const devEnvironmentSubDomain = 'cloudtest';
-    const expectedEndpoints: AccessTokenUtils.LfEndpoints = {
+    const expectedEndpoints: JwtUtils.LfEndpoints = {
       webClientUrl: 'https://app.cloudtest.laserfiche.ca/laserfiche',
       wsignoutUrl: 'https://accounts.cloudtest.laserfiche.ca/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.cloudtest.laserfiche.ca/repository/'
     };
 
     // Act
-    const endpoints = AccessTokenUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
+    const endpoints = JwtUtils.getLfEndpoints(accountId, devEnvironmentSubDomain);
 
     // Assert
     expect(endpoints).toEqual(expectedEndpoints);
@@ -104,14 +104,14 @@ describe('AccessTokenUtils', () => {
   it('getLfEndpoints returns the region-specific Laserfiche Cloud endpoints for EU accounts', () => {
     // Arrange
     const accountId = '2123456789';
-    const expectedEndpoints: AccessTokenUtils.LfEndpoints = {
+    const expectedEndpoints: JwtUtils.LfEndpoints = {
       webClientUrl: 'https://app.eu.laserfiche.com/laserfiche',
       wsignoutUrl: 'https://accounts.eu.laserfiche.com/WebSTS/?wa=wsignout1.0',
       repositoryApiBaseUrl: 'https://api.eu.laserfiche.com/repository/'
     };
 
     // Act
-    const endpoints = AccessTokenUtils.getLfEndpoints(accountId);
+    const endpoints = JwtUtils.getLfEndpoints(accountId);
 
     // Assert
     expect(endpoints).toEqual(expectedEndpoints);
@@ -123,7 +123,7 @@ describe('AccessTokenUtils', () => {
     const expectedDecodedString = 'test';
 
     // Act
-    const decodedString = AccessTokenUtils.base64toString(base64String);
+    const decodedString = JwtUtils.base64toString(base64String);
 
     // Assert
     expect(decodedString).toEqual(expectedDecodedString);
@@ -133,7 +133,7 @@ describe('AccessTokenUtils', () => {
     // Arrange
     const jwtString = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9l
     IiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`; // copy from https://jwt.io/
-    const expectedJWT: AccessTokenUtils.JWT = {
+    const expectedJWT: JwtUtils.JWT = {
       header:
       {
         "alg": "HS256",
@@ -149,7 +149,7 @@ describe('AccessTokenUtils', () => {
     };
 
     // Act
-    const jwt = AccessTokenUtils.parseAccessToken(jwtString);
+    const jwt = JwtUtils.parseAccessToken(jwtString);
 
     // Assert
     expect(jwt).toEqual(expectedJWT);
@@ -162,7 +162,7 @@ describe('AccessTokenUtils', () => {
     const expectedRegionalDomain = 'laserfiche.com';
 
     // Act
-    const regionalDomain = AccessTokenUtils.getLfRegionalDomainFromAccountId(accountId);
+    const regionalDomain = JwtUtils.getLfRegionalDomainFromAccountId(accountId);
 
     // Assert
     expect(regionalDomain).toEqual(expectedRegionalDomain);
@@ -175,7 +175,7 @@ describe('AccessTokenUtils', () => {
     const expectedRegionalDomain = 'a.clouddev.laserfiche.ca';
 
     // Act
-    const regionalDomain = AccessTokenUtils.getLfRegionalDomainFromAccountId(accountId, devEnvironmentSubDomain);
+    const regionalDomain = JwtUtils.getLfRegionalDomainFromAccountId(accountId, devEnvironmentSubDomain);
 
     // Assert
     expect(regionalDomain).toEqual(expectedRegionalDomain);
@@ -188,7 +188,7 @@ describe('AccessTokenUtils', () => {
     const expectedRegionalDomain = 'cloudtest.eu.laserfiche.com';
 
     // Act
-    const regionalDomain = AccessTokenUtils.getLfRegionalDomainFromAccountId(accountId, devEnvironmentSubDomain);
+    const regionalDomain = JwtUtils.getLfRegionalDomainFromAccountId(accountId, devEnvironmentSubDomain);
 
     // Assert
     expect(regionalDomain).toEqual(expectedRegionalDomain);
@@ -200,7 +200,7 @@ describe('AccessTokenUtils', () => {
     const expectedDevEnvironmentSubDomain = 'a.clouddev';
 
     // Act
-    const devEnvironmentSubDomain = AccessTokenUtils.getLfDevEnvironmentSubDomain(urlHostName);
+    const devEnvironmentSubDomain = JwtUtils.getLfDevEnvironmentSubDomain(urlHostName);
 
     // Act
     expect(devEnvironmentSubDomain).toEqual(expectedDevEnvironmentSubDomain);
@@ -212,7 +212,7 @@ describe('AccessTokenUtils', () => {
     const expectedDevEnvironmentSubDomain = 'cloudtest';
 
     // Act
-    const devEnvironmentSubDomain = AccessTokenUtils.getLfDevEnvironmentSubDomain(urlHostName);
+    const devEnvironmentSubDomain = JwtUtils.getLfDevEnvironmentSubDomain(urlHostName);
 
     // Act
     expect(devEnvironmentSubDomain).toEqual(expectedDevEnvironmentSubDomain);
@@ -224,7 +224,7 @@ describe('AccessTokenUtils', () => {
     const expectedDevEnvironmentSubDomain = '';
 
     // Act
-    const devEnvironmentSubDomain = AccessTokenUtils.getLfDevEnvironmentSubDomain(urlHostName);
+    const devEnvironmentSubDomain = JwtUtils.getLfDevEnvironmentSubDomain(urlHostName);
 
     // Act
     expect(devEnvironmentSubDomain).toEqual(expectedDevEnvironmentSubDomain);

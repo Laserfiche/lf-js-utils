@@ -1,4 +1,4 @@
-export * as AccessTokenUtils from './utils/access-token-utils.js'; 
+export * as JwtUtils from './utils/jwt-utils.js';
 export * as UrlUtils from './utils/url-utils.js';
 export * as LfMetadataValidationUtils from './utils/validation-utils/validation-utils-public-api.js';
 export * as LfMetadataDatetimeUtils from './utils/datetime-utils.js';
