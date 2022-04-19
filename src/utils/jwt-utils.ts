@@ -65,7 +65,7 @@ export function getTrusteeIdFromLfJWT(lfJwt: JWT): string {
  *  //      wsignoutUrl: 'https://accounts.a.clouddev.laserfiche.com/WebSTS/?wa=wsignout1.0',
  *  //      repositoryApiBaseUrl: 'https://api.a.clouddev.laserfiche.com/repository/'
  *  //     }
- * ```
+ *
  *  getLfEndpoints('123456789');
  *  // => {
  *  //      webClientUrl: 'https://app.laserfiche.com/laserfiche',
