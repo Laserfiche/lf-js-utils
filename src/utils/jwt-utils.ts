@@ -132,6 +132,7 @@ export function parseAccessToken(jwt: string): JWT {
  * @returns
  * @example
  * ```typescript
+ * getLfRegionalDomainFromAccountId('1123456789'); // 'laserfiche.ca'
  * getLfRegionalDomainFromAccountId('1123456789', 'a.clouddev'); // 'a.clouddev.laserfiche.ca'
  * getLfRegionalDomainFromAccountId('123456789', 'a.clouddev'); // 'a.clouddev.laserfiche.com'
  * getLfRegionalDomainFromAccountId('2123456789', 'cloudtest'); // 'cloudtest.eu.laserfiche.com'
