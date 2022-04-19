@@ -23,7 +23,7 @@ on:
 env:
   MAJOR_VERSION: 3
   MINOR_VERSION: 0
-  PATCH_VERSION: 4
+  PATCH_VERSION: 5
   publishProduction: 'false'
   publishPreview: 'false'
 
@@ -41,7 +41,7 @@ jobs:
       NpmTag: ${{ env.NpmTag }}
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Echo build number
         run: echo ${{github.run_id}}
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Npm run lint
         run: npm run lint
-  
+
       - name: Npm run test
         run: npm run test:ci
 
@@ -76,26 +76,26 @@ jobs:
 
       - name: Npm run generate-doc
         run: npm run generate-doc
-        
+
       - name: set up variable -- NpmPackageVersion and NpmTag for prod
         if: ${{ github.event.inputs.publishProduction == 'true'}}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
           echo "NpmTag='latest'" >> $GITHUB_ENV
-        
+
       - name: Set up variable -- NpmPackageVersion and NpmTag for preview
         if: ${{ github.event.inputs.publishPreview == 'true'}}
         run: |
           echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
           echo "NpmTag='next'" >> $GITHUB_ENV
-        
+
       - name: Echo NPM package version
         run: echo ${{ env.NpmPackageVersion }}
-        
+
       - name: Npm version
         if: ${{ env.NpmPackageVersion }}
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
- 
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
         with:
@@ -105,6 +105,8 @@ jobs:
             ./dist
             ./package.json
             ./.npmrc
+            ./README.md
+            ./LICENSE
 
   publishNPM:
     runs-on: ubuntu-latest
