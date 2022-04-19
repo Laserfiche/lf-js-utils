@@ -66,6 +66,13 @@ export function getTrusteeIdFromLfJWT(lfJwt: JWT): string {
  *  //      repositoryApiBaseUrl: 'https://api.a.clouddev.laserfiche.com/repository/'
  *  //     }
  * ```
+ *  getLfEndpoints('123456789');
+ *  // => {
+ *  //      webClientUrl: 'https://app.laserfiche.com/laserfiche',
+ *  //      wsignoutUrl: 'https://accounts.laserfiche.com/WebSTS/?wa=wsignout1.0',
+ *  //      repositoryApiBaseUrl: 'https://api.laserfiche.com/repository/'
+ *  //     }
+ * ```
  */
 export function getLfEndpoints(accountId: string, devEnvironmentSubDomain?: string): LfEndpoints {
   const regionSpecificHostName = getLfRegionalDomainFromAccountId(accountId, devEnvironmentSubDomain);
