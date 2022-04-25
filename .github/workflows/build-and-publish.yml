@@ -9,7 +9,7 @@ on:
 
   workflow_dispatch:
 
-   
+
 env:
   isProduction: 'false'
   MAJOR_VERSION: 3
@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
@@ -71,7 +71,7 @@ jobs:
             ./.npmrc
             ./README.md
             ./LICENSE
-            
+
   preview:
     runs-on: ubuntu-latest
     environment: preview
@@ -94,7 +94,7 @@ jobs:
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
-          
+
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
         env:
@@ -117,23 +117,23 @@ jobs:
     environment: production
     needs: [ build, preview ]
     steps:
-    
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
-          
+
       - name: Npm tool install
         run: npm install -g npm@8
 
       - name: set up variable -- NpmPackageVersion
         run: echo "NpmPackageVersion=${{env.MAJOR_VERSION}}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-        
+
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
           name: npm-publish-artifact
-          
+
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
         env:
@@ -148,4 +148,4 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }} 
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
