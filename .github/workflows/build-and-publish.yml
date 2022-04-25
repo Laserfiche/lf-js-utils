@@ -90,6 +90,11 @@ jobs:
       - name: set up variable -- NpmPackageVersion
         run: echo "NpmPackageVersion=${{env.MAJOR_VERSION}}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
 
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-artifact
+          
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
         env:
@@ -112,13 +117,23 @@ jobs:
     environment: production
     needs: [ build, preview ]
     steps:
-
+    
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '14'
+          
       - name: Npm tool install
         run: npm install -g npm@8
 
       - name: set up variable -- NpmPackageVersion
         run: echo "NpmPackageVersion=${{env.MAJOR_VERSION}}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-
+        
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-artifact
+          
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
         env:
