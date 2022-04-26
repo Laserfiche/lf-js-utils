@@ -1,4 +1,4 @@
-import { formatString } from './string-utils.js';
+import { base64toString, formatString } from './string-utils.js';
 
 describe('string-utils', () => {
   it('formatString should not replace variables if there are no variables or params', () => {
@@ -146,4 +146,17 @@ describe('string-utils', () => {
       formatString(stringWithRepeatedParams, params);
     }).toThrow(error);
   });
+  
+  it('base64toString decodes a based64-encoded string', () => {
+    // Arrange
+    const base64String = 'dGVzdA=='; // base64-encoding of 'test'
+    const expectedDecodedString = 'test';
+
+    // Act
+    const decodedString = base64toString(base64String);
+
+    // Assert
+    expect(decodedString).toEqual(expectedDecodedString);
+  });
+
 });
