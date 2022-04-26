@@ -117,18 +117,6 @@ describe('JwtUtils', () => {
     expect(endpoints).toEqual(expectedEndpoints);
   });
 
-  it('base64toString decodes a based64-encoded string', () => {
-    // Arrange
-    const base64String = 'dGVzdA=='; // base64-encoding of 'test'
-    const expectedDecodedString = 'test';
-
-    // Act
-    const decodedString = JwtUtils.base64toString(base64String);
-
-    // Assert
-    expect(decodedString).toEqual(expectedDecodedString);
-  });
-
   it('parseAccessToken parses a base64-encoded jwt', () => {
     // Arrange
     const jwtString = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9l

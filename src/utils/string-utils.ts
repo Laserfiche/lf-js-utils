@@ -31,3 +31,35 @@
     return stringToFormat;
   }
   
+let _isBrowser: boolean | undefined;
+
+export function isBrowser(): boolean {
+  if (_isBrowser) {
+    return _isBrowser;
+  }
+  try {
+    _isBrowser = window.location !== undefined;
+  }
+  catch {
+    _isBrowser = false;
+  }
+  return _isBrowser;
+}
+
+/**
+ * Decodes a string of data encoded using Base64 encoding
+ * @param base64String
+ * @returns
+ * @example
+ * ```typescript
+ * base64toString('dGVzdA=='); // => 'test';
+ * ```
+ */
+export function base64toString(base64String: string): string {
+  if (isBrowser()) {
+    return window.atob(base64String);
+  }
+  else {
+    return Buffer.from(base64String, 'base64').toString();
+  }
+}

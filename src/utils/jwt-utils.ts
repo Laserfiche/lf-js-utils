@@ -1,3 +1,5 @@
+import { base64toString } from './string-utils.js';
+
 /**
  * Laserfiche Cloud endpoints
  */
@@ -81,19 +83,6 @@ export function getLfEndpoints(accountId: string, devEnvironmentSubDomain?: stri
     repositoryApiBaseUrl: `https://api.${regionSpecificHostName}/repository/`,
     wsignoutUrl: `https://accounts.${regionSpecificHostName}/WebSTS/?wa=wsignout1.0`,
   };
-}
-
-/**
- * Decodes a string of data encoded using Base64 encoding
- * @param base64String
- * @returns
- * @example
- * ```typescript
- * base64toString('dGVzdA=='); // => 'test';
- * ```
- */
-export function base64toString(base64String: string): string {
-  return Buffer.from(base64String, 'base64').toString();
 }
 
 /**
