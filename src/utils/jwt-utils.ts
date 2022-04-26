@@ -100,7 +100,7 @@ export function base64toString(base64String: string): string {
     return window.atob(base64String);
   }
   else {
-    throw new Error('No method exists to decode base64')
+    throw new Error('No method exists to decode base64');
   }
 }
 
