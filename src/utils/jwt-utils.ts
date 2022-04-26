@@ -93,7 +93,15 @@ export function getLfEndpoints(accountId: string, devEnvironmentSubDomain?: stri
  * ```
  */
 export function base64toString(base64String: string): string {
-  return Buffer.from(base64String, 'base64').toString();
+  if (Buffer) {
+    return Buffer.from(base64String, 'base64').toString();
+  }
+  else if (window) {
+    return window.atob(base64String);
+  }
+  else {
+    throw new Error('No method exists to decode base64')
+  }
 }
 
 /**
