@@ -45,7 +45,7 @@ jobs:
           name: npm-publish-artifact
 
       - name: set NpmPackageVersion as preview version from downloaded artifact
-        run: echo "NpmPackageVersion=`cat npm-publish-artifact/preview_version.txt`" >> $GITHUB_ENV
+        run: echo "NpmPackageVersion=`cat preview_version.txt`" >> $GITHUB_ENV
 
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
@@ -78,15 +78,15 @@ jobs:
       - name: Npm tool install
         run: npm install -g npm@8
 
-      - name: set NpmPackageVersion as production version from downloaded artifact
-        run: echo "NpmPackageVersion=`cat npm-publish-artifact/production_version.txt`" >> $GITHUB_ENV
-
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           workflow_conclusion: success
           name: npm-publish-artifact
+
+      - name: set NpmPackageVersion as production version from downloaded artifact
+        run: echo "NpmPackageVersion=`cat production_version.txt`" >> $GITHUB_ENV
 
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
