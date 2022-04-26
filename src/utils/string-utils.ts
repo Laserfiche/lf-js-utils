@@ -1,3 +1,5 @@
+import { isBrowser } from './core-utils.js';
+
 /**
  * Returns the formatted string.
  * It will replace parameters of the format {x}, where x is a number and will be used as
@@ -11,39 +13,24 @@
  * // formattedString = 'Do you like apples and bananas? I like apples'
  * ```
  */
- export function formatString(stringToFormat: string, params?: string[]): string {
-    const expectedParams: RegExpMatchArray = stringToFormat.match(/\{\d+\}/g) ?? [];
-    const expectedNumParams: number = new Set(expectedParams).size;
-    if (
-      (expectedNumParams > 0 && params?.length !== expectedNumParams) ||
-      (expectedNumParams === 0 && params && params.length > 0)
-    ) {
-      throw new Error(`Expected ${expectedNumParams} arguments. Actual arguments: ${params?.length ?? '0'}.`);
-    }
-  
-    if (params && params.length > 0) {
-      for (let i = 0; i < params.length; i++) {
-        const replacement: string = params[i];
-        const varRegex: RegExp = new RegExp(`\\{${i}\\}`, 'g');
-        stringToFormat = stringToFormat.replace(varRegex, replacement);
-      }
-    }
-    return stringToFormat;
+export function formatString(stringToFormat: string, params?: string[]): string {
+  const expectedParams: RegExpMatchArray = stringToFormat.match(/\{\d+\}/g) ?? [];
+  const expectedNumParams: number = new Set(expectedParams).size;
+  if (
+    (expectedNumParams > 0 && params?.length !== expectedNumParams) ||
+    (expectedNumParams === 0 && params && params.length > 0)
+  ) {
+    throw new Error(`Expected ${expectedNumParams} arguments. Actual arguments: ${params?.length ?? '0'}.`);
   }
-  
-let _isBrowser: boolean | undefined;
 
-export function isBrowser(): boolean {
-  if (_isBrowser) {
-    return _isBrowser;
+  if (params && params.length > 0) {
+    for (let i = 0; i < params.length; i++) {
+      const replacement: string = params[i];
+      const varRegex: RegExp = new RegExp(`\\{${i}\\}`, 'g');
+      stringToFormat = stringToFormat.replace(varRegex, replacement);
+    }
   }
-  try {
-    _isBrowser = window.location !== undefined;
-  }
-  catch {
-    _isBrowser = false;
-  }
-  return _isBrowser;
+  return stringToFormat;
 }
 
 /**
