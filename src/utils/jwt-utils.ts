@@ -93,7 +93,12 @@ export function getLfEndpoints(accountId: string, devEnvironmentSubDomain?: stri
  * ```
  */
 export function base64toString(base64String: string): string {
-  return Buffer.from(base64String, 'base64').toString();
+  try {
+    return atob(base64String);
+  }
+  catch {
+    return Buffer.from(base64String, 'base64').toString();
+  }
 }
 
 /**
