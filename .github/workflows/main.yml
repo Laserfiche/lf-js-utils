@@ -21,9 +21,9 @@ on:
         default: 'false'
 
 env:
-  MAJOR_VERSION: 3
+  MAJOR_VERSION: 4
   MINOR_VERSION: 0
-  PATCH_VERSION: 5
+  PATCH_VERSION: 0
   publishProduction: 'false'
   publishPreview: 'false'
 
