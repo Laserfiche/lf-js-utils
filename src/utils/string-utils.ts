@@ -16,6 +16,7 @@ import { isBrowser } from './core-utils.js';
 export function formatString(stringToFormat: string, params?: string[]): string {
   const expectedParams: RegExpMatchArray = stringToFormat.match(/\{\d+\}/g) ?? [];
   const expectedNumParams: number = new Set(expectedParams).size;
+
   if (
     (expectedNumParams > 0 && params?.length !== expectedNumParams) ||
     (expectedNumParams === 0 && params && params.length > 0)
