@@ -12,9 +12,9 @@ on:
 
 env:
   isProduction: 'false'
-  MAJOR_VERSION: 3
+  MAJOR_VERSION: 4
   MINOR_VERSION: 0
-  PATCH_VERSION: 6
+  PATCH_VERSION: 1
 
 jobs:
   build:
