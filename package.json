@@ -1,6 +1,6 @@
 {
   "name": "@laserfiche/lf-js-utils",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "A library containing utility functions for use with laserfiche-ui-components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
