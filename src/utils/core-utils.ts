@@ -90,6 +90,10 @@ export async function waitForConditionAsync(func: () => boolean, timeoutFunc: ()
   
 let _isBrowser: boolean | undefined;
 
+/**
+ * Function that determines if the environment is in a browser or not
+ * @returns True if the function is run in a browser, false if it is run in another environment
+ */
 export function isBrowser(): boolean {
   if (_isBrowser) {
     return _isBrowser;
