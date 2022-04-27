@@ -9,7 +9,7 @@ describe('CoreUtils', () => {
         }, 500);
         await waitForConditionAsync(
             () => value === expected,
-            () => { throw Error('Timeout')}
+            () => { throw Error('Timeout');}
         );
         expect(value).toEqual(expected);
     });
@@ -22,7 +22,7 @@ describe('CoreUtils', () => {
         }, 500);
         waitForConditionAsync(
             () => value === expected,
-            () => { throw Error('Timeout')},
+            () => { throw Error('Timeout');},
             1000
         ).catch(() => expect(true));
     });
