@@ -25,13 +25,12 @@ describe('CoreUtils', () => {
             () => value === expected,
             () => { throw Error('Timeout');},
             1000
-        )
+        );
       }
       catch(e) {
         const msg = (<Error>e).message;
         expect(msg.includes('Timeout')).toBeTruthy();
       }
-;
     });
 
     it('validateDefined should return default if value is undefined', async () => {

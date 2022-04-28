@@ -171,7 +171,7 @@ describe('LfLocalizationService', () => {
     const message = `Required language resource en is not found in ${resourcesFolder}nonexistent/en.json.`;
 
     try {
-      await lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)
+      await lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`);
     } catch (e) {
       const msg = (<Error>e).message;
       expect(msg.includes(message)).toBeTruthy();
