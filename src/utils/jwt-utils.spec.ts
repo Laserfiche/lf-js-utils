@@ -9,7 +9,7 @@ describe('JwtUtils', () => {
       payload: { "csid": "123456789" },
       signature: "_signature"
     };
-    const expectedAccountId = '';
+    const expectedAccountId = '123456789';
 
     // Act
     const accountId = JwtUtils.getAccountIdFromLfJWT(jwt);

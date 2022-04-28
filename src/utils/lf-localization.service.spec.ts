@@ -168,12 +168,14 @@ describe('LfLocalizationService', () => {
   it('initResourcesFromUrlAsync should return error when getting default language returns HTTP error 404', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const error = new Error();
-    error.message = `Required language resource en is not found in ${resourcesFolder}nonexistent/en.json.`;
+    const message = `Required language resource en is not found in ${resourcesFolder}nonexistent/en.json.`;
 
-    await expect(lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)).rejects.toThrow(
-      error
-    );
+    try {
+      await lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`)
+    } catch (e) {
+      const msg = (<Error>e).message;
+      expect(msg.includes(message)).toBeTruthy();
+    }
   });
 
   it('initResourcesFromUrlAsync should return error when getting HTTP error other than 404', async () => {
