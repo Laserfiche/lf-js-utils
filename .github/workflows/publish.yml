@@ -67,6 +67,7 @@ jobs:
     if: ${{ github.run_attempt != 1 }}
     environment: production
     needs: [ validation ]
+
     steps:
 
       - name: Setup Node.js environment
