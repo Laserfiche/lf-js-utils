@@ -53,6 +53,7 @@ jobs:
           path: ./*.xml
           reporter: jest-junit
           only-summary: 'true'
+          fail-on-error: 'false'
 
       - name: Npm run build
         run: npm run build
