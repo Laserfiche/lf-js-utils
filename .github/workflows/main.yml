@@ -17,7 +17,7 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build_test:
+  build:
     runs-on: ubuntu-latest
     env:
       NPM_TOKEN: dummy
@@ -25,7 +25,7 @@ jobs:
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
     outputs:
-      NpmBaseVersion: ${{ env.NpmPackageVersion }}
+      NpmPackageVersion: ${{ env.NpmPackageVersion }}
     steps:
       - uses: actions/checkout@v2
 
@@ -64,7 +64,7 @@ jobs:
 
       - name: set up variable -- NpmPackageVersion
         run: |
-          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MAJOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
+          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
 
       - name: Npm run generate-doc
         run: npm run generate-doc
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: preview
     if: ${{ github.run_attempt != 1 }}
-    needs: [ build_test ] # wait for build to finish
+    needs: [ build ] # wait for build to finish
     steps:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     if: ${{ github.run_attempt != 1 }}
-    needs: [ build_test ]
+    needs: [ build ]
     steps:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
