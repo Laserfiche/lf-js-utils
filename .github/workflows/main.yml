@@ -10,9 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  MAJOR_VERSION: 4
-  MINOR_VERSION: 0
-  PATCH_VERSION: 1
+  NPM_VERSION: "4.0.1"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -24,8 +22,7 @@ jobs:
       NPM_USERNAME: dummy
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
-    outputs:
-      NpmPackageVersion: ${{ env.NpmPackageVersion }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -62,15 +59,11 @@ jobs:
       - name: Npm run build
         run: npm run build
 
-      - name: set up variable -- NpmPackageVersion
-        run: |
-          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-
       - name: Npm run generate-doc
         run: npm run generate-doc
 
       - name: Echo NPM package version
-        run: echo ${{ env.NpmPackageVersion }}
+        run: echo ${{ env.NPM_VERSION }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
@@ -104,7 +97,7 @@ jobs:
         run: npm install -g npm@8
 
       - name: set NpmPackageVersion as production version from downloaded artifact
-        run: echo "NpmPackageVersion=${{ needs.build.outputs.NpmPackageVersion }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
+        run: echo "NpmPackageVersion=${{ env.NPM_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
 
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
@@ -122,15 +115,13 @@ jobs:
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
           
+      - name: echo commit sha
+        run: echo ${{ github.sha }}
       - name: Create Tag
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: rickstaa/action-create-tag@v1
         with:
-          tag_name: ${{ env.NpmPackageVersion }}
-          release_name: ${{ env.NpmPackageVersion }}
-          draft: false
-          prerelease: false
+          tag: ${{ env.NpmPackageVersion }}
+          commit_sha: ${{ github.sha }}
 
   publish_to_npm_release:
     runs-on: ubuntu-latest
@@ -151,11 +142,9 @@ jobs:
       - name: Npm tool install
         run: npm install -g npm@8
 
-      - name: set NpmPackageVersion as production version from downloaded artifact
-        run: echo "NpmPackageVersion=${{ needs.build.outputs.NpmPackageVersion }}" >> $GITHUB_ENV
 
       - name: npm version
-        run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
+        run: npm version ${{ env.NPM_VERSION }} --no-git-tag-version
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
