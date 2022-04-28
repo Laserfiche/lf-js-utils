@@ -85,6 +85,10 @@ jobs:
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ] # wait for build to finish
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+          
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
@@ -132,6 +136,10 @@ jobs:
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ]
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+          
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
