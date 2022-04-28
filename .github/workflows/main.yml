@@ -17,7 +17,7 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  build_test:
     runs-on: ubuntu-latest
     env:
       NPM_TOKEN: dummy
@@ -84,11 +84,11 @@ jobs:
             ./README.md
             ./LICENSE
 
-  preview:
+  publish_to_npm_preview:
     runs-on: ubuntu-latest
     environment: preview
     if: ${{ github.run_attempt != 1 }}
-    needs: [ build ] # wait for build to finish
+    needs: [ build_test ] # wait for build to finish
     steps:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
@@ -122,11 +122,11 @@ jobs:
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
 
-  production:
+  publish_to_npm_release:
     runs-on: ubuntu-latest
     environment: production
     if: ${{ github.run_attempt != 1 }}
-    needs: [ build ]
+    needs: [ build_test ]
     steps:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
