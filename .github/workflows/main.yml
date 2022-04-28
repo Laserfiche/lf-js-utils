@@ -103,7 +103,7 @@ jobs:
       - name: Npm tool install
         run: npm install -g npm@8
 
-    - name: set NpmPackageVersion as production version from downloaded artifact
+      - name: set NpmPackageVersion as production version from downloaded artifact
         run: echo "NpmPackageVersion=${{ needs.build.outputs.NpmPackageVersion }}--preview-${{ github.run_id }}
 
       - name: npm version
@@ -141,7 +141,7 @@ jobs:
       - name: Npm tool install
         run: npm install -g npm@8
 
-    - name: set NpmPackageVersion as production version from downloaded artifact
+      - name: set NpmPackageVersion as production version from downloaded artifact
         run: echo "NpmPackageVersion=${{ needs.build.outputs.NpmPackageVersion }}
 
       - name: npm version
