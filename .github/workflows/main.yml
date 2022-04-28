@@ -64,7 +64,7 @@ jobs:
 
       - name: set up variable -- NpmPackageVersion
         run: |
-          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MAJOR_VERSION }}.${{ env.PATCH_VERSION }}"" >> $GITHUB_ENV
+          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MAJOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
 
       - name: Npm run generate-doc
         run: npm run generate-doc
