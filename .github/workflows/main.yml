@@ -102,7 +102,7 @@ jobs:
       - name: Npm tool install
         run: npm install -g npm@8
 
-      - name: set NpmPackageVersion as production version from downloaded artifact
+      - name: set NpmPackageVersion environment
         run: echo "NpmPackageVersion=${{ env.NPM_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
 
       - name: npm version
