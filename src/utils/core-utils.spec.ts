@@ -20,11 +20,17 @@ describe('CoreUtils', () => {
         setTimeout(() => {
             value = 8;
         }, 500);
-        waitForConditionAsync(
+      try {
+          await waitForConditionAsync(
             () => value === expected,
             () => { throw Error('Timeout');},
             1000
-        ).catch(() => expect(true));
+        );
+      }
+      catch(e) {
+        const msg = (<Error>e).message;
+        expect(msg.includes('Timeout')).toBeTruthy();
+      }
     });
 
     it('validateDefined should return default if value is undefined', async () => {

@@ -8,24 +8,9 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      publishProduction:
-        description: 'Publish to npm production'
-        type: boolean
-        required: true
-        default: 'false'
-      publishPreview:
-        description: 'Publish to npm preview'
-        type: boolean
-        required: true
-        default: 'false'
 
 env:
-  MAJOR_VERSION: 4
-  MINOR_VERSION: 0
-  PATCH_VERSION: 0
-  publishProduction: 'false'
-  publishPreview: 'false'
+  NPM_VERSION: "4.0.1"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -37,10 +22,11 @@ jobs:
       NPM_USERNAME: dummy
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
-    outputs:
-      NpmTag: ${{ env.NpmTag }}
+
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
 
       - name: Echo build number
         run: echo ${{github.run_id}}
@@ -70,6 +56,7 @@ jobs:
           path: ./*.xml
           reporter: jest-junit
           only-summary: 'true'
+          fail-on-error: 'false'
 
       - name: Npm run build
         run: npm run build
@@ -77,24 +64,8 @@ jobs:
       - name: Npm run generate-doc
         run: npm run generate-doc
 
-      - name: set up variable -- NpmPackageVersion and NpmTag for prod
-        if: ${{ github.event.inputs.publishProduction == 'true'}}
-        run: |
-          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}" >> $GITHUB_ENV
-          echo "NpmTag='latest'" >> $GITHUB_ENV
-
-      - name: Set up variable -- NpmPackageVersion and NpmTag for preview
-        if: ${{ github.event.inputs.publishPreview == 'true'}}
-        run: |
-          echo "NpmPackageVersion=${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
-          echo "NpmTag='next'" >> $GITHUB_ENV
-
       - name: Echo NPM package version
-        run: echo ${{ env.NpmPackageVersion }}
-
-      - name: Npm version
-        if: ${{ env.NpmPackageVersion }}
-        run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
+        run: echo ${{ env.NPM_VERSION }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.3.1
@@ -108,12 +79,16 @@ jobs:
             ./README.md
             ./LICENSE
 
-  publishNPM:
+  publish_to_npm_preview:
     runs-on: ubuntu-latest
-    environment: publish
+    environment: npm_preview
+    if: ${{ github.run_attempt != 1 }}
     needs: [ build ] # wait for build to finish
-    if: ${{  github.event.inputs.publishPreview == 'true' || github.event.inputs.publishProduction == 'true' }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+          
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
@@ -127,10 +102,74 @@ jobs:
       - name: Npm tool install
         run: npm install -g npm@8
 
-      - name: Npm publish
-        run: npm publish  --access public  --tag ${{ needs.build.outputs.NpmTag }}
+      - name: set NpmPackageVersion environment
+        run: echo "NpmPackageVersion=${{ env.NPM_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
+
+      - name: npm version
+        run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
           NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
           NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+
+      - name: Npm publish
+        run: npm publish  --access public  --tag next
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+        
+      - name: Tag commit
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ env.NpmPackageVersion }}
+          commit_sha: ${{ github.sha }}
+          message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}} 
+
+  publish_to_npm_release:
+    runs-on: ubuntu-latest
+    environment: npm_production
+    if: ${{ github.run_attempt != 1 }}
+    needs: [ build ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+          
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-artifact
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '14'
+
+      - name: Npm tool install
+        run: npm install -g npm@8
+
+      - name: npm version
+        run: npm version ${{ env.NPM_VERSION }} --no-git-tag-version --allow-same-version
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+
+      - name: Npm publish
+        run: npm publish  --access public  --tag latest
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+
+      - name: Tag commit
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ env.NPM_VERSION }}
+          commit_sha: ${{ github.sha }}
+          message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}} 
