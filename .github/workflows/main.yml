@@ -214,6 +214,7 @@ jobs:
         
   delete_preview_package:
       runs-on: ubuntu-latest
+      environment: remove_npm_packages
       needs: [ delete_preview_package_and_tag ]
       if: ${{ needs.delete_preview_package_and_tag.outputs.empty_matrix == 'false' }}
       strategy:
