@@ -227,8 +227,8 @@ jobs:
           run:  echo ${{ fromJSON(needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered) }}
           
       
-        - name: Npm unpublish preview package
-          run: npm unpublish ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageName }}@${{ matrix.version }}
+        - name: Npm deprecate preview package 
+          run: npm deprecate -f ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageName }}@${{ matrix.version }} "this package has been deprecated"
         
         - name: Delete prelease tag
           uses: dev-drprasad/delete-tag-and-release@v0.2.0
