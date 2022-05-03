@@ -173,3 +173,67 @@ jobs:
           tag: ${{ env.NPM_VERSION }}
           commit_sha: ${{ github.sha }}
           message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}} 
+          
+  delete_preview_package_and_tag:
+    runs-on: ubuntu-latest
+    environment: production
+    if: ${{ github.run_attempt != 1 }}
+    needs: [ build ]
+    outputs:
+      empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
+      NpmPackageName: ${{ env.NpmPackageName }}
+      NpmPackageVersionFiltered: ${{ steps.set-matrix-filtered.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+          
+      - name: Set NpmPackageName
+        run: |
+          SHOWNAME=$(npm view . name)
+          echo "NpmPackageName=$SHOWNAME" >> $GITHUB_ENV
+          
+      - name: echo NpmPackageName
+        run: echo ${{ env.NpmPackageName }}
+          
+      - name: Set NpmVersionsArrayFiltered
+        id: set-matrix-filtered
+        run: |
+          \node ./clean_up_filter_npm_versions.js ${{env.NpmPackageName}} ${{ env.NPM_VERSION }} > matching_version.txt
+          echo "::set-output name=matrix::$(cat matching_version.txt)"
+          
+      - id: check-matrix
+        name: Check matrix      
+        run: |
+          if [[ ${{ steps.set-matrix-filtered.outputs.matrix }} == *"[]"* ]]; then
+            echo "::set-output name=empty_matrix::true"
+          else
+            echo "::set-output name=empty_matrix::false"   
+          fi
+        
+        
+  delete_preview_package:
+      runs-on: ubuntu-latest
+      needs: [ delete_preview_package_and_tag ]
+      if: ${{ needs.delete_preview_package_and_tag.outputs.empty_matrix == 'false' }}
+      strategy:
+        matrix:
+          version: ${{ fromJSON(needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered) }}
+      steps:
+      
+        - name: echo matrix
+          run:  echo ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered }}
+        - name: echo matrix
+          run:  echo ${{ fromJSON(needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered) }}
+          
+      
+        - name: Npm unpublish preview package
+          run: npm unpublish ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageName }}@${{ matrix.version }}
+        
+        - name: Delete prelease tag
+          uses: dev-drprasad/delete-tag-and-release@v0.2.0
+          with:
+            delete_release: false
+            tag_name: ${{  matrix.version }}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
