@@ -176,7 +176,7 @@ jobs:
           
   delete_preview_package_and_tag:
     runs-on: ubuntu-latest
-    environment: production
+    environment: remove_npm_packages
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ]
     outputs:
@@ -229,6 +229,12 @@ jobs:
       
         - name: Npm deprecate preview package 
           run: npm deprecate -f ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageName }}@${{ matrix.version }} "this package has been deprecated"
+          env:
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+            NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+            NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+        
         
         - name: Delete prelease tag
           uses: dev-drprasad/delete-tag-and-release@v0.2.0
