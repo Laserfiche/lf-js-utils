@@ -199,7 +199,7 @@ jobs:
       - name: Set NpmVersionsArrayFiltered
         id: set-matrix-filtered
         run: |
-          \node ./clean_up_filter_npm_versions.js ${{env.NpmPackageName}} ${{ env.NPM_VERSION }} > matching_version.txt
+          \node ./clean_up_filter_npm_versions.cjs ${{env.NpmPackageName}} ${{ env.NPM_VERSION }} > matching_version.txt
           echo "::set-output name=matrix::$(cat matching_version.txt)"
           
       - id: check-matrix
