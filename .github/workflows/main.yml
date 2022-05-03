@@ -176,7 +176,6 @@ jobs:
           
   delete_preview_package_and_tag:
     runs-on: ubuntu-latest
-    environment: remove_npm_packages
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ]
     outputs:
