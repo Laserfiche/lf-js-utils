@@ -220,12 +220,9 @@ jobs:
         matrix:
           version: ${{ fromJSON(needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered) }}
       steps:
-      
-        - name: echo matrix
-          run:  echo ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered }}
-        - name: echo matrix
-          run:  echo ${{ fromJSON(needs.delete_preview_package_and_tag.outputs.NpmPackageVersionFiltered) }}
-          
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ github.sha }}
       
         - name: Npm deprecate preview package 
           run: npm deprecate -f ${{ needs.delete_preview_package_and_tag.outputs.NpmPackageName }}@${{ matrix.version }} "this package has been deprecated"
