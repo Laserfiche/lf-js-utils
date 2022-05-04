@@ -47,7 +47,10 @@ jobs:
         run: npm run lint
 
       - name: Npm run test
-        run: npm run test:ci\
+        run: npm run test:ci
+        
+      - name: echo github fork
+        run: echo  ${{ github.event.pull_request.head.repo.fork }}
         
       - name: Test Report
         uses: dorny/test-reporter@v1
