@@ -228,7 +228,7 @@ jobs:
           id: check-deprecation
           run: |
             \node ./check_if_npm_package_deprecated.cjs ${{needs.delete_preview_package_and_tag.outputs.NpmPackageName}} ${{  matrix.version }} > already_deprecated.txt
-            echo "::set-output name=deprecated::$(cat already_deprecated.txt)
+            echo "::set-output name=deprecated::$(cat already_deprecated.txt)"
             
         - name: Npm deprecate preview package
           if: ${{ steps.check-deprecation.outputs.deprecated == 'false' }}
