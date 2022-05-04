@@ -49,12 +49,9 @@ jobs:
       - name: Npm run test
         run: npm run test:ci
         
-      - name: echo github fork
-        run: echo  ${{ github.event.pull_request.head.repo.fork }}
-        
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: always() && ${{ github.event.pull_request.head.repo.fork == 'false' }}  # fork pr does not permission to write to checks
+        if:  ${{ always() && github.event.pull_request.head.repo.fork == 'false' }}  # fork pr does not permission to write to checks
         with:
           name: Jest Test Results
           path: ./*.xml
