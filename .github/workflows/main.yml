@@ -22,10 +22,6 @@ jobs:
       NPM_USERNAME: dummy
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
-    permissions:
-      checks: write # required by test-reporter https://github.com/dorny/test-reporter/issues/149
-      id-token: write
-      contents: read
 
 
     steps:
@@ -55,7 +51,7 @@ jobs:
         
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+        if: always() && ${{ github.event.pull_request.head.repo.fork == 'false' }}  # fork pr does not permission to write to checks
         with:
           name: Jest Test Results
           path: ./*.xml
