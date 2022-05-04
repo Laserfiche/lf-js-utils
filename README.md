@@ -2,7 +2,7 @@
 
 Laserfiche javascript utility functions and localization service.
 
-[Documentation](https://unpkg.com/@laserfiche/lf-js-utils@3/dist/doc/index.html)
+[Documentation](https://unpkg.com/@laserfiche/lf-js-utils@4/dist/doc/index.html)
 
 ## Getting started
 
