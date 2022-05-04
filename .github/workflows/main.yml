@@ -23,7 +23,10 @@ jobs:
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
     permissions:
-     checks: write # required by test-reporter https://github.com/dorny/test-reporter/issues/149
+      checks: write # required by test-reporter https://github.com/dorny/test-reporter/issues/149
+      id-token: write
+      contents: read
+
 
     steps:
       - uses: actions/checkout@v2
