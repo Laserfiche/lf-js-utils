@@ -71,7 +71,7 @@ jobs:
       - name: echo github run attempt
         run: echo ${{ github.run_attempt }}
       - name: echo github context
-        run: echo ${{ fromJSON(github) }}
+        run: echo ${{ toJSON(github) }}
 
   publish_to_npm_preview:
     runs-on: ubuntu-latest
