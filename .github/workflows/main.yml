@@ -86,6 +86,7 @@ jobs:
   publish_to_npm_preview:
     runs-on: ubuntu-latest
     environment: npm_preview
+    # this is because run_attempt starts at 2 for outside contributors
     if: ${{ (github.run_attempt != 1 && github.event.pull_request.head.repo.owner.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ] # wait for build to finish
     steps:
