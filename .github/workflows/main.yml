@@ -23,6 +23,7 @@ jobs:
       NPM_EMAIL: dummy
       NPM_REGISTRY: dummy
 
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -47,17 +48,17 @@ jobs:
 
       - name: Npm run test
         run: npm run test:ci
-
+        
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+        if:  ${{ always() && github.event.pull_request.head.repo.fork == 'false' }}  # fork pr does not permission to write to checks
         with:
           name: Jest Test Results
           path: ./*.xml
           reporter: jest-junit
           only-summary: 'true'
           fail-on-error: 'false'
-
+          
       - name: Npm run build
         run: npm run build
 
@@ -78,11 +79,15 @@ jobs:
             ./.npmrc
             ./README.md
             ./LICENSE
+      - name: echo github run attempt
+        run: echo ${{ github.run_attempt }} ${{  github.event.pull_request.head.repo.owner.login }}
+
 
   publish_to_npm_preview:
     runs-on: ubuntu-latest
     environment: npm_preview
-    if: ${{ github.run_attempt != 1 }}
+    # this is because run_attempt starts at 2 for outside contributors
+    if: ${{ (github.run_attempt != 1 && github.event.pull_request.head.repo.owner.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ] # wait for build to finish
     steps:
       - uses: actions/checkout@v2
@@ -131,7 +136,7 @@ jobs:
   publish_to_npm_release:
     runs-on: ubuntu-latest
     environment: npm_production
-    if: ${{ github.run_attempt != 1 }}
+    if: ${{ (github.run_attempt != 1 && github.event.pull_request.head.repo.owner.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ]
     steps:
       - uses: actions/checkout@v2
