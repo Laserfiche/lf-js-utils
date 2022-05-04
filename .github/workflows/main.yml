@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm_preview
     # this is because run_attempt starts at 2 for outside contributors
-    if: ${{ (github.run_attempt != 1) || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
+    if: ${{ (github.run_attempt != 1) && (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ] # wait for build to finish
     steps:
       - uses: actions/checkout@v2
@@ -136,7 +136,7 @@ jobs:
   publish_to_npm_release:
     runs-on: ubuntu-latest
     environment: npm_production
-    if: ${{ (github.run_attempt != 1) || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
+    if: ${{ (github.run_attempt != 1) && (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ]
     steps:
       - uses: actions/checkout@v2
