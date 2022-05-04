@@ -48,16 +48,6 @@ jobs:
       - name: Npm run test
         run: npm run test:ci
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
-        with:
-          name: Jest Test Results
-          path: ./*.xml
-          reporter: jest-junit
-          only-summary: 'true'
-          fail-on-error: 'false'
-
       - name: Npm run build
         run: npm run build
 
