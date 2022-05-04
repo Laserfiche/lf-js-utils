@@ -69,13 +69,13 @@ jobs:
             ./README.md
             ./LICENSE
       - name: echo github run attempt
-        run: echo ${{ github.run_attempt }} ${{  github.event.repository.owner.login }}
+        run: echo ${{ github.run_attempt }} ${{  github.event.pull_request.head.repo.owner.login }}
 
 
   publish_to_npm_preview:
     runs-on: ubuntu-latest
     environment: npm_preview
-    if: ${{ (github.run_attempt != 1 && github.event.pull_request.base.user.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.base.user.login != 'Laserfiche') }}
+    if: ${{ (github.run_attempt != 1 && github.event.pull_request.head.repo.owner.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ] # wait for build to finish
     steps:
       - uses: actions/checkout@v2
@@ -124,7 +124,7 @@ jobs:
   publish_to_npm_release:
     runs-on: ubuntu-latest
     environment: npm_production
-    if: ${{ (github.run_attempt != 1 && github.event.pull_request.base.user.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.base.user.login != 'Laserfiche') }}
+    if: ${{ (github.run_attempt != 1 && github.event.pull_request.head.repo.owner.login == 'Laserfiche') || (github.run_attempt != 2 && github.event.pull_request.head.repo.owner.login != 'Laserfiche') }}
     needs: [ build ]
     steps:
       - uses: actions/checkout@v2
