@@ -8,11 +8,11 @@
  * ```
  */
  export function getDocumentIconUrlFromIconId(iconId: string): string {
-    return `https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#${iconId}`;
+    return `https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0--preview-2303917872/resources/icons/document-icons.svg#${iconId}`;
 }
 
 /**
- * Returns the icon id given a file extension from https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg.
+ * Returns the icon id given a file extension from https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0--preview-2303917872/resources/icons/document-icons.svg.
  * @param ext 
  * @returns icon id
  * @example
