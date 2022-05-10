@@ -4,9 +4,9 @@ describe('IconUtils', () => {
     it('should return Icon url given an Icon id', () => {
         // Arrange
         const expectedResultByInput = {
-            '': 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#',
-            'a': 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#a',
-            undefined: 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0/resources/icons/document-icons.svg#undefined'
+            '': 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0--preview-2303917872/resources/icons/document-icons.svg#',
+            'a': 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0--preview-2303917872/resources/icons/document-icons.svg#a',
+            undefined: 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@2.0.0--preview-2303917872/resources/icons/document-icons.svg#undefined'
         };
         // Act, Assert
         // eslint-disable-next-line guard-for-in
