@@ -12,16 +12,9 @@ on:
 env:
   NPM_VERSION: "4.0.1"
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NPM_TOKEN: dummy
-      NPM_USERNAME: dummy
-      NPM_EMAIL: dummy
-      NPM_REGISTRY: dummy
 
 
     steps:
@@ -76,7 +69,6 @@ jobs:
           path: |
             ./dist
             ./package.json
-            ./.npmrc
             ./README.md
             ./LICENSE
       - name: echo github run attempt
@@ -103,6 +95,7 @@ jobs:
         uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Npm tool install
         run: npm install -g npm@8
@@ -112,19 +105,11 @@ jobs:
 
       - name: npm version
         run: npm version ${{ env.NpmPackageVersion }} --no-git-tag-version
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
 
       - name: Npm publish
         run: npm publish  --access public  --tag next
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         
       - name: Tag commit
         uses: rickstaa/action-create-tag@v1
@@ -152,25 +137,18 @@ jobs:
         uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Npm tool install
         run: npm install -g npm@8
 
       - name: npm version
         run: npm version ${{ env.NPM_VERSION }} --no-git-tag-version --allow-same-version
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
 
       - name: Npm publish
         run: npm publish  --access public  --tag latest
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_REGISTRY: ${{ secrets.NPM_REGISTRY }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Tag commit
         uses: rickstaa/action-create-tag@v1
