@@ -51,3 +51,53 @@ export function base64toString(base64String: string): string {
     return Buffer.from(base64String, 'base64').toString();
   }
 }
+
+/**
+ * Encodes a string of data using Base64 encoding
+ * @param binaryString
+ * @returns
+ * @example
+ * ```typescript
+ * stringToBase64('test'); // => 'dGVzdA==';
+ * ```
+ */
+ export function stringToBase64(binaryString: string): string {
+  if (isBrowser()) {
+    return window.btoa(binaryString);
+  }
+  else {
+    return Buffer.from(binaryString).toString('base64');
+  }
+}
+
+/**
+ * Converts an ArrayBuffer to a base64 string
+ * @param buffer
+ * @returns
+ * @example
+ * ```typescript
+ * const buffer = new Uint8Array(4);
+ * arrayBufferToBase64(buffer); // => 'AAAAAA==';
+ * ```
+ */
+export function arrayBufferToBase64(buffer: ArrayBuffer) {
+  var binary = '';
+  var bytes = new Uint8Array(buffer);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+  }
+  return stringToBase64(binary);
+}
+
+/**
+ * Convert a decimal number to hexadecimal number
+ * @param dec
+ * @returns
+ * ```typescript
+ * dec2base16(16);  // => '10'
+ * ```
+ */
+export function dec2base16(dec: number): string {
+  return dec.toString(16).padStart(2, "0");
+}
