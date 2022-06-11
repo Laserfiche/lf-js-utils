@@ -2,7 +2,7 @@
 
 Laserfiche javascript utility functions and localization service.
 
-[Documentation](https://unpkg.com/@laserfiche/lf-js-utils@3/dist/doc/index.html)
+[Documentation](https://developer.laserfiche.com)
 
 ## Getting started
 
@@ -10,7 +10,7 @@ Laserfiche javascript utility functions and localization service.
 
 ## Contribution
 
-We welcome contributions and feedback. Please follow our [contributing guidelines](https://github.com/Laserfiche/lf-js-utils/blob/main/CONTRIBUTING.md).
+We welcome contributions and feedback. Please follow our [contributing guidelines](./CONTRIBUTING.md).
 
 ### Development prerequisite
 
