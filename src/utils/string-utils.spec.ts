@@ -1,4 +1,4 @@
-import { base64toString, formatString } from './string-utils.js';
+import { arrayBufferToBase64, base64toString, base10ToBase16, formatString, stringToBase64 } from './string-utils.js';
 
 describe('string-utils', () => {
   it('formatString should not replace variables if there are no variables or params', () => {
@@ -146,7 +146,7 @@ describe('string-utils', () => {
       formatString(stringWithRepeatedParams, params);
     }).toThrow(error);
   });
-  
+
   it('base64toString decodes a based64-encoded string', () => {
     // Arrange
     const base64String = 'dGVzdA=='; // base64-encoding of 'test'
@@ -157,6 +157,42 @@ describe('string-utils', () => {
 
     // Assert
     expect(decodedString).toEqual(expectedDecodedString);
+  });
+
+  it('stringToBase64 base64-encodes a string', () => {
+    // Arrange
+    const binaryString = 'test';
+    const expectedEncodedString = 'dGVzdA=='; // base64-encoding of 'test'
+
+    // Act
+    const encodedString = stringToBase64(binaryString);
+
+    // Assert
+    expect(encodedString).toEqual(expectedEncodedString);
+  });
+
+  it('arrayBufferToBase64 converts an ArrayBuffer to a base64 string', () => {
+    // Arrange
+    const buffer = new Uint8Array(4);
+    const expectedString = 'AAAAAA=='; // base64-encoding of [0, 0, 0, 0]
+
+    // Act
+    const encodedString = arrayBufferToBase64(buffer);
+
+    // Assert
+    expect(encodedString).toEqual(expectedString);
+  });
+
+  it('base10ToBase16 convert a decimal number to hexadecimal number', () => {
+    // Arrange
+    const dec = 16;
+    const expectedEncodedString = '10'; // hex representation of 16
+
+    // Act
+    const encodedString = base10ToBase16(dec);
+
+    // Assert
+    expect(encodedString).toEqual(expectedEncodedString);
   });
 
 });
