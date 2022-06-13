@@ -95,9 +95,9 @@ export function arrayBufferToBase64(buffer: ArrayBuffer) {
  * @param dec
  * @returns
  * ```typescript
- * dec2base16(16);  // => '10'
+ * base10ToBase16(16);  // => '10'
  * ```
  */
-export function dec2base16(dec: number): string {
+export function base10ToBase16(dec: number): string {
   return dec.toString(16).padStart(2, "0");
 }

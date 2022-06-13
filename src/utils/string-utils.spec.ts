@@ -1,4 +1,4 @@
-import { arrayBufferToBase64, base64toString, dec2base16, formatString, stringToBase64 } from './string-utils.js';
+import { arrayBufferToBase64, base64toString, base10ToBase16, formatString, stringToBase64 } from './string-utils.js';
 
 describe('string-utils', () => {
   it('formatString should not replace variables if there are no variables or params', () => {
@@ -159,7 +159,7 @@ describe('string-utils', () => {
     expect(decodedString).toEqual(expectedDecodedString);
   });
 
-  it('stringToBase64 based64-encodes a string', () => {
+  it('stringToBase64 base64-encodes a string', () => {
     // Arrange
     const binaryString = 'test';
     const expectedEncodedString = 'dGVzdA=='; // base64-encoding of 'test'
@@ -183,13 +183,13 @@ describe('string-utils', () => {
     expect(encodedString).toEqual(expectedString);
   });
 
-  it('dec2base64 convert a decimal number to hexadecimal number', () => {
+  it('base10ToBase16 convert a decimal number to hexadecimal number', () => {
     // Arrange
     const dec = 16;
     const expectedEncodedString = '10'; // hex representation of 16
 
     // Act
-    const encodedString = dec2base16(dec);
+    const encodedString = base10ToBase16(dec);
 
     // Assert
     expect(encodedString).toEqual(expectedEncodedString);
