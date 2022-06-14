@@ -14,7 +14,7 @@
     "test:ci": "npm run test -- --watchAll=false --reporters=default --reporters=jest-junit",
     "lint": "eslint . --ext .ts",
     "build": "tsc",
-    "generate-doc": "npx typedoc src/index.ts --out ./dist/doc --excludePrivate"
+    "generate-doc": "npx typedoc src/index.ts --out ./doc --excludePrivate"
   },
   "author": "",
   "license": "MIT",
