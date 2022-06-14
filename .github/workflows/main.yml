@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  NPM_VERSION: "4.0.1"
+  NPM_VERSION: "4.0.2"
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
 
       - name: Npm run test
         run: npm run test:ci
-        
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if:  ${{ always() && github.event.pull_request.head.repo.fork == 'false' }}  # fork pr does not permission to write to checks
@@ -51,7 +51,7 @@ jobs:
           reporter: jest-junit
           only-summary: 'true'
           fail-on-error: 'false'
-          
+
       - name: Npm run build
         run: npm run build
 
@@ -68,6 +68,7 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: |
             ./dist
+            ./doc
             ./package.json
             ./README.md
             ./LICENSE
@@ -84,7 +85,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.sha }}
-          
+
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
@@ -109,13 +110,13 @@ jobs:
         run: npm publish  --access public  --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        
+
       - name: Tag commit
         uses: rickstaa/action-create-tag@v1
         with:
           tag: ${{ env.NpmPackageVersion }}
           commit_sha: ${{ github.sha }}
-          message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}} 
+          message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}}
 
   publish_to_npm_release:
     runs-on: ubuntu-latest
@@ -126,7 +127,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.sha }}
-          
+
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
@@ -154,4 +155,35 @@ jobs:
         with:
           tag: ${{ env.NPM_VERSION }}
           commit_sha: ${{ github.sha }}
-          message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}} 
+          message: Workflow run ${{github.server_url}}/${{github.repository}}/actions/runs/${{ github.run_id}}
+
+  publish_documentation:
+    runs-on: ubuntu-latest
+    environment: publish_to_S3
+    if: ${{ github.run_attempt != 1 }}
+    needs: [ build ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: npm-publish-artifact
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '14'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2 # Use your bucket region here
+
+      - name: Upload docs to S3 bucket
+        run: aws s3 sync ./doc s3://apiserver-publish-client-library-docs/${GITHUB_REPOSITORY##*/}/docs/${GITHUB_REF##*/} --delete
