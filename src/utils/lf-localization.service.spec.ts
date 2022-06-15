@@ -91,7 +91,7 @@ describe('LfLocalizationService', () => {
   it('getString with two parameters to be substituted', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringKey: string = 'MVFG_HEADER_FORMATTER';
+    const stringKey: string = '0_OF_1';
     const expectedValue: string = 'five of ten';
 
     // Act
@@ -106,7 +106,7 @@ describe('LfLocalizationService', () => {
   it('getString gets Spanish when spanish is specified', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringKey: string = 'EMPTY_FILE_EXPLORER';
+    const stringKey: string = 'THIS_FOLDER_IS_EMPTY';
     const spanishValue: string = 'Esta carpeta está vacía.';
 
     // Act
@@ -121,7 +121,7 @@ describe('LfLocalizationService', () => {
   it(`getString gets pt-BR when pt-BR is specified`, async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringKey: string = 'EMPTY_FILE_EXPLORER';
+    const stringKey: string = 'THIS_FOLDER_IS_EMPTY';
     const spanishValue: string = 'Esta pasta está vazia.';
 
     // Act
@@ -136,7 +136,7 @@ describe('LfLocalizationService', () => {
   it('getString gets english when selected language does not exist', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
-    const stringKey: string = 'EMPTY_FILE_EXPLORER';
+    const stringKey: string = 'THIS_FOLDER_IS_EMPTY';
     const englishValue: string = 'This folder is empty.';
 
     // Act
@@ -282,7 +282,7 @@ describe('LfLocalizationService', () => {
     lfLocalizationService.debugMode = true;
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-    expect(lfLocalizationService.getString('APPLY_CHANGES')).toEqual('_Ḓǿ ẏǿŭ ẇȧƞŧ ŧǿ ȧƥƥŀẏ ẏǿŭř ƒīḗŀḓ ƈħȧƞɠḗş?_');
+    expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual('_Ḓǿ ẏǿŭ ẇȧƞŧ ŧǿ ȧƥƥŀẏ ẏǿŭř ƒīḗŀḓ ƈħȧƞɠḗş?_');
   });
 
   it('should create pseudo language in debug mode for spanish', async () => {
@@ -292,6 +292,6 @@ describe('LfLocalizationService', () => {
 
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-    expect(lfLocalizationService.getString('APPLY_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
+    expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
   });
 });
