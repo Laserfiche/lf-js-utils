@@ -156,9 +156,9 @@ describe('LfLocalizationService', () => {
       ['en', { TEST_STRING: 'test string' }],
     ]);
     lfLocalizationService = new LfLocalizationService(resources);
+    lfLocalizationService.setLanguage('es');
 
     // Act
-    lfLocalizationService.setLanguage('es');
     lfLocalizationService.setLanguage('unknown');
 
     // Assert
