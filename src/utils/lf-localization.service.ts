@@ -276,14 +276,14 @@ export class LfLocalizationService implements ILocalizationService {
     if (languageWithoutDash != this._selectedLanguage) {
       const setCurrentResourceFallBackSuccess = this.setLanguageResource(languageWithoutDash);
       if (setCurrentResourceFallBackSuccess) return;
-      const setCurrentResourceFallBackDefaultSuccess = this.setLanguageResource(this.DEFAULT_LANGUAGE);
-      if (setCurrentResourceFallBackDefaultSuccess) {
-        console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.
-      Fall back to use default language ${this.DEFAULT_LANGUAGE}.`);
-      } else {
-        console.warn('Resource is not found. Cannot set currentResource.');
-        this._currentResource = undefined;
-      }
+    }
+    const setCurrentResourceFallBackDefaultSuccess = this.setLanguageResource(this.DEFAULT_LANGUAGE);
+    if (setCurrentResourceFallBackDefaultSuccess) {
+      console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.
+    Fall back to use default language ${this.DEFAULT_LANGUAGE}.`);
+    } else {
+      console.warn('Resource is not found. Cannot set currentResource.');
+      this._currentResource = undefined;
     }
   }
 
