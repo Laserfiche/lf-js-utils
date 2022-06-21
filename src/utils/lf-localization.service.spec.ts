@@ -149,6 +149,25 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual(englishValue);
   });
 
+  it('setLanguage gets English when current language is not English and requested language is unavailable', async () => {
+    const resources = new Map([
+      ['es', { TEST_STRING: 'spanish string' }],
+      ['en', { TEST_STRING: 'test string' }],
+    ]);
+    lfLocalizationService = new LfLocalizationService(resources);
+    lfLocalizationService.setLanguage('es');
+
+   console.log('set  es', lfLocalizationService.currentResource?.language);
+
+
+    lfLocalizationService.setLanguage('unknown');
+
+   console.log('set  unknown', lfLocalizationService.currentResource?.language);
+
+
+    expect(lfLocalizationService.currentResource?.language).toEqual('en');
+  });
+
   it(`getString should return key when selected language map exists,
    but string does not exist in neither selected language or default language`, async () => {
     // Arrange
