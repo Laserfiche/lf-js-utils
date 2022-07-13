@@ -324,6 +324,8 @@ export class LfLocalizationService implements ILocalizationService {
         return 'zh-Hans';
       case 'zh-TW':
         return 'zh-Hant';
+      case 'zh-HK':
+        return 'zh-Hant';
       case 'zh':
         return 'zh-Hans';
       default:
