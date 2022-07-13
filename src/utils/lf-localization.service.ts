@@ -98,38 +98,47 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * Loads the selected langauge resource given the url pointing to the folder of the resource,
+   * Loads the selected language resource given the url pointing to the folder of the resource,
    * if HTTP receives 404 error, loads the non-region-specific language resource,
    * throws error otherwise
    * @param url
    */
   private async getSelectedLanguageResourceAsync(url: string) {
-    if (!this.setLanguageResource(this._selectedLanguage)) {
       try {
-        await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
-        this.setLanguageResource(this._selectedLanguage);
-        console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
+        await this.trySetLanguageResourceAsync(url, this._selectedLanguage);
+        return;
       } catch (e) {
+        console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
         if ((e as Error)?.name === ResourceNotFoundError_NAME) {
-          const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-          if (!this.setLanguageResource(languageWithoutDash)) {
+          const closestLanguage: string = this.mapToClosestLanguage(this._selectedLanguage);
             try {
-              await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
-              this.setLanguageResource(languageWithoutDash);
-              console.warn(
-                `Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`
-              );
+              await this.trySetLanguageResourceAsync(url, closestLanguage);
+              return;
             } catch {
-              this.setLanguageResource(this.DEFAULT_LANGUAGE);
-              console.warn(
-                `Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`
-              );
+              console.warn(`Language resource ${closestLanguage} is not found at ${url}${closestLanguage}.json.`);
+              const languageWithoutDash = closestLanguage.split('-')[0];
+              if (languageWithoutDash !== closestLanguage) {
+                try {
+                  await this.trySetLanguageResourceAsync(url, languageWithoutDash);
+                  return;
+                }
+                catch {
+                  console.warn(`Language resource ${languageWithoutDash} is not found at ${url}${languageWithoutDash}.json.`);
+                }
+              }
             }
-          }
         } else {
           console.error(e);
         }
-      }
+    }
+    this.setLanguageResource(this.DEFAULT_LANGUAGE);
+  }
+
+  private async trySetLanguageResourceAsync(url: string, language: string): Promise<void> {
+    if (!this.setLanguageResource(language)) {
+        await this.addResourceFromUrlAsync(`${url}${language}.json`, language);
+        this.setLanguageResource(language);
+        console.log(`Loaded resource from ${url}${language}.json.`);
     }
   }
 
@@ -272,14 +281,22 @@ export class LfLocalizationService implements ILocalizationService {
   private setResourceWithFallBack(language: string): void {
     const setCurrentResourceSuccess = this.setLanguageResource(language);
     if (setCurrentResourceSuccess) return;
-    const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-    if (languageWithoutDash != this._selectedLanguage) {
+    console.warn(`Language resource ${language} is not found.`);
+    const closestLanguage = this.mapToClosestLanguage(language);
+    if (closestLanguage != language) {
+      const setClosestLanguageResourceFallBackSuccess = this.setLanguageResource(closestLanguage);
+      if (setClosestLanguageResourceFallBackSuccess) return;
+      console.warn(`Language resource ${closestLanguage} is not found.`);
+    }
+    const languageWithoutDash: string = closestLanguage.split('-')[0];
+    if (languageWithoutDash != closestLanguage) {
       const setCurrentResourceFallBackSuccess = this.setLanguageResource(languageWithoutDash);
       if (setCurrentResourceFallBackSuccess) return;
+      console.warn(`Language resource ${languageWithoutDash} is not found.`);
     }
     const setCurrentResourceFallBackDefaultSuccess = this.setLanguageResource(this.DEFAULT_LANGUAGE);
     if (setCurrentResourceFallBackDefaultSuccess) {
-      console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.
+      console.warn(`Use initResourcesFromUrlAsync to load resource.
     Fall back to use default language ${this.DEFAULT_LANGUAGE}.`);
     } else {
       console.warn('Resource is not found. Cannot set currentResource.');
@@ -299,6 +316,19 @@ export class LfLocalizationService implements ILocalizationService {
       return true;
     }
     return false;
+  }
+
+  private mapToClosestLanguage(originalLanguage: string) : string {
+    switch (originalLanguage) {
+      case 'zh-CN':
+        return 'zh-Hans';
+      case 'zh-TW':
+        return 'zh-Hant';
+      case 'zh':
+        return 'zh-Hans';
+      default:
+        return originalLanguage.split('-')[0];
+    }
   }
 
   /**

@@ -310,4 +310,60 @@ describe('LfLocalizationService', () => {
 
     expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
   });
+
+  it(`when requested language is zh-CN, current language is set to zh-Hans`, async () => {
+   // Arrange
+   lfLocalizationService = new LfLocalizationService();
+
+   // Act
+   lfLocalizationService.setLanguage('zh-CN');
+   await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+
+   // Assert
+   expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
+ });
+
+ it(`when requested language is zh-TW, current language is set to zh-Hant`, async () => {
+  // Arrange
+  lfLocalizationService = new LfLocalizationService();
+
+  // Act
+  lfLocalizationService.setLanguage('zh-TW');
+  await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+
+  // Assert
+  expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hant');
+});
+
+it(`when requested language is zh-TW with custom JSON, current language is set to zh-Hant`, async () => {
+  // Arrange
+  const resources: Map<string, object> = new Map([
+    ['en', { TEST_STRING: 'test res' }],
+    ['zh-Hans', { TEST_STRING: 'chinese simplified test' }],
+    ['zh-Hant', { TEST_STRING: 'chinese traditional test' }],
+  ]);
+  lfLocalizationService = new LfLocalizationService(resources);
+
+  // Act
+  lfLocalizationService.setLanguage('zh-TW');
+
+  // Assert
+  expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hant');
+});
+
+it(`when requested language is zh-CN with custom JSON, current language is set to zh-Hans`, async () => {
+  // Arrange
+  const resources: Map<string, object> = new Map([
+    ['en', { TEST_STRING: 'test res' }],
+    ['zh-Hans', { TEST_STRING: 'chinese simplified test' }],
+    ['zh-Hant', { TEST_STRING: 'chinese traditional test' }],
+  ]);
+  lfLocalizationService = new LfLocalizationService(resources);
+
+  // Act
+  lfLocalizationService.setLanguage('zh-CN');
+
+  // Assert
+  expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
+});
 });
