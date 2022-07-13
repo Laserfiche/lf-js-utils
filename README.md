@@ -8,6 +8,10 @@ Laserfiche javascript utility functions and localization service.
 
 `npm install @laserfiche/lf-js-utils`
 
+## Change Log
+
+See CHANGELOG [here](https://github.com/Laserfiche/lf-js-utils/blob/4.x/CHANGELOG.md).
+
 ## Contribution
 
 We welcome contributions and feedback. Please follow our [contributing guidelines](./CONTRIBUTING.md).
