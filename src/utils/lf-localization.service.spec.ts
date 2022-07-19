@@ -366,4 +366,16 @@ it(`when requested language is zh-CN with custom JSON, current language is set t
   // Assert
   expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
 });
+
+it(`when requested language is fr, current language is set to fr-FR`, async () => {
+  // Arrange
+  lfLocalizationService = new LfLocalizationService();
+
+  // Act
+  lfLocalizationService.setLanguage('fr');
+  await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+
+  // Assert
+  expect(lfLocalizationService.currentResource?.language).toEqual('fr-FR');
+});
 });
