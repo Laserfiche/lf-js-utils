@@ -190,7 +190,6 @@ describe('LfLocalizationService', () => {
       await lfLocalizationService.initResourcesFromUrlAsync(`${resourcesFolder}nonexistent`);
     } catch (e) {
       const msg = (<Error>e).message;
-      console.log(message)
       expect(msg.includes(message)).toBeTruthy();
     }
   });
