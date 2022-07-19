@@ -110,22 +110,13 @@ export class LfLocalizationService implements ILocalizationService {
       } catch (e) {
         console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
         if ((e as Error)?.name === ResourceNotFoundError_NAME) {
-          const closestLanguage: string = this.mapToClosestLanguage(this._selectedLanguage);
+          const languageWithoutDash = this._selectedLanguage.split('-')[0];
+          const closestLanguage: string = this.mapToClosestLanguage(languageWithoutDash);
             try {
               await this.trySetLanguageResourceAsync(url, closestLanguage);
               return;
             } catch {
               console.warn(`Language resource ${closestLanguage} is not found at ${url}${closestLanguage}.json.`);
-              const languageWithoutDash = closestLanguage.split('-')[0];
-              if (languageWithoutDash !== closestLanguage) {
-                try {
-                  await this.trySetLanguageResourceAsync(url, languageWithoutDash);
-                  return;
-                }
-                catch {
-                  console.warn(`Language resource ${languageWithoutDash} is not found at ${url}${languageWithoutDash}.json.`);
-                }
-              }
             }
         } else {
           console.error(e);
@@ -320,6 +311,20 @@ export class LfLocalizationService implements ILocalizationService {
 
   private mapToClosestLanguage(originalLanguage: string) : string {
     switch (originalLanguage) {
+      case 'ar':
+        return 'ar-EG';
+      case 'en':
+        return 'en-US';
+      case 'es':
+        return 'es-MX';
+      case 'fr':
+        return 'fr-FR';
+      case 'it':
+        return 'it-IT';
+      case 'pt':
+        return 'pt-BR';
+      case 'th':
+        return 'th-TH';
       case 'zh-CN':
         return 'zh-Hans';
       case 'zh-TW':
@@ -329,7 +334,7 @@ export class LfLocalizationService implements ILocalizationService {
       case 'zh':
         return 'zh-Hans';
       default:
-        return originalLanguage.split('-')[0];
+        return originalLanguage;
     }
   }
 
