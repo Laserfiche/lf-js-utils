@@ -24,9 +24,8 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const resource = new Map([
-   *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }],
-   *  ['en', { "LOADING": "Loading..." }]
+   *  ['jp-JP', { "LOADING": "読み込み中..." }],
+   *  ['en-US', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
    * localizationService.debugMode = true;
@@ -35,7 +34,7 @@ export class LfLocalizationService implements ILocalizationService {
    */
   public debugMode: boolean = false;
 
-  private readonly DEFAULT_LANGUAGE: string = 'en';
+  private readonly DEFAULT_LANGUAGE: string = 'en-US';
   private _currentResource?: resourceType;
   private _resources: Map<string, object> = new Map<string, object>();
   private _selectedLanguage: string = this.DEFAULT_LANGUAGE;
@@ -45,9 +44,8 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const resource = new Map([
-   *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }],
-   *  ['en', { "LOADING": "Loading..." }]  // have to provide 'en' in map
+   *  ['jp-JP', { "LOADING": "読み込み中..." }],
+   *  ['en-US', { "LOADING": "Loading..." }]  // have to provide 'en' in map
    * ]);
    * const localizationService = new LfLocalizationService(resource);
    *
@@ -84,9 +82,9 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@3/resources/laserfiche-base';
+   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/laserfiche-base';
    * localizationService.setLanguage('fr-CA');
-   * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json
+   * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en-US.json and fr-FR.json
    * ```
    */
   public async initResourcesFromUrlAsync(url: string): Promise<void> {
@@ -98,38 +96,37 @@ export class LfLocalizationService implements ILocalizationService {
   }
 
   /**
-   * Loads the selected langauge resource given the url pointing to the folder of the resource,
+   * Loads the selected language resource given the url pointing to the folder of the resource,
    * if HTTP receives 404 error, loads the non-region-specific language resource,
    * throws error otherwise
    * @param url
    */
   private async getSelectedLanguageResourceAsync(url: string) {
-    if (!this.setLanguageResource(this._selectedLanguage)) {
       try {
-        await this.addResourceFromUrlAsync(`${url}${this._selectedLanguage}.json`, this._selectedLanguage);
-        this.setLanguageResource(this._selectedLanguage);
-        console.log(`Loaded resource from ${url}${this._selectedLanguage}.json.`);
+        await this.trySetLanguageResourceAsync(url, this._selectedLanguage);
+        return;
       } catch (e) {
+        console.warn(`Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`);
         if ((e as Error)?.name === ResourceNotFoundError_NAME) {
-          const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-          if (!this.setLanguageResource(languageWithoutDash)) {
+          const closestLanguage: string = this.mapToClosestLanguage(this._selectedLanguage);
             try {
-              await this.addResourceFromUrlAsync(`${url}${languageWithoutDash}.json`, languageWithoutDash);
-              this.setLanguageResource(languageWithoutDash);
-              console.warn(
-                `Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json. Loaded resource from ${url}${languageWithoutDash}.json.`
-              );
+              await this.trySetLanguageResourceAsync(url, closestLanguage);
+              return;
             } catch {
-              this.setLanguageResource(this.DEFAULT_LANGUAGE);
-              console.warn(
-                `Selected language resource ${this._selectedLanguage} is not found at ${url}${this._selectedLanguage}.json.`
-              );
+              console.warn(`Language resource ${closestLanguage} is not found at ${url}${closestLanguage}.json.`);
             }
-          }
         } else {
           console.error(e);
         }
-      }
+    }
+    this.setLanguageResource(this.DEFAULT_LANGUAGE);
+  }
+
+  private async trySetLanguageResourceAsync(url: string, language: string): Promise<void> {
+    if (!this.setLanguageResource(language)) {
+        await this.addResourceFromUrlAsync(`${url}${language}.json`, language);
+        this.setLanguageResource(language);
+        console.log(`Loaded resource from ${url}${language}.json.`);
     }
   }
 
@@ -157,7 +154,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@3/resources/laserfiche-base';
+   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/laserfiche-base';
    * localizationService.setLanguage('fr-CA');  // gives a warning since no resource exists at this point
    * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json because language has been set to be fr-CA
    * localizationService.currentLanguage // {'language': 'fr', 'resource': { ... }}
@@ -165,13 +162,12 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const resource = new Map([
-   *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }],
-   *  ['en', { "LOADING": "Loading..." }]
+   *  ['jp-JP', { "LOADING": "読み込み中..." }],
+   *  ['en-US', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
-   * localizationService.setLanguage('ir');  // set currentResource to ir
-   * localizationService.currentLanguage // {'language': 'ir', 'resource':{ "LOADING": "ag lódáil..." }}
+   * localizationService.setLanguage('jp-JP');  // set currentResource to ir
+   * localizationService.currentLanguage // {'language': 'jp-JP', 'resource':{ "LOADING": "読み込み中..." }}
    * ```
    */
   public setLanguage(language: string): void {
@@ -185,7 +181,6 @@ export class LfLocalizationService implements ILocalizationService {
    * ```typescript
    * const resource = new Map([
    *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }],
    *  ['en', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
@@ -206,14 +201,13 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const resource = new Map([
-   *  ['jp', { "LOADING": "読み込み中..." }],
-   *  ['ir', { "LOADING": "ag lódáil..." }],
-   *  ['en', { "LOADING": "Loading..." }]
+   *  ['jp-JP', { "LOADING": "読み込み中..." }],
+   *  ['en-US', { "LOADING": "Loading..." }]
    * ]);
    * localizationService = new LfLocalizationService(resource);
    * localizationService.getString('LOADING'); // 'Loading...'
-   * localizationService.setLanguage('ir');
-   * localizationService.getString('LOADING'); // 'ag lódáil...'
+   * localizationService.setLanguage('jp-JP');
+   * localizationService.getString('LOADING'); // '読み込み中...'
    * ```
    */
   public getString(key: string, params?: string[]): string {
@@ -272,14 +266,16 @@ export class LfLocalizationService implements ILocalizationService {
   private setResourceWithFallBack(language: string): void {
     const setCurrentResourceSuccess = this.setLanguageResource(language);
     if (setCurrentResourceSuccess) return;
-    const languageWithoutDash: string = this._selectedLanguage.split('-')[0];
-    if (languageWithoutDash != this._selectedLanguage) {
-      const setCurrentResourceFallBackSuccess = this.setLanguageResource(languageWithoutDash);
-      if (setCurrentResourceFallBackSuccess) return;
+    console.warn(`Language resource ${language} is not found.`);
+    const closestLanguage = this.mapToClosestLanguage(language);
+    if (closestLanguage != language) {
+      const setClosestLanguageResourceFallBackSuccess = this.setLanguageResource(closestLanguage);
+      if (setClosestLanguageResourceFallBackSuccess) return;
+      console.warn(`Language resource ${closestLanguage} is not found.`);
     }
     const setCurrentResourceFallBackDefaultSuccess = this.setLanguageResource(this.DEFAULT_LANGUAGE);
     if (setCurrentResourceFallBackDefaultSuccess) {
-      console.warn(`Selected language resource ${this._selectedLanguage} is not found. Use initResourcesFromUrlAsync to load resource.
+      console.warn(`Use initResourcesFromUrlAsync to load resource.
     Fall back to use default language ${this.DEFAULT_LANGUAGE}.`);
     } else {
       console.warn('Resource is not found. Cannot set currentResource.');
@@ -299,6 +295,39 @@ export class LfLocalizationService implements ILocalizationService {
       return true;
     }
     return false;
+  }
+
+  private mapToClosestLanguage(originalLanguage: string) : string {
+    const languageWithoutDash = this._selectedLanguage.split('-')[0];
+    switch (languageWithoutDash) {
+      case 'zh':
+        switch (originalLanguage) {
+          case 'zh-CN':
+            return 'zh-Hans';
+          case 'zh-TW':
+            return 'zh-Hant';
+          case 'zh-HK':
+            return 'zh-Hant';
+          default:
+            return 'zh-Hans';
+        }
+      case 'ar':
+        return 'ar-EG';
+      case 'en':
+        return 'en-US';
+      case 'es':
+        return 'es-MX';
+      case 'fr':
+        return 'fr-FR';
+      case 'it':
+        return 'it-IT';
+      case 'pt':
+        return 'pt-BR';
+      case 'th':
+        return 'th-TH';
+      default:
+        return originalLanguage;
+    }
   }
 
   /**
