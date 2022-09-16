@@ -1,9 +1,13 @@
 ## 4.0.4
 ### Features
+
 - `IconUtils` references icon url from `lfxstatic` instead of `jsdelivr`.
 - `localizationService` documentation references language resource files from `lfxstatic` instead of `jsdelivr`.
+
 ### Fixes
+
 ### Chore & Maintenance
+
 
 ## 4.0.3
 
