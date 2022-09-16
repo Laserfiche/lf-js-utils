@@ -245,7 +245,7 @@ export class LfLocalizationService implements ILocalizationService {
    */
   private async addResourceFromUrlAsync(url: string, code: string): Promise<object> {
     const response = await fetch(url);
-    if (response.status === 403) {
+    if (response.status > 399 && response.status < 500) {
       throw new ResourceNotFoundError(`HTTP error ${response.status} at ${url}`);
     } else if (response.status === 200) {
       const json = await response.json();
