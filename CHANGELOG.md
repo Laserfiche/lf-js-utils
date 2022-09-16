@@ -1,3 +1,10 @@
+## 4.0.4
+### Features
+- `IconUtils` references icon url from `lfxstatic` instead of `jsdelivr`.
+- `localizationService` documentation references language resource files from `lfxstatic` instead of `jsdelivr`.
+### Fixes
+### Chore & Maintenance
+
 ## 4.0.3
 
 ### Features
@@ -41,7 +48,7 @@
 
 - Use `@laserfiche/resource-library@3`.
 - Remove documentation in npm package.
-- `jwtUtils` has been moved to `@laserfiche/lf-api-client-core`.
+- **[BREAKING]** `jwtUtils` has been moved to `@laserfiche/lf-api-client-core`.
 
 ## 3.0.5
 

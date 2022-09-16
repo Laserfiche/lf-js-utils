@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  NPM_VERSION: "4.0.3"
+  NPM_VERSION: "4.0.4"
 
 jobs:
   build:
