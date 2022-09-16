@@ -97,7 +97,7 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Loads the selected language resource given the url pointing to the folder of the resource,
-   * if HTTP receives 404 error, loads the non-region-specific language resource,
+   * if HTTP receives 403 error, loads the non-region-specific language resource,
    * throws error otherwise
    * @param url
    */
@@ -245,7 +245,7 @@ export class LfLocalizationService implements ILocalizationService {
    */
   private async addResourceFromUrlAsync(url: string, code: string): Promise<object> {
     const response = await fetch(url);
-    if (response.status === 404) {
+    if (response.status === 403) {
       throw new ResourceNotFoundError(`HTTP error ${response.status} at ${url}`);
     } else if (response.status === 200) {
       const json = await response.json();

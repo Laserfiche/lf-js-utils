@@ -181,7 +181,7 @@ describe('LfLocalizationService', () => {
     expect(localizedString).toEqual(notFoundValue);
   });
 
-  it('initResourcesFromUrlAsync should return error when getting default language returns HTTP error 404', async () => {
+  it('initResourcesFromUrlAsync should return error when getting default language returns HTTP error 403', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
     const message = `Required language resource en-US is not found in ${resourcesFolder}nonexistent/en-US.json.`;
@@ -194,7 +194,7 @@ describe('LfLocalizationService', () => {
     }
   });
 
-  it('initResourcesFromUrlAsync should return error when getting HTTP error other than 404', async () => {
+  it('initResourcesFromUrlAsync should return error when getting HTTP error other than 403', async () => {
     // Arrange
     lfLocalizationService = new LfLocalizationService();
     const mockedResponse = new Response(null, { status: 500 });
