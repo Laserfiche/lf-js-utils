@@ -1,18 +1,18 @@
 /**
- * Returns the url to an svg icon from https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg.
+ * Returns the url to an svg icon from https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg.
  * @param iconId e.g. edoc-code-20
  * @returns the url
  * @example
  * ```typescript
- * getDocumentIconUrlFromIconId('edoc-code-20'); // 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg#edoc-code-20'
+ * getDocumentIconUrlFromIconId('edoc-code-20'); // 'https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg#edoc-code-20'
  * ```
  */
  export function getDocumentIconUrlFromIconId(iconId: string): string {
-    return `https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg#${iconId}`;
+    return `https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg#${iconId}`;
 }
 
 /**
- * Returns the icon id given a file extension from https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg.
+ * Returns the icon id given a file extension from https://lfxstatic.com/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg.
  * @param ext
  * @returns icon id
  * @example

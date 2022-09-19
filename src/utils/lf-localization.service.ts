@@ -82,7 +82,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/laserfiche-base';
+   * const resourcesFolder = 'https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/laserfiche-base';
    * localizationService.setLanguage('fr-CA');
    * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en-US.json and fr-FR.json
    * ```
@@ -97,7 +97,7 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Loads the selected language resource given the url pointing to the folder of the resource,
-   * if HTTP receives 404 error, loads the non-region-specific language resource,
+   * if HTTP receives 403 or 404 error, loads the non-region-specific language resource,
    * throws error otherwise
    * @param url
    */
@@ -154,7 +154,7 @@ export class LfLocalizationService implements ILocalizationService {
    * @example
    * ```typescript
    * const localizationService = new LfLocalizationService();
-   * const resourcesFolder = 'https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4/resources/laserfiche-base';
+   * const resourcesFolder = 'https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/laserfiche-base';
    * localizationService.setLanguage('fr-CA');  // gives a warning since no resource exists at this point
    * await localizationService.initResourcesFromUrlAsync(resourcesFolder); // loads en.json and fr.json because language has been set to be fr-CA
    * localizationService.currentLanguage // {'language': 'fr', 'resource': { ... }}
@@ -245,7 +245,7 @@ export class LfLocalizationService implements ILocalizationService {
    */
   private async addResourceFromUrlAsync(url: string, code: string): Promise<object> {
     const response = await fetch(url);
-    if (response.status === 404) {
+    if (response.status > 399 && response.status < 500) {
       throw new ResourceNotFoundError(`HTTP error ${response.status} at ${url}`);
     } else if (response.status === 200) {
       const json = await response.json();
