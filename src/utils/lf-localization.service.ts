@@ -97,7 +97,7 @@ export class LfLocalizationService implements ILocalizationService {
 
   /**
    * Loads the selected language resource given the url pointing to the folder of the resource,
-   * if HTTP receives 403 error, loads the non-region-specific language resource,
+   * if HTTP receives 403 or 404 error, loads the non-region-specific language resource,
    * throws error otherwise
    * @param url
    */
