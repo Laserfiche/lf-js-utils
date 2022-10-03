@@ -8,7 +8,7 @@
  * ```
  */
  export function getDocumentIconUrlFromIconId(iconId: string): string {
-    return `https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg#${iconId}`;
+    return `https://cdn.jsdelivr.net/npm/@laserfiche/lf-resource-library@4.0.1--preview-3178157605/resources/icons/document-icons.svg#${iconId}`;
 }
 
 /**
