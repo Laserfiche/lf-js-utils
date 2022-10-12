@@ -14,7 +14,7 @@ See CHANGELOG [here](https://github.com/Laserfiche/lf-js-utils/blob/4.x/CHANGELO
 
 ## Contribution
 
-We welcome contributions and feedback. Please follow our [contributing guidelines](./CONTRIBUTING.md).
+We welcome contributions and feedback. Please follow our [contributing guidelines](https://github.com/Laserfiche/lf-js-utils/blob/4.x/CONTRIBUTING.md).
 
 ### Development prerequisite
 
