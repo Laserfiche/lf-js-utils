@@ -10,11 +10,11 @@ Laserfiche javascript utility functions and localization service.
 
 ## Change Log
 
-See CHANGELOG [here](https://github.com/Laserfiche/lf-js-utils/blob/4.x/CHANGELOG.md).
+See CHANGELOG [here](https://github.com/Laserfiche/lf-js-utils/blob/HEAD/CHANGELOG.md).
 
 ## Contribution
 
-We welcome contributions and feedback. Please follow our [contributing guidelines](./CONTRIBUTING.md).
+We welcome contributions and feedback. Please follow our [contributing guidelines](https://github.com/Laserfiche/lf-js-utils/blob/HEAD/CONTRIBUTING.md).
 
 ### Development prerequisite
 
