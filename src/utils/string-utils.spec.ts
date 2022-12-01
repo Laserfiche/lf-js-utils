@@ -1,4 +1,4 @@
-import { arrayBufferToBase64, base64toString, base10ToBase16, formatString, stringToBase64 } from './string-utils.js';
+import { arrayBufferToBase64, base64toString, base10ToBase16, formatString, stringToBase64, trimEnd } from './string-utils.js';
 
 describe('string-utils', () => {
   it('formatString should not replace variables if there are no variables or params', () => {
@@ -193,6 +193,36 @@ describe('string-utils', () => {
 
     // Assert
     expect(encodedString).toEqual(expectedEncodedString);
+  });
+
+  it('Trim one end character', () => {
+    //Arrange
+    const value = 'https://example.com/LFRepositoryAPI/';
+    const endValue = '/';
+    //Act
+    const result = trimEnd(value, endValue);
+    //Assert
+    expect(result).toBe('https://example.com/LFRepositoryAPI');
+  });
+
+  it('Trim two end characters', () => {
+    //Arrange
+    const value = 'https://example.com/LFRepositoryAPI/';
+    const endValue = 'I/';
+    //Act
+    const result = trimEnd(value, endValue);
+    //Assert
+    expect(result).toBe('https://example.com/LFRepositoryAP');
+  });
+
+  it('Trim zero characters', () => {
+    //Arrange
+    const value = 'https://example.com/LFRepositoryAPI/';
+    const endValue = '';
+    //Act
+    const result = trimEnd(value, endValue);
+    //Assert
+    expect(result).toBe(value);
   });
 
 });

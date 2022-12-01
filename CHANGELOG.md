@@ -1,3 +1,12 @@
+## 4.0.5
+### Features
+
+- `StringUtils` now contains `trimEnd` function remove all the trailing occurrences of a character from a string.
+
+### Fixes
+
+### Chore & Maintenance
+
 ## 4.0.4
 ### Features
 

@@ -101,3 +101,13 @@ export function arrayBufferToBase64(buffer: ArrayBuffer) {
 export function base10ToBase16(dec: number): string {
   return dec.toString(16).padStart(2, "0");
 }
+
+/**
+ * Removes all the trailing occurrences of a character from a string.
+ * @param value
+ * @param endValue string to remove
+ * @return trimed string
+ */
+ export function trimEnd(value: string, endValue: string): string {
+  return value.endsWith(endValue) ? value.substring(0, value.length - endValue.length) : value;
+}
