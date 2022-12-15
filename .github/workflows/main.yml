@@ -28,10 +28,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
-
-      - name: Npm tool install
-        run: npm install -g npm@8
+          node-version: '16'
 
       - name: Npm ci
         run: npm ci
@@ -94,11 +91,8 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Npm tool install
-        run: npm install -g npm@8
 
       - name: set NpmPackageVersion environment
         run: echo "NpmPackageVersion=${{ env.NPM_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
@@ -136,11 +130,8 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Npm tool install
-        run: npm install -g npm@8
 
       - name: npm version
         run: npm version ${{ env.NPM_VERSION }} --no-git-tag-version --allow-same-version
@@ -175,7 +166,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Configure AWS credentials
