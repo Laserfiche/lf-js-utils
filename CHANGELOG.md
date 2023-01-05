@@ -1,3 +1,11 @@
+## 4.0.6
+### Features
+
+### Fixes
+
+### Chore & Maintenance
+- Update build pipeline to use Node 16
+
 ## 4.0.5
 ### Features
 

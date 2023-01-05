@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  NPM_VERSION: "4.0.5"
+  NPM_VERSION: "4.0.6"
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
 
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
 
@@ -26,12 +26,9 @@ jobs:
         run: echo ${{github.run_id}}
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
-
-      - name: Npm tool install
-        run: npm install -g npm@8
+          node-version: '16'
 
       - name: Npm ci
         run: npm ci
@@ -62,7 +59,7 @@ jobs:
         run: echo ${{ env.NPM_VERSION }}
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
           name: npm-publish-artifact
           # A file, directory or wildcard pattern that describes what to upload
@@ -82,23 +79,20 @@ jobs:
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ] # wait for build to finish
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
 
       - name: Download a Build Artifact
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           name: npm-publish-artifact
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Npm tool install
-        run: npm install -g npm@8
 
       - name: set NpmPackageVersion environment
         run: echo "NpmPackageVersion=${{ env.NPM_VERSION }}--preview-${{ github.run_id }}" >> $GITHUB_ENV
@@ -124,23 +118,20 @@ jobs:
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
 
       - name: Download a Build Artifact
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           name: npm-publish-artifact
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Npm tool install
-        run: npm install -g npm@8
 
       - name: npm version
         run: npm version ${{ env.NPM_VERSION }} --no-git-tag-version --allow-same-version
@@ -163,23 +154,23 @@ jobs:
     if: ${{ github.run_attempt != 1 }}
     needs: [ build ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
 
       - name: Download a Build Artifact
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           name: npm-publish-artifact
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
