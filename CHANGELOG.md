@@ -1,6 +1,14 @@
 ## 4.0.5
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+- Update build pipeline to use Node 16
+
+## 4.0.5
+### Features
+
 - `StringUtils` now contains `trimEnd` function remove all the trailing occurrences of a character from a string.
 
 ### Fixes
