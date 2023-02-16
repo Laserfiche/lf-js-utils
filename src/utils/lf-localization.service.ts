@@ -77,7 +77,7 @@ export class LfLocalizationService implements ILocalizationService {
 
   private getCookieLanguage(): string | undefined {
     const domainCookie: string | undefined = document?.cookie;
-    const cookiesKeyValue = domainCookie?.split(';');
+    const cookiesKeyValue = domainCookie?.split('|');
     cookiesKeyValue?.forEach((kv) => {
       const splitkv = kv.split('=');
       const key = splitkv.at(0);
