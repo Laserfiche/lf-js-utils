@@ -81,7 +81,7 @@ export class LfLocalizationService implements ILocalizationService {
     cookiesKeyValue?.forEach((kv) => {
       const splitkv = kv.split('=');
       const key = splitkv.at(0);
-      if (key?.toLocaleLowerCase() === 'language') {
+      if (key?.trim().toLocaleLowerCase() === 'language') {
         const value: string | undefined = splitkv.at(1);
         const cultures = value?.split('|');
         const uic = cultures?.at(1)?.split('=');
