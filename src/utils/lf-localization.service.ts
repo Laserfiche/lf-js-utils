@@ -1,4 +1,5 @@
 import { formatString } from './string-utils.js';
+import { LfLanguageCookie, getLfLanguageCookie } from './browser-cookie-utils.js';
 
 export type resourceType = { language: string; resource: object };
 
@@ -67,28 +68,13 @@ export class LfLocalizationService implements ILocalizationService {
       console.log('No static resources provided. Call initResourcesFromUrlAsync to load resources dynamically.');
     }
     try {
-      const cookieLanguage: string | undefined = this.getCookieLanguage();
-      const language = cookieLanguage ?? window?.navigator?.language ?? this.DEFAULT_LANGUAGE;
+      const domainCookie: string = document?.cookie ?? '';
+      const cookieLanguage: LfLanguageCookie | undefined = getLfLanguageCookie(domainCookie);
+      const language = cookieLanguage?.uic ?? window?.navigator?.language ?? this.DEFAULT_LANGUAGE;
       this.setLanguage(language);
     } catch {
       this.setLanguage(this.DEFAULT_LANGUAGE);
     }
-  }
-
-  private getCookieLanguage(): string | undefined {
-    const domainCookie: string | undefined = document?.cookie;
-    const cookiesKeyValue = domainCookie?.split('|');
-    cookiesKeyValue?.forEach((kv) => {
-      const splitkv = kv.split('=');
-      const key = splitkv.at(0);
-      if (key?.trim().toLocaleLowerCase() === 'language') {
-        const value: string | undefined = splitkv.at(1);
-        const cultures = value?.split('|');
-        const uic = cultures?.at(1)?.split('=');
-        return uic?.at(1);
-      }
-    });
-    return undefined;
   }
 
   /**

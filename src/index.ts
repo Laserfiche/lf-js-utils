@@ -7,3 +7,4 @@ export * as MimeTypeUtils from './utils/mime-type-utils.js';
 export * as PathUtils from './utils/path-utils.js';
 export * as StringUtils from './utils/string-utils.js';
 export * as CoreUtils from './utils/core-utils.js';
+export * as BrowserCookieUtils from './utils/browser-cookie-utils.js';
