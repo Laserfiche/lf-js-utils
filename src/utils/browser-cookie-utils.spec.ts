@@ -6,7 +6,7 @@ describe('BrowserCookieUtils', () => {
 
         const parsedLfCookie: LfLanguageCookie | undefined = getLfLanguageCookie(cookiesFromBrowser);
 
-        expect(parsedLfCookie).toEqual({uic: 'en-US', c: 'en-US'})
+        expect(parsedLfCookie).toEqual({uic: 'en-US', c: 'en-US'});
     });
 
     it('getLfLanguageCookie should return if condition is met within time limit', async () => {
@@ -14,7 +14,7 @@ describe('BrowserCookieUtils', () => {
 
         const parsedLfCookie: LfLanguageCookie | undefined = getLfLanguageCookie(cookiesFromBrowser);
 
-        expect(parsedLfCookie).toEqual({uic: 'en-US', c: 'es-419'})
+        expect(parsedLfCookie).toEqual({uic: 'en-US', c: 'es-419'});
     });
 
     it('getLfLanguageCookie should return if condition is met within time limit', async () => {
