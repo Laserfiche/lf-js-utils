@@ -18,27 +18,35 @@ export function getLfLanguageCookie(browserCookies: string): LfLanguageCookie | 
   const cookiesKeyValue = browserCookies.split(';');
   let cult: LfLanguageCookie | undefined;
   cookiesKeyValue?.forEach((kv) => {
-    let uiCode: string | undefined;
-    let langCode: string | undefined;
     const trimmedCookieValue = kv?.trim();
     if (trimmedCookieValue.startsWith('Language=')) {
       const value: string | undefined = trimmedCookieValue.replace('Language=', '');
-      const cultures = value?.split('|');
-      cultures.forEach((code) => {
-        if (code.startsWith('c=')) {
-          langCode = code.replace('c=', '');
-        } else if (code.startsWith('uic=')) {
-          uiCode = code.replace('uic=', '');
-        }
-      });
-      if (langCode || uiCode) {
-        cult = {
-          c: langCode,
-          uic: uiCode,
-        };
-      }
+      cult = parseLanguageCookie(value);
     }
   });
   // TODO this will return last instance of Language header, is it possible to have multiple?
   return cult ?? undefined;
+}
+
+/**
+ * @internal
+ */
+function parseLanguageCookie(value: string): LfLanguageCookie | undefined {
+  let langCode: string | undefined;
+  let uiCode: string | undefined;
+  const cultures = value?.split('|');
+  cultures.forEach((code) => {
+    if (code.startsWith('c=')) {
+      langCode = code.replace('c=', '');
+    } else if (code.startsWith('uic=')) {
+      uiCode = code.replace('uic=', '');
+    }
+  });
+  if (langCode || uiCode) {
+    return {
+      c: langCode,
+      uic: uiCode,
+    };
+  }
+  return undefined;
 }
