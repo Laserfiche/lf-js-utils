@@ -298,7 +298,9 @@ describe('LfLocalizationService', () => {
     lfLocalizationService.debugMode = true;
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-    expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual('_Ḓǿ ẏǿŭ ẇȧƞŧ ŧǿ ȧƥƥŀẏ ẏǿŭř ƒīḗŀḓ ƈħȧƞɠḗş?_');
+    expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual(
+      '_Ḓǿ ẏǿŭ ẇȧƞŧ ŧǿ ȧƥƥŀẏ ẏǿŭř ƒīḗŀḓ ƈħȧƞɠḗş?_'
+    );
   });
 
   it('should create pseudo language in debug mode for spanish', async () => {
@@ -308,74 +310,76 @@ describe('LfLocalizationService', () => {
 
     await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-    expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual('_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_');
+    expect(lfLocalizationService.getString('DO_YOU_WANT_TO_YOUR_APPLY_FIELD_CHANGES')).toEqual(
+      '_¿Ḓḗşḗȧ ȧƥŀīƈȧř şŭş ƈȧḿƀīǿş ḓḗ ƈȧḿƥǿ?_'
+    );
   });
 
   it(`when requested language is zh-CN, current language is set to zh-Hans`, async () => {
-   // Arrange
-   lfLocalizationService = new LfLocalizationService();
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
 
-   // Act
-   lfLocalizationService.setLanguage('zh-CN');
-   await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    // Act
+    lfLocalizationService.setLanguage('zh-CN');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-   // Assert
-   expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
- });
+    // Assert
+    expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
+  });
 
- it(`when requested language is zh-TW, current language is set to zh-Hant`, async () => {
-  // Arrange
-  lfLocalizationService = new LfLocalizationService();
+  it(`when requested language is zh-TW, current language is set to zh-Hant`, async () => {
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
 
-  // Act
-  lfLocalizationService.setLanguage('zh-TW');
-  await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    // Act
+    lfLocalizationService.setLanguage('zh-TW');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-  // Assert
-  expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hant');
-});
+    // Assert
+    expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hant');
+  });
 
-it(`when requested language is zh-TW with custom JSON, current language is set to zh-Hant`, async () => {
-  // Arrange
-  const resources: Map<string, object> = new Map([
-    ['en-US', { TEST_STRING: 'test res' }],
-    ['zh-Hans', { TEST_STRING: 'chinese simplified test' }],
-    ['zh-Hant', { TEST_STRING: 'chinese traditional test' }],
-  ]);
-  lfLocalizationService = new LfLocalizationService(resources);
+  it(`when requested language is zh-TW with custom JSON, current language is set to zh-Hant`, async () => {
+    // Arrange
+    const resources: Map<string, object> = new Map([
+      ['en-US', { TEST_STRING: 'test res' }],
+      ['zh-Hans', { TEST_STRING: 'chinese simplified test' }],
+      ['zh-Hant', { TEST_STRING: 'chinese traditional test' }],
+    ]);
+    lfLocalizationService = new LfLocalizationService(resources);
 
-  // Act
-  lfLocalizationService.setLanguage('zh-TW');
+    // Act
+    lfLocalizationService.setLanguage('zh-TW');
 
-  // Assert
-  expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hant');
-});
+    // Assert
+    expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hant');
+  });
 
-it(`when requested language is zh-CN with custom JSON, current language is set to zh-Hans`, async () => {
-  // Arrange
-  const resources: Map<string, object> = new Map([
-    ['en-US', { TEST_STRING: 'test res' }],
-    ['zh-Hans', { TEST_STRING: 'chinese simplified test' }],
-    ['zh-Hant', { TEST_STRING: 'chinese traditional test' }],
-  ]);
-  lfLocalizationService = new LfLocalizationService(resources);
+  it(`when requested language is zh-CN with custom JSON, current language is set to zh-Hans`, async () => {
+    // Arrange
+    const resources: Map<string, object> = new Map([
+      ['en-US', { TEST_STRING: 'test res' }],
+      ['zh-Hans', { TEST_STRING: 'chinese simplified test' }],
+      ['zh-Hant', { TEST_STRING: 'chinese traditional test' }],
+    ]);
+    lfLocalizationService = new LfLocalizationService(resources);
 
-  // Act
-  lfLocalizationService.setLanguage('zh-CN');
+    // Act
+    lfLocalizationService.setLanguage('zh-CN');
 
-  // Assert
-  expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
-});
+    // Assert
+    expect(lfLocalizationService.currentResource?.language).toEqual('zh-Hans');
+  });
 
-it(`when requested language is fr, current language is set to fr-FR`, async () => {
-  // Arrange
-  lfLocalizationService = new LfLocalizationService();
+  it(`when requested language is fr, current language is set to fr-FR`, async () => {
+    // Arrange
+    lfLocalizationService = new LfLocalizationService();
 
-  // Act
-  lfLocalizationService.setLanguage('fr');
-  await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
+    // Act
+    lfLocalizationService.setLanguage('fr');
+    await lfLocalizationService.initResourcesFromUrlAsync(resourcesFolder);
 
-  // Assert
-  expect(lfLocalizationService.currentResource?.language).toEqual('fr-FR');
-});
+    // Assert
+    expect(lfLocalizationService.currentResource?.language).toEqual('fr-FR');
+  });
 });
