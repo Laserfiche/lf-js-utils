@@ -1,14 +1,23 @@
 export interface LfLanguageCookie {
-  c: string;
-  uic: string;
+  c?: string;
+  uic?: string;
 }
 
+/**
+ * Function to get UI Culture (uic) and Regional Settings (c) from `Language` cookie, if exists in expected format
+ * @param browserCookies cookies from browser. Cookies separated by `;`
+ * @returns LfLanguageCookie, parsed from input
+ * @example
+ * ```typescript
+ * getLfLanguageCookie('test=hi;Language=c=en-US|uic=en-US;moretest=cookie'); // '{uic: 'en-US', c: 'en-US'}'
+ * getLfLanguageCookie('test=hi;Language=c=en-US;moretest=cookie'); // {uic: undefined, c: 'en-US'}
+ * getLfLanguageCookie('test=hi;moretest=cookie'); //  undefined
+ * ```
+ */
 export function getLfLanguageCookie(browserCookies: string): LfLanguageCookie | undefined {
-  // TODO should we let them pass in an optional sessionKey to check the LangSess
   const cookiesKeyValue = browserCookies.split(';');
   let cult: LfLanguageCookie | undefined;
   cookiesKeyValue?.forEach((kv) => {
-    // " Language=c=en-US|uic=es-419"
     let uiCode: string | undefined;
     let langCode: string | undefined;
     const trimmedCookieValue = kv?.trim();
@@ -22,15 +31,14 @@ export function getLfLanguageCookie(browserCookies: string): LfLanguageCookie | 
           uiCode = code.replace('uic=', '');
         }
       });
-      console.log('lllll', langCode, uiCode);
-      if (langCode && uiCode) {
+      if (langCode || uiCode) {
         cult = {
           c: langCode,
           uic: uiCode,
         };
-        console.log('cult', cult);
       }
     }
   });
+  // TODO this will return last instance of Language header, is it possible to have multiple?
   return cult ?? undefined;
 }
