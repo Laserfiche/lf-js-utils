@@ -1,5 +1,5 @@
 import { formatString } from './string-utils.js';
-import { LfLanguageCookie, getLfLanguageCookie } from './browser-cookie-utils.js';
+import { LfLanguageCookie, getLfLanguageCookie } from './cookie-utils.js';
 
 export type resourceType = { language: string; resource: object };
 

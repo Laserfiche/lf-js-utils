@@ -1,6 +1,6 @@
 ## 4.0.7
 ### Features
-- Add BrowserCookieUtils to parse browser cookie into UI culture and regional settings
+- Add CookieUtils to parse browser cookie into UI culture and regional settings
 - `LfLocalizationService`: If Language cookie exists in expected LF format, language will default to that UI culture (uic) 
 
 ### Fixes

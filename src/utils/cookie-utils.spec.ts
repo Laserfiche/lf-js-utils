@@ -1,6 +1,6 @@
-import { getLfLanguageCookie, LfLanguageCookie } from "./browser-cookie-utils";
+import { getLfLanguageCookie, LfLanguageCookie } from "./cookie-utils";
 
-describe('BrowserCookieUtils', () => {
+describe('CookieUtils', () => {
 
     it('getLfLanguageCookie should return parsed cookie if in correct format', async () => {
         const cookiesFromBrowser = 'test=hi;Language=c=es-419|uic=en-US';
