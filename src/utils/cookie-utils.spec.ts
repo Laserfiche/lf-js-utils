@@ -17,20 +17,20 @@ describe('CookieUtils', () => {
     expect(parsedLfCookie).toBeUndefined();
   });
 
-  it('getLfLanguageCookie should return valid cookie if second language cookie is not valid', async () => {
-    const cookiesFromBrowser = 'test=hi;Language=c=es-419|uic=en-US; no=yes; Language=cookie';
+  it('getLfLanguageCookie should return first valid cookie if first language cookie is not valid', async () => {
+    const cookiesFromBrowser = 'Language=cookie; test=hi;Language=c=es-419|uic=en-US; no=yes;';
 
     const parsedLfCookie: LfLanguageCookie | undefined = getLfLanguageCookie(cookiesFromBrowser);
 
     expect(parsedLfCookie).toEqual({ uic: 'en-US', c: 'es-419' });
   });
 
-  it('getLfLanguageCookie should return second valid cookie if second language cookie is valid', async () => {
+  it('getLfLanguageCookie should return first valid cookie', async () => {
     const cookiesFromBrowser = 'test=hi;Language=c=es-419|uic=en-US; no=yes; Language=c=en-US|uic=en-US';
 
     const parsedLfCookie: LfLanguageCookie | undefined = getLfLanguageCookie(cookiesFromBrowser);
 
-    expect(parsedLfCookie).toEqual({ uic: 'en-US', c: 'en-US' });
+    expect(parsedLfCookie).toEqual({ uic: 'en-US', c: 'es-419' });
   });
 
   it('getLfLanguageCookie should return only uic if that is all that exists', async () => {
