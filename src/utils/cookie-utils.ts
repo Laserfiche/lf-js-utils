@@ -28,7 +28,6 @@ export function getLfLanguageCookie(cookie: string): LfLanguageCookie | undefine
       const value: string | undefined = trimmedCookieValue.replace(LANGUAGE_COOKIE_PREFIX, '');
       const parsedCult = parseLanguageCookie(value);
       if (parsedCult) {
-        console.log(parsedCult)
         return parsedCult;
       }
     }
