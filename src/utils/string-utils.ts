@@ -36,8 +36,8 @@ export function formatString(stringToFormat: string, params?: string[]): string 
 
 /**
  * Decodes a string of data encoded using Base64 encoding
- * @param base64String
- * @returns
+ * @param base64String Base64 encoded string
+ * @returns Ascii encoded string
  * @example
  * ```typescript
  * base64toString('dGVzdA=='); // => 'test';
@@ -46,34 +46,32 @@ export function formatString(stringToFormat: string, params?: string[]): string 
 export function base64toString(base64String: string): string {
   if (isBrowser()) {
     return window.atob(base64String);
-  }
-  else {
+  } else {
     return Buffer.from(base64String, 'base64').toString();
   }
 }
 
 /**
  * Encodes a string of data using Base64 encoding
- * @param binaryString
- * @returns
+ * @param asciiString Ascii encoded string
+ * @returns Base64 encoded string
  * @example
  * ```typescript
  * stringToBase64('test'); // => 'dGVzdA==';
  * ```
  */
- export function stringToBase64(binaryString: string): string {
+export function stringToBase64(asciiString: string): string {
   if (isBrowser()) {
-    return window.btoa(binaryString);
-  }
-  else {
-    return Buffer.from(binaryString).toString('base64');
+    return window.btoa(asciiString);
+  } else {
+    return Buffer.from(asciiString).toString('base64');
   }
 }
 
 /**
  * Converts an ArrayBuffer to a base64 string
  * @param buffer
- * @returns
+ * @returns Base64 encoded string
  * @example
  * ```typescript
  * const buffer = new Uint8Array(4);
@@ -85,29 +83,73 @@ export function arrayBufferToBase64(buffer: ArrayBuffer) {
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
   for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
+    binary += String.fromCharCode(bytes[i]);
   }
   return stringToBase64(binary);
 }
 
 /**
  * Convert a decimal number to hexadecimal number
- * @param dec
- * @returns
+ * @param dec Number in base 10
+ * @returns Hexadecimal string
+ * @example
  * ```typescript
  * base10ToBase16(16);  // => '10'
  * ```
  */
 export function base10ToBase16(dec: number): string {
-  return dec.toString(16).padStart(2, "0");
+  return dec.toString(16).padStart(2, '0');
 }
 
 /**
  * Removes all the trailing occurrences of a character from a string.
  * @param value
- * @param endValue string to remove
- * @return trimed string
+ * @param endValue String to remove
+ * @return Trimmed string
  */
- export function trimEnd(value: string, endValue: string): string {
+export function trimEnd(value: string, endValue: string): string {
   return value.endsWith(endValue) ? value.substring(0, value.length - endValue.length) : value;
+}
+
+/**
+ * Function to convert bytes to an abbreviated format
+ * @param bytes Number of bytes
+ * @param numOfFractionalDigits Number of digits after the decimal place
+ * @returns String representing the bytes in abbreviated form (KB, MB, GB, etc.)
+ * @example
+ * ```typescript
+ * convertBytesToString(1024); // 1 KB
+ * convertBytesToString(1027); // 1.00 KB
+ * convertBytesToString(1500000); // 1.43 MB
+ * ```
+ */
+export function convertBytesToString(bytes: number, numOfFractionalDigits: number = 2): string {
+  if (bytes < 0.0) {
+    return '';
+  }
+  let suffix = 'B';
+  if (bytes >= 1024.0) {
+    bytes /= 1024.0;
+    suffix = 'KB';
+  }
+  if (bytes >= 1024.0) {
+    bytes /= 1024.0;
+    suffix = 'MB';
+  }
+  if (bytes >= 1024.0) {
+    bytes /= 1024.0;
+    suffix = 'GB';
+  }
+  if (bytes >= 1024.0) {
+    bytes /= 1024.0;
+    suffix = 'TB';
+  }
+
+  if (suffix === 'B') {
+    return `${bytes} ${suffix}`;
+  }
+  if (Number.isInteger(bytes)) {
+    return `${bytes} ${suffix}`;
+  }
+  return `${bytes.toFixed(numOfFractionalDigits)} ${suffix}`;
 }

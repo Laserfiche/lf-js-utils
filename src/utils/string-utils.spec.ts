@@ -1,4 +1,4 @@
-import { arrayBufferToBase64, base64toString, base10ToBase16, formatString, stringToBase64, trimEnd } from './string-utils.js';
+import { arrayBufferToBase64, base64toString, base10ToBase16, formatString, stringToBase64, trimEnd, convertBytesToString } from './string-utils.js';
 
 describe('string-utils', () => {
   it('formatString should not replace variables if there are no variables or params', () => {
@@ -195,7 +195,7 @@ describe('string-utils', () => {
     expect(encodedString).toEqual(expectedEncodedString);
   });
 
-  it('Trim one end character', () => {
+  it('trimEnd trims one end character', () => {
     //Arrange
     const value = 'https://example.com/LFRepositoryAPI/';
     const endValue = '/';
@@ -205,7 +205,7 @@ describe('string-utils', () => {
     expect(result).toBe('https://example.com/LFRepositoryAPI');
   });
 
-  it('Trim two end characters', () => {
+  it('trimEnd trims two end characters', () => {
     //Arrange
     const value = 'https://example.com/LFRepositoryAPI/';
     const endValue = 'I/';
@@ -215,7 +215,7 @@ describe('string-utils', () => {
     expect(result).toBe('https://example.com/LFRepositoryAP');
   });
 
-  it('Trim zero characters', () => {
+  it('trimEnd trims zero characters', () => {
     //Arrange
     const value = 'https://example.com/LFRepositoryAPI/';
     const endValue = '';
@@ -225,4 +225,48 @@ describe('string-utils', () => {
     expect(result).toBe(value);
   });
 
+  it('convertBytesToString converts to KB', () => {
+    //Arrange
+    const value = Math.pow(2, 15) + 500;
+    //Act
+    const result = convertBytesToString(value);
+    //Assert
+    expect(result).toBe('32.49 KB');
+  });
+
+  it('convertBytesToString converts to MB', () => {
+    //Arrange
+    const value = Math.pow(2, 21);
+    //Act
+    const result = convertBytesToString(value);
+    //Assert
+    expect(result).toBe('2 MB');
+  });
+
+  it('convertBytesToString converts to GB', () => {
+    //Arrange
+    const value = Math.pow(2, 32);
+    //Act
+    const result = convertBytesToString(value);
+    //Assert
+    expect(result).toBe('4 GB');
+  });
+
+  it('convertBytesToString converts to TB, with numbers after decimal if not exact number', () => {
+    //Arrange
+    const value = Math.pow(2, 47) + 500;
+    //Act
+    const result = convertBytesToString(value);
+    //Assert
+    expect(result).toBe('128.00 TB');
+  });
+
+  it('convertBytesToString adds decimals to precision when specified', () => {
+    //Arrange
+    const value = Math.pow(2, 17) + 500;
+    //Act
+    const result = convertBytesToString(value, 5);
+    //Assert
+    expect(result).toBe('128.48828 KB');
+  });
 });
