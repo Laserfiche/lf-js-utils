@@ -1,7 +1,7 @@
 ## 4.0.7
 ### Features
-- Add CookieUtils to parse browser cookie into UI culture and regional settings
-- `LfLocalizationService`: If Language cookie exists in expected LF format, language will default to that UI culture (uic) 
+- `LfLocalizationService`: If Language cookie exists in expected LF format, language will default to that UI culture
+- Add `convertBytesToString` in `StringUtils` to convert a raw number of bytes to an abbreviated string (MB, GB, etc.)
 
 ### Fixes
 
