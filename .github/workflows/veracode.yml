@@ -20,6 +20,9 @@ jobs:
         with:
           ref: ${{ github.sha }}
 
+      - name: 'Delete spec files'
+        run: rm -r *.spec.ts
+
       - name: 'create an empty ./veracode folder'
         run: 'mkdir -p ./veracode'
         
