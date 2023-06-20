@@ -23,13 +23,13 @@ jobs:
       - name: 'create an empty ./veracode folder'
         run: 'mkdir -p ./veracode'
         
-      - name: 'Compress UI Components Services'
+      - name: 'Compress lf-js-utils'
         run: tar -czvf ./veracode/lf-js-utils.tar.gz ./src
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ui-components-services
+          name: lf-js-utils
           # A file, directory or wildcard pattern that describes what to upload
           path: |
             ./veracode
