@@ -20,14 +20,6 @@ jobs:
         with:
           ref: ${{ github.sha }}
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - name: Npm ci
-        run: npm ci
-
       - name: 'Delete spec files'
         run: find . -type f -name '*.spec.ts' -delete
 
