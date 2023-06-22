@@ -1,0 +1,44 @@
+name: Veracode lf-js-utils-CI
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * 6'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+
+      - name: 'Delete spec files'
+        run: find . -type f -name '*.spec.ts' -delete
+
+      - name: 'create an empty ./veracode folder'
+        run: 'mkdir -p ./veracode'
+        
+      - name: 'Compress lf-js-utils'
+        run: tar -czvf ./veracode/lf-js-utils.tar.gz ./src
+
+      - name: Veracode Upload And Scan (Static Application Security Testing)
+        uses: veracode/veracode-uploadandscan-action@0.2.6
+        with:
+          appname: 'lf-js-utils'
+          createprofile: true
+          filepath: 'veracode'
+          vid: '${{ secrets.VERACODE_API_ID }}'
+          vkey: '${{ secrets.VERACODE_API_KEY }}'
+          teams: 'Application Component - Shared'
+
+      - name: Run Veracode Software Composition Analysis (SCA)
+        env:
+          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+        uses: veracode/veracode-sca@v2.1.6
+        with:
+          create-issues: false
+          allow-dirty: true
+          recursive: true
