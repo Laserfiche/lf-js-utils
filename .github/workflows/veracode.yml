@@ -1,11 +1,6 @@
 name: Veracode lf-js-utils-CI
 
 on:
-  push:
-    branches: [ '\d+.x' ]
-  pull_request:
-    branches: [ '\d+.x' ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   schedule:
@@ -29,15 +24,7 @@ jobs:
       - name: 'Compress lf-js-utils'
         run: tar -czvf ./veracode/lf-js-utils.tar.gz ./src
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: lf-js-utils
-          # A file, directory or wildcard pattern that describes what to upload
-          path: |
-            ./veracode
-
-      - name: Veracode Upload And Scan
+      - name: Veracode Upload And Scan (Static Application Security Testing)
         uses: veracode/veracode-uploadandscan-action@0.2.6
         with:
           appname: 'lf-js-utils'
@@ -47,7 +34,7 @@ jobs:
           vkey: '${{ secrets.VERACODE_API_KEY }}'
           teams: 'Application Component - Shared'
 
-      - name: Run Veracode SCA
+      - name: Run Veracode Software Composition Analysis (SCA)
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         uses: veracode/veracode-sca@v2.1.6
