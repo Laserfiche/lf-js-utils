@@ -32,7 +32,6 @@ jobs:
           filepath: 'veracode'
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          teams: 'GitHub - Open Source'
 
       - name: Run Veracode Software Composition Analysis (SCA)
         env:
