@@ -93,8 +93,8 @@ export function formatTextConstraint(textConstraint: string): string {
 
 /**
  *
- * @param str Function to check if an input string is empty
- * @returns true if the input is consisted only of whitespace characters, false otherwise
+ * @param str Function to check if an input is empty
+ * @returns true if the input is null, undefined, or consisted only of whitespace characters, false otherwise
  * @example
  * ```typescript
  * isNullOrEmpty(''); // true
@@ -102,7 +102,10 @@ export function formatTextConstraint(textConstraint: string): string {
  * isNullOrEmpty('abc'); // false
  * ```
  */
- export function isNullOrEmpty(str: string): boolean {
+ export function isNullOrEmpty(str: string | null | undefined ): boolean {
+  if (!str) {
+    return true;
+  }
   const trimmed = str.trim();
   return trimmed.length === 0;
 }
