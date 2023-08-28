@@ -1,3 +1,10 @@
+## 4.0.8
+### Features
+- `LfMetadataValidationUtils`: add `isNullOrEmpty` to test if an string is consisted of white-space character
+### Fixes
+
+### Chore & Maintenance
+
 ## 4.0.7
 ### Features
 - `LfLocalizationService`: If Language cookie exists in expected LF format, language will default to that UI culture
