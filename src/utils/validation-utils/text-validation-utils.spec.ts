@@ -311,7 +311,7 @@ describe('TextValidationUtils', () => {
     //Arrange
     const value = '    ';
     //Act
-    const result =isNullOrEmpty(value);
+    const result = isNullOrEmpty(value);
     //Assert
     expect(result).toBe(true);
   });
@@ -320,7 +320,25 @@ describe('TextValidationUtils', () => {
     //Arrange
     const value = '\t';
     //Act
-    const result =isNullOrEmpty(value);
+    const result = isNullOrEmpty(value);
+    //Assert
+    expect(result).toBe(true);
+  });
+
+  it('isNullOrEmpty returns true if the input is null', () => {
+    //Arrange
+    const value = null;
+    //Act
+    const result = isNullOrEmpty(value);
+    //Assert
+    expect(result).toBe(true);
+  });
+
+  it('isNullOrEmpty returns true if the input is undefined', () => {
+    //Arrange
+    const value = undefined;
+    //Act
+    const result = isNullOrEmpty(value);
     //Assert
     expect(result).toBe(true);
   });
@@ -329,7 +347,7 @@ describe('TextValidationUtils', () => {
     //Arrange
     const value = '\n';
     //Act
-    const result =isNullOrEmpty(value);
+    const result = isNullOrEmpty(value);
     //Assert
     expect(result).toBe(true);
   });
