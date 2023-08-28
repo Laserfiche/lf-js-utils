@@ -1,4 +1,4 @@
-import { text_testables, formatTextConstraint } from './text-validation-utils.js';
+import { text_testables, formatTextConstraint, isNullOrEmpty } from './text-validation-utils.js';
 
 describe('TextValidationUtils', () => {
   it('should add ^ to beginning if not present', () => {
@@ -296,5 +296,56 @@ describe('TextValidationUtils', () => {
     expect(regex.test(tooShortVal)).toBeFalsy();
     expect(regex.test(tooLongVal)).toBeFalsy();
     expect(regex.test(notWordVal)).toBeFalsy();
+  });
+
+  it('isNullOrEmpty returns true if the input is an empty string', () => {
+    //Arrange
+    const value = '';
+    //Act
+    const result = isNullOrEmpty(value);
+    //Assert
+    expect(result).toBe(true);
+  });
+
+  it('isNullOrEmpty returns true if the input contains only empty space character', () => {
+    //Arrange
+    const value = '    ';
+    //Act
+    const result =isNullOrEmpty(value);
+    //Assert
+    expect(result).toBe(true);
+  });
+
+  it('isNullOrEmpty returns true if the input is a tab character', () => {
+    //Arrange
+    const value = '\t';
+    //Act
+    const result =isNullOrEmpty(value);
+    //Assert
+    expect(result).toBe(true);
+  });
+
+  it('isNullOrEmpty returns true if the input is a end of line char', () => {
+    //Arrange
+    const value = '\n';
+    //Act
+    const result =isNullOrEmpty(value);
+    //Assert
+    expect(result).toBe(true);
+  });
+
+  it('isNullOrEmpty returns false if the input contains any character other than space', () => {
+    //Arrange
+    const validInputField = [
+      ' a b c ',
+      'a',
+      ' a',
+      'a ',
+      'a\n'
+    ];
+    //Act
+    for (const input of validInputField) {
+      expect(isNullOrEmpty(input)).toBe(false);
+    }
   });
 });
