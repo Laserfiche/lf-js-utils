@@ -45,7 +45,7 @@ describe('inputValidationUtils', () => {
       ' a',
       'a ',
       'a\n'
-    ]
+    ];
     //Act
     for (const input of validInputField) {
       expect(inputIsEmpty(input)).toBe(false);
