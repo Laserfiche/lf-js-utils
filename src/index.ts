@@ -1,3 +1,6 @@
+// Copyright (c) Laserfiche.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 export * as UrlUtils from './utils/url-utils.js';
 export * as LfMetadataValidationUtils from './utils/validation-utils/validation-utils-public-api.js';
 export * as LfMetadataDatetimeUtils from './utils/datetime-utils.js';

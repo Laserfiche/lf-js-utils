@@ -1,3 +1,6 @@
+// Copyright (c) Laserfiche.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 /**
  * Given a string that represents a date object with no timezone offset,
  * adds the offset based on the client's current timezone, and returns it as a string

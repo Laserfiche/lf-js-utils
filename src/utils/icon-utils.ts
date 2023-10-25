@@ -1,3 +1,6 @@
+// Copyright (c) Laserfiche.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 /**
  * Returns the url to an svg icon from https://lfxstatic.com/npm/@laserfiche/lf-resource-library@4/resources/icons/document-icons.svg.
  * @param iconId e.g. edoc-code-20
