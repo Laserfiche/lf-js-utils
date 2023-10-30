@@ -1,3 +1,6 @@
+// Copyright (c) Laserfiche.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 import { formatString } from './string-utils.js';
 import { LfLanguageCookie, getLfLanguageCookie } from './cookie-utils.js';
 

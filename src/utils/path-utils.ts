@@ -1,3 +1,6 @@
+// Copyright (c) Laserfiche.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 /**
  * Returns the last past segment for a '\' delimited string
  * @param path to a folder or a file
